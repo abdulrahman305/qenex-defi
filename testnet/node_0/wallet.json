@@ -1,0 +1,6 @@
+{
+  "address": "testnet_wallet_0",
+  "balance": 1000000,
+  "private_key": "test_key_0",
+  "public_key": "test_pub_0"
+}
