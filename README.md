@@ -5,11 +5,15 @@
 [![Status](https://img.shields.io/badge/status-Active-success.svg)](https://github.com/abdulrahman305/qenex-os)
 [![AI](https://img.shields.io/badge/AI-Powered-purple.svg)](https://github.com/abdulrahman305/qenex-os)
 [![DeFi](https://img.shields.io/badge/DeFi-Ecosystem-orange.svg)](https://github.com/abdulrahman305/qxc-token)
-[![Token](https://img.shields.io/badge/Token-QXC-gold.svg)](https://etherscan.io/token/0xb17654f3f068aded95a234de2532b9a478b858bf)
+[![Status](https://img.shields.io/badge/Status-Development-yellow.svg)](https://github.com/abdulrahman305/qenex-os)
+
+## ⚠️ IMPORTANT DISCLAIMER
+
+**This is an experimental educational project. Smart contracts are NOT deployed to mainnet. The repository contains test keys for development only. DO NOT use with real funds. See [SECURITY_WARNING.md](SECURITY_WARNING.md) for details.**
 
 ## 🌟 Overview
 
-QENEX OS is a revolutionary autonomous operating system that integrates artificial intelligence, blockchain technology, and a complete DeFi ecosystem. It features **QENEX Coin (QXC)**, a comprehensive cryptocurrency ecosystem with staking, metaverse, AI trading, and 15+ advanced DeFi protocols.
+QENEX OS is an experimental autonomous operating system concept that explores integrating artificial intelligence with blockchain technology. It includes example implementations of DeFi protocols for educational purposes.
 
 ### 🎯 Key Innovation: Proof of Improvement (PoI)
 
@@ -69,11 +73,12 @@ cd qxc-token
 npm run deploy
 ```
 
-### Import to MetaMask
+### Testing with MetaMask (LOCAL ONLY)
 
 ```
-Private Key: 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
-Token Address: 0xb17654f3f068aded95a234de2532b9a478b858bf
+⚠️ TEST ACCOUNT ONLY - DO NOT USE WITH REAL FUNDS
+Private Key: [Use Hardhat test account - see documentation]
+Network: Localhost 8545
 Symbol: QXC
 Decimals: 18
 ```
@@ -145,15 +150,16 @@ qenex wallet  # Manage QXC wallets
 qenex ai      # AI performance metrics
 ```
 
-## 📊 Smart Contract Addresses
+## 📊 Development Status
 
-| Contract | Mainnet Address | Status |
-|----------|----------------|---------|
-| QXC Token | `0xb17654f3f068aded95a234de2532b9a478b858bf` | ✅ Deployed |
-| Staking | `Ready for deployment` | 🔄 Pending |
-| Launchpad | `Ready for deployment` | 🔄 Pending |
-| Metaverse | `Ready for deployment` | 🔄 Pending |
-| DEX Aggregator | `Ready for deployment` | 🔄 Pending |
+| Contract | Status | Notes |
+|----------|--------|-------|
+| QXC Token | ✅ Developed | Ready for testing |
+| Staking | ✅ Developed | 15% APY implementation |
+| Launchpad | ✅ Developed | ICO/IDO platform |
+| Metaverse | ✅ Developed | Virtual world contracts |
+| DEX Aggregator | ✅ Developed | Multi-DEX routing |
+| **All contracts** | ⚠️ **NOT deployed to mainnet** | Testing only |
 
 ## 🌐 Ecosystem Components
 
@@ -187,7 +193,7 @@ qenex ai      # AI performance metrics
 
 - **Main Repository**: [github.com/abdulrahman305/qenex-os](https://github.com/abdulrahman305/qenex-os)
 - **Token Repository**: [github.com/abdulrahman305/qxc-token](https://github.com/abdulrahman305/qxc-token)
-- **Contract on Etherscan**: [0xb17654f3f068aded95a234de2532b9a478b858bf](https://etherscan.io/token/0xb17654f3f068aded95a234de2532b9a478b858bf)
+- **Documentation**: [Project Documentation](PROJECT_DOCUMENTATION.md)
 - **Website**: [qenex.ai](https://qenex.ai)
 
 ## 📚 Documentation

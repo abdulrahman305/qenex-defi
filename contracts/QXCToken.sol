@@ -83,6 +83,7 @@ contract QXCToken {
     // AI Mining function - rewards for AI improvements
     function mineReward(address miner, uint256 reward, string memory improvement) public {
         require(msg.sender == owner, "Only owner can issue mining rewards");
+        require(_totalSupply + reward <= maxSupply, "Cannot exceed max supply");
         _totalSupply += reward;
         _balances[miner] += reward;
         emit Transfer(address(0), miner, reward);

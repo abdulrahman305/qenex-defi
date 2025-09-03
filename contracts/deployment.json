@@ -11,6 +11,6 @@
     "bsc_testnet": "0xe660b8be8d4c728927f9ee6ea1fa4eb1bbcb6442",
     "polygon_mumbai": "0x84919221d8db0005165cef30330c79b49e7b1532"
   },
-  "deployment_status": "ready_to_deploy",
+  "deployment_status": "NOT_DEPLOYED - Testing only",
   "timestamp": "2025-09-03T15:05:13.951248"
 }
