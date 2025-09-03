@@ -1,0 +1,17 @@
+{
+  "developer_id": "MODEL_OPTIMIZER",
+  "address": "496ad9b5c69eabdd778cb04f8e3fd5115d1cdff593e554d7f6290330f21feb3a",
+  "balance": 0.0,
+  "created_at": "2025-09-03T11:22:27.513106",
+  "mining_stats": {
+    "total_mined": 0.0,
+    "blocks_mined": 0,
+    "improvements_submitted": 0,
+    "accuracy_gains": 0.0,
+    "speed_gains": 0.0,
+    "models_improved": 0,
+    "algorithms_created": 0
+  },
+  "transactions": [],
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDMrgDTcsCxSJ/7\nNMFNRCI34boFSEYs+jd5IqL6BUbti3MQw2bmZiGuAxaGi234+MdIGOPY/EIEUgGu\n/aoTL2F2+5PGFX3lPrWpWkpljc6ZNIHhwftn4SBIe4iLDzRcu9TnycpUPWuShqhB\n+qHrskMubtu1yGxiaak9LCEOqi+1ny7fN0MdfdN1KhvoGAn//cm9n7fD9NVDen3d\n1+ETBa9j3V4ZSqLkgzjoKl/Kr1cNoyi1P3eeXEgW6lHvMsGmycWVMpNbm4KaD2Up\n4E6kC+3aJTYWPZJ4kS/oKbrnwQJkUb1aHbRS6M8vX2ud/w08bEuNbKb93X4aPnoP\nZjl/mhiPAgMBAAECggEAEGbvRQKV+NRU5wNqwX+GGHamermNz26RFyF/RaGPoLCY\nnM1z3QnD2tcqLR0A8pSJGmN4OtFi6Z1iv3xaGTsmSIEk7e5B+PwmAEzD19CIhP7Q\nBmCOU4bsbd03FiG2n1R5XXEZHYK7MJz0NdlZCXNvGR+kIV9OztzLGvkC1dMt4JQc\ntqGh9TOST9Jw3SAG+q7bY+EeZxfjNMGSu0+A5J1Kg0DhMpZ+aDm29QXUeCggL3TB\n9Q69u/9Lmi4kVvw9K9zjFfwIIMnmbh5vtNGjaVs7fJVqHQROhruiBJSTZ6fUStA+\nhxQFrOFno/lKq5Enyz8hiuslyLfCCxngMuUbdKx3uQKBgQD7H9anrYgxsNaSxfW0\nibfTxQ44ZtrJuadx3G1AMfjrFD4y6DIBVofUBoKLn+yKWZrRbZii1D+3GSbQgE6b\nnDVh77XUbpUhpckhqfx5FhcRDBJWndBL77Y3kbcH8a7IFPxSwAV66GvJcWCDrRkC\nTc3uhcYJFidtSoBJfhPqJbWiFwKBgQDQp1I3B+2pVe5jnOEI9GzGQSQTbI5T4HzA\nt3Nw+0QBPW3M+DGIJdlP/7vB+DdKlTqFF8Qzt3cY1hkLNFIFIjGV+1ZpHHPKzYM2\nH3bDsJUtA/lgvLCZJajt6YG80h5Z/sftBwuN89TPmcPtAl2rX16Cfvw8RpMmz3h8\ndVfh3VQgSQKBgE10toqldZqOBsDimjSDPdXts8MlxlnuD32JFZF1WGd5qO2evL24\n6NA26dETFKxfkucBvNCMUtKwyU4KJTTN65E3lIffS9RDBFSDz8GxVJAHfyiEKJkj\naLqfESs8GkLQZjtHyujsA0Lw22oB2/Lf+KKXVEu9L5AAKK2CW7Yex3UlAoGBALcG\nPmDVTIygOvcX8nGXbh7NnyaGr6Y1oViu0s2FKlboGnuULmadxKyex4TTBTUgB3Ad\ns9YllYusqdUhNN0Z7GMCT/7tnUiE0xbTrKrlJ0WQWdyYR1RfK3pdvJbzvPn2OkrZ\nRjJjcwYTfEBXNfEQO+e+GeWJhqShkq+hgtA2BAg5AoGAWNi0vWJNYg9xzVZ0a8HD\nahFE/HuZgDFbFhAXY9xEw5+UVOqWUT0SifwzrxhT2P8BFd94nhIVC5o662XXUw74\nGrE60m0BLda34EDz5aPiIR+QpDcRgTtArx+b+FAn5V+jjEefBVk+coKmyedTK+5R\nTN5w/A5i8MZ0TAOcpyko5TE=\n-----END PRIVATE KEY-----\n"
+}
