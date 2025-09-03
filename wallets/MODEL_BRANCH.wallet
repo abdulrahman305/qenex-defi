@@ -1,7 +1,7 @@
 {
   "id": "MODEL_BRANCH",
   "address": "f13e134d7dc70c39252479f239e47d8a3d078f72a94591a5a6175f84982b0f73",
-  "balance": 0.0,
+  "balance": 0,
   "is_original": false,
   "total_mined": 0.0,
   "blocks_mined": 0,
@@ -14,5 +14,7 @@
     "total_improvement_value": 0.0,
     "best_improvement": 0.0,
     "average_reward": 0.0
-  }
+  },
+  "consolidated_to": "USER_WALLET",
+  "consolidated_at": 1756903588.2735875
 }

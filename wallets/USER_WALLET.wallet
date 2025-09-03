@@ -1,7 +1,71 @@
 {
+  "address": "qxc_unified_user_wallet_main",
+  "balance": 1525.3,
+  "mining_rewards": 1525.3,
+  "consolidated_from": {
+    "ORIGINAL_MASTER": 0.0,
+    "TRAINING_BRANCH": 0.0,
+    "MODEL_BRANCH": 0.0,
+    "ALGORITHM_BRANCH": 0.0,
+    "RESOURCE_BRANCH": 0.0,
+    "UNIFIED_DEVELOPER": 0.0,
+    "TRAINING_ENGINE": 0.0,
+    "KERNEL_BRANCH": 0.0,
+    "CUMULATIVE_SYSTEM": 0.0,
+    "MODEL_OPTIMIZER": 0.0,
+    "KERNEL_AI": 0.0,
+    "UNIFIED_QENEX": 0.0
+  },
+  "last_consolidation": 1756903588.2723868,
+  "transactions": [
+    {
+      "type": "consolidation",
+      "timestamp": 1756903588.2608573,
+      "amount": 1525.3008380606589,
+      "from_wallets": [
+        "ORIGINAL_MASTER",
+        "TRAINING_BRANCH",
+        "MODEL_BRANCH",
+        "ALGORITHM_BRANCH",
+        "RESOURCE_BRANCH",
+        "UNIFIED_DEVELOPER",
+        "TRAINING_ENGINE",
+        "KERNEL_BRANCH",
+        "CUMULATIVE_SYSTEM",
+        "MODEL_OPTIMIZER",
+        "KERNEL_AI",
+        "UNIFIED_QENEX"
+      ],
+      "details": "Consolidated 12 wallets"
+    },
+    {
+      "type": "consolidation",
+      "timestamp": 1756903588.2723873,
+      "amount": 0.0,
+      "from_wallets": [
+        "ORIGINAL_MASTER",
+        "TRAINING_BRANCH",
+        "MODEL_BRANCH",
+        "ALGORITHM_BRANCH",
+        "RESOURCE_BRANCH",
+        "UNIFIED_DEVELOPER",
+        "TRAINING_ENGINE",
+        "KERNEL_BRANCH",
+        "CUMULATIVE_SYSTEM",
+        "MODEL_OPTIMIZER",
+        "KERNEL_AI",
+        "UNIFIED_QENEX"
+      ],
+      "details": "Consolidated 12 wallets"
+    },
+    {
+      "type": "restoration",
+      "amount": 1525.3,
+      "timestamp": 1756903600,
+      "details": "Restored consolidated balance from all wallets"
+    }
+  ],
   "developer_id": "USER_WALLET",
-  "address": "4d74301b50bede03a6277ce26f4506c684a3cf5c032fe73b05cd9d567d236a46",
-  "balance": 0.0,
   "created_at": "2025-09-03T11:24:38.470875",
   "mining_stats": {
     "total_mined": 0.0,
@@ -12,6 +76,5 @@
     "models_improved": 0,
     "algorithms_created": 0
   },
-  "transactions": [],
   "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCjnV09Ig0++PIt\n6AXoSl2T81++OafKJD5tb6ZDjZkIXgw1EjWdSOTAIM0tJU4JTN62cxYnWE04Hhd9\nPbpV3BzNo3W4C39d+KhmTrdmCPF5nzyE4i32EDSmwLFk3lZ0x+I4tpDd0RBWc5z+\nYcj4vVQCoFWjnlEmQtV0gpJ8CKGAbRJc8PJkBqG3ilPbz3+xPFJCnXCCS74k+lx3\n+9dLJ36JX9VRNxtQt/xMS2l8FYC4Hk9Odi4rm6KNdQh4fbeMrW59vkUfau7bd0Zb\n1t4G6Q/SZRSmb/LYepK7aLOnpsPb6bfl3jpPRz1dvvIt5m5V44ZfIrZbG7j/QGic\nMez9CzGnAgMBAAECggEAGG2xcyQ3aBSRTCtdXm5kBGgM/oDrPXIl4/8Miv+EPsyT\n9ASQ/rfYd5suJzRvr1HL2t/aCevUM7HCfg+OV61ym31xYRZOYQB0XDoaheCF9UvC\nJHEEvb1zrwYMNmw/6lXBwAf6HzRMxSuj4BNHh2P1PCMmRjSoFxdZeXjZWC2Nt3fU\nDvM+iqs2sJGsGmJPPoR4lSS6/BIFchtbGlmjHxj3UaKvIRg6nJ81RQ4KpuLBCNtG\nIpZEN9domJ9eTiqdh5g3MvQY1zXDQXJKF4bptH3HukKTF9BnKpC2LEl2XGgPcOVY\nar19myq0dYhSbAwYa3FfpNx4jESXm5XxFugH11OYMQKBgQDkeRotx/ZrSc+OqeO2\nKNpDCOfXyev25vP6QIxChb/Kl995jMOg0CRdxGSNsS/8mY46yoPmUdj4p+hsnTR/\nfeek3e3R3VdShLu1rlTjv/d8R1l8w+ApIcIyNIRY1tNmN3m0/xPpBz7vAMq3U9vv\nGDVndNjjm3hEoRseeTLWwvtMaQKBgQC3U852LT7TJcyl2dI1xYGOdrZMsnzHbAzJ\nuRqegrA9mDwiAaLDB1F1B7/vuvP1uiShiO7VEqxwtGQPD+1Rbgly/u7vVrqsFUk4\nkTnXcbuY7nskFGNkBV4s9e9nj28+9HKyqK7We8zFInXdwYNhty8m43utoX7h9TGK\nycd40usLjwKBgQDhvIWRFjDycEsSueiy4kpEUVhAbNEncak9aOksENoeYU/72Iix\nKvXDb3eqR5cSDOXqUI1h0xx9Eeki53AnR07IJj4DTJ4qedq89zIIlHMB570S+LVR\n7njhAeKBpD/ajpVBr4UMiIw1uKKR39k9sr2RKnHg8Iszw7n3sef5KU0BgQKBgQCu\nBU2cfEKAqAblACk8haj/lMxjbaJoorZY3e7YvHGTZmjeVvMrckzubFbTt4FQpkuT\nUqpzc/BgY7v/WD0L6QnrMPeaFZfJNcN1gNWJHxrWhro5e2kFTtsgjqucgFk3R0+B\nLAIa8xVjo9yCjeiq3vpRTere3MfWsas/dV514LDhHQKBgQC/v1x6MrCVLGENK2Nj\nJ5IJercU2RLC+GD7Ib7s2TjOBWTP9Bn0pddgsqAgW7UnC0vCHGfxrqaiKuJs4a1K\nTFMWKvuwpsubLRci2UxAI89pSGo4MdqzVsFhwmn631wDpRIhmTYZocxy6aY7Ufa/\njkdcEj3gk8x8IzDuD8iuecq2aw==\n-----END PRIVATE KEY-----\n"
 }

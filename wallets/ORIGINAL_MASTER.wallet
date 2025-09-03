@@ -1,7 +1,7 @@
 {
   "id": "ORIGINAL_MASTER",
   "address": "c0884b65ba70e6a9f80e02b975ebf7cf30bd4f7e53b4043ee60e3ec10cd2b9f4",
-  "balance": 22.35073484892807,
+  "balance": 0,
   "is_original": true,
   "total_mined": 0.0,
   "blocks_mined": 0,
@@ -43,5 +43,7 @@
     "total_improvement_value": 0.0,
     "best_improvement": 0.0,
     "average_reward": 0.0
-  }
+  },
+  "consolidated_to": "USER_WALLET",
+  "consolidated_at": 1756903588.27308
 }

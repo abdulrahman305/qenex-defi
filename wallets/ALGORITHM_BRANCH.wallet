@@ -1,7 +1,7 @@
 {
   "id": "ALGORITHM_BRANCH",
   "address": "624708c95c8f39decf09f669c2539efd2e5e954a81f2081d174f4bc19fc3e47c",
-  "balance": 27.000665196089102,
+  "balance": 0,
   "is_original": false,
   "total_mined": 33.75083149511138,
   "blocks_mined": 1,
@@ -22,5 +22,7 @@
     "total_improvement_value": 3.023370428030357,
     "best_improvement": 3.023370428030357,
     "average_reward": 33.75083149511138
-  }
+  },
+  "consolidated_to": "USER_WALLET",
+  "consolidated_at": 1756903588.2738006
 }
