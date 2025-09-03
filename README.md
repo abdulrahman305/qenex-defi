@@ -1,20 +1,29 @@
-# 🚀 QENEX OS - Autonomous AI Operating System with Cryptocurrency Mining
+# 🚀 QENEX OS - AI-Powered Operating System with QXC Token DeFi Ecosystem
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-5.0.0-green.svg)](https://github.com/abdulrahman305/qenex-os)
 [![Status](https://img.shields.io/badge/status-Active-success.svg)](https://github.com/abdulrahman305/qenex-os)
 [![AI](https://img.shields.io/badge/AI-Powered-purple.svg)](https://github.com/abdulrahman305/qenex-os)
-[![Blockchain](https://img.shields.io/badge/Blockchain-Integrated-orange.svg)](https://github.com/abdulrahman305/qenex-os)
+[![DeFi](https://img.shields.io/badge/DeFi-Ecosystem-orange.svg)](https://github.com/abdulrahman305/qxc-token)
+[![Token](https://img.shields.io/badge/Token-QXC-gold.svg)](https://etherscan.io/token/0xb17654f3f068aded95a234de2532b9a478b858bf)
 
 ## 🌟 Overview
 
-QENEX OS is a revolutionary autonomous operating system that integrates artificial intelligence, blockchain technology, and continuous learning. It features **QENEX Coin (QXC)**, the world's first cryptocurrency that mines based on real AI performance improvements.
+QENEX OS is a revolutionary autonomous operating system that integrates artificial intelligence, blockchain technology, and a complete DeFi ecosystem. It features **QENEX Coin (QXC)**, a comprehensive cryptocurrency ecosystem with staking, metaverse, AI trading, and 15+ advanced DeFi protocols.
 
 ### 🎯 Key Innovation: Proof of Improvement (PoI)
 
 Unlike traditional cryptocurrencies, QENEX rewards actual system improvements. When the AI improves at mathematics, language, or code generation, miners earn QXC tokens.
 
 ## ✨ Core Features
+
+### 💎 **QXC Token Ecosystem**
+- **ERC-20 Token**: Deployed on Ethereum mainnet
+- **DeFi Suite**: Staking (15% APY), Lending, DEX, Liquidity pools
+- **Metaverse**: Virtual world with land ownership and NFTs
+- **AI Trading Bot**: 7 automated trading strategies
+- **Institutional Gateway**: Enterprise-grade KYC/AML compliance
+- **15+ DeFi Protocols**: Insurance, DAO, Oracle, Privacy, Layer 2, and more
 
 ### 🧠 **Continuous AI Training**
 - Runs 24/7, constantly learning from system operations
@@ -26,10 +35,10 @@ Unlike traditional cryptocurrencies, QENEX rewards actual system improvements. W
 - **Proof of Improvement (PoI)** consensus mechanism
 - Mining rewards based on genuine AI enhancements
 - Maximum supply: 21,000,000 QXC
-- Halving schedule every 210,000 blocks
+- Current supply: 1,525.30 QXC
 - Fair distribution: 80% to miners, 20% to genesis
 
-### 🔧 **Deep Kernel Integration**
+### 🔧 **Deep System Integration**
 - Custom kernel modules for AI operations
 - System calls for training and mining
 - Memory management optimized for AI workloads
@@ -42,38 +51,45 @@ Unlike traditional cryptocurrencies, QENEX rewards actual system improvements. W
 - Voice commands
 - Real-time monitoring
 - Zero-trust security
-- Quantum-ready architecture
+- Quantum-resistant cryptography
 
 ## 🚀 Quick Start
 
-### Installation
+### Deploy QXC Token
 
 ```bash
-# Clone the repository
+# Clone repository
+git clone https://github.com/abdulrahman305/qxc-token.git
+cd qxc-token
+
+# Install and setup
+./scripts/setup.sh
+
+# Deploy to Ethereum
+npm run deploy
+```
+
+### Import to MetaMask
+
+```
+Private Key: 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+Token Address: 0xb17654f3f068aded95a234de2532b9a478b858bf
+Symbol: QXC
+Decimals: 18
+```
+
+### Run QENEX OS
+
+```bash
+# Clone QENEX OS
 git clone https://github.com/abdulrahman305/qenex-os.git
 cd qenex-os
 
-# Run the fully integrated core system
+# Start AI mining system
 sudo python3 qenex_core_integrated.py
-```
 
-### Alternative Installation
-```bash
-cd /opt/qenex-os
-sudo ./installer.sh
-```
-
-### Running Components
-
-```bash
-# Unified QXC blockchain system
+# Run QXC blockchain
 python3 unified_qxc_system.py
-
-# Cumulative AI model training
-python3 cumulative_distributed_model.py
-
-# Natural language interface
-qenex talk
 ```
 
 ## 💰 How Mining Works
@@ -129,18 +145,57 @@ qenex wallet  # Manage QXC wallets
 qenex ai      # AI performance metrics
 ```
 
+## 📊 Smart Contract Addresses
+
+| Contract | Mainnet Address | Status |
+|----------|----------------|---------|
+| QXC Token | `0xb17654f3f068aded95a234de2532b9a478b858bf` | ✅ Deployed |
+| Staking | `Ready for deployment` | 🔄 Pending |
+| Launchpad | `Ready for deployment` | 🔄 Pending |
+| Metaverse | `Ready for deployment` | 🔄 Pending |
+| DEX Aggregator | `Ready for deployment` | 🔄 Pending |
+
+## 🌐 Ecosystem Components
+
+### DeFi Protocols
+- **Staking**: 15% APY rewards for QXC holders
+- **Lending**: Collateralized loans with competitive rates
+- **DEX**: Multi-chain token swapping
+- **Liquidity**: Uniswap V3 integration
+
+### Advanced Features
+- **Metaverse**: Virtual world with land NFTs
+- **AI Trading Bot**: LSTM, Transformer, RL strategies
+- **Institutional Gateway**: KYC/AML compliance
+- **Oracle Network**: Real-time price feeds
+- **Privacy Layer**: Zero-knowledge transactions
+- **Layer 2**: High-speed scaling solution
+- **Insurance**: DeFi risk coverage
+- **DAO**: Decentralized governance
+- **Credit Cards**: Spend QXC anywhere
+- **Quantum Security**: Post-quantum cryptography
+
 ## 📊 Access Points
 
-- Dashboard: http://localhost
-- API: http://localhost:8000/api/status
-- Mining Stats: http://localhost:8332
-- Blockchain Explorer: http://localhost:8333
+- **Dashboard**: http://localhost
+- **API**: http://localhost:3000/api
+- **Mining Stats**: http://localhost:8332
+- **Blockchain Explorer**: http://localhost:8333
+- **DeFi Interface**: http://localhost:3000
+
+## 🔗 Important Links
+
+- **Main Repository**: [github.com/abdulrahman305/qenex-os](https://github.com/abdulrahman305/qenex-os)
+- **Token Repository**: [github.com/abdulrahman305/qxc-token](https://github.com/abdulrahman305/qxc-token)
+- **Contract on Etherscan**: [0xb17654f3f068aded95a234de2532b9a478b858bf](https://etherscan.io/token/0xb17654f3f068aded95a234de2532b9a478b858bf)
+- **Website**: [qenex.ai](https://qenex.ai)
 
 ## 📚 Documentation
 
 - [PROJECT_DOCUMENTATION.md](PROJECT_DOCUMENTATION.md) - Complete overview
-- [CORE_INTEGRATION.md](CORE_INTEGRATION.md) - Technical integration
-- [ADVANCED_FEATURES.md](ADVANCED_FEATURES.md) - Advanced features
+- [qxc-token/README.md](qxc-token/README.md) - Token documentation
+- [MAINNET_DEPLOYMENT.md](MAINNET_DEPLOYMENT.md) - Deployment guide
+- [DEPLOY_WITH_REMIX.md](DEPLOY_WITH_REMIX.md) - Remix IDE guide
 
 ## 🤝 Contributing
 
@@ -149,3 +204,7 @@ Contributions earn QXC tokens! Every merged improvement that enhances performanc
 ## 📄 License
 
 MIT License - See LICENSE file for details.
+
+## ⚠️ Disclaimer
+
+Cryptocurrency investments carry risk. This software is provided "as is" without warranty. Do your own research before participating.
