@@ -1,0 +1,26 @@
+{
+  "id": "KERNEL_BRANCH",
+  "address": "ac7b7f87d171d42009f27c3b2835bdc4f6228fe357fe6ef146aa313a0fc4ceb0",
+  "balance": 26.510861222965744,
+  "is_original": false,
+  "total_mined": 33.138576528707176,
+  "blocks_mined": 1,
+  "revenue_received": 0.0,
+  "revenue_distributed": 6.627715305741436,
+  "created_at": "2025-09-03T11:35:57.832655",
+  "transactions": [
+    {
+      "type": "mining_reward",
+      "amount": 26.510861222965744,
+      "original_share": 6.627715305741436,
+      "improvement": "kernel_performance",
+      "timestamp": 1756899358.8642523
+    }
+  ],
+  "mining_stats": {
+    "improvements": 1,
+    "total_improvement_value": 5.580667468094406,
+    "best_improvement": 5.580667468094406,
+    "average_reward": 33.138576528707176
+  }
+}

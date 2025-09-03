@@ -1,12 +1,12 @@
 {
   "developer_id": "TRAINING_ENGINE",
   "address": "f9806b8a2bc69e85f8e19b9f5361be75e298bc7833e060575cb8ca48d97307f3",
-  "balance": 17.445124480623598,
-  "created_at": "2025-09-03T11:22:33.656051",
+  "balance": 86.94365253854093,
+  "created_at": "2025-09-03T11:26:15.809518",
   "mining_stats": {
-    "total_mined": 17.445124480623598,
-    "blocks_mined": 1,
-    "improvements_submitted": 1,
+    "total_mined": 86.94365253854093,
+    "blocks_mined": 5,
+    "improvements_submitted": 5,
     "accuracy_gains": 0.0,
     "speed_gains": 0.0,
     "models_improved": 0,
@@ -23,6 +23,54 @@
       "ai_contribution": {
         "type": "training_efficiency",
         "score": 4.554868924611609
+      }
+    },
+    {
+      "tx_id": "f05823399a777952043e07499b282ffb8a2544381ca19507f5f5dd23f79bd8ac",
+      "sender": "MINING_REWARD",
+      "receiver": "f9806b8a2bc69e85f8e19b9f5361be75e298bc7833e060575cb8ca48d97307f3",
+      "amount": 18.58816061120849,
+      "fee": 0.0,
+      "timestamp": 1756898569.278484,
+      "ai_contribution": {
+        "type": "training_efficiency",
+        "score": 7.346453945687583
+      }
+    },
+    {
+      "tx_id": "a28da835a22d2eed1cb4d60a019b2a02f7341747e7ac7b40a3add53865ac8e6c",
+      "sender": "MINING_REWARD",
+      "receiver": "f9806b8a2bc69e85f8e19b9f5361be75e298bc7833e060575cb8ca48d97307f3",
+      "amount": 17.330765107985798,
+      "fee": 0.0,
+      "timestamp": 1756898626.0136952,
+      "ai_contribution": {
+        "type": "training_efficiency",
+        "score": 4.301590561946616
+      }
+    },
+    {
+      "tx_id": "267a1bccf19730e55c8270f437211facd3b95e5c29500800b29216c6a5558af4",
+      "sender": "MINING_REWARD",
+      "receiver": "f9806b8a2bc69e85f8e19b9f5361be75e298bc7833e060575cb8ca48d97307f3",
+      "amount": 16.343141568649873,
+      "fee": 0.0,
+      "timestamp": 1756898734.6201973,
+      "ai_contribution": {
+        "type": "training_efficiency",
+        "score": 2.289742154404391
+      }
+    },
+    {
+      "tx_id": "518d3e91d8322228964fea80fd9fd22922e1f806d77765bdac8373b313c94f7e",
+      "sender": "MINING_REWARD",
+      "receiver": "f9806b8a2bc69e85f8e19b9f5361be75e298bc7833e060575cb8ca48d97307f3",
+      "amount": 17.236460770073172,
+      "fee": 0.0,
+      "timestamp": 1756898775.8094935,
+      "ai_contribution": {
+        "type": "training_efficiency",
+        "score": 4.096048478332177
       }
     }
   ],

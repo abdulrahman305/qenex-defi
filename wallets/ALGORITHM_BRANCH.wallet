@@ -1,0 +1,26 @@
+{
+  "id": "ALGORITHM_BRANCH",
+  "address": "624708c95c8f39decf09f669c2539efd2e5e954a81f2081d174f4bc19fc3e47c",
+  "balance": 27.000665196089102,
+  "is_original": false,
+  "total_mined": 33.75083149511138,
+  "blocks_mined": 1,
+  "revenue_received": 0.0,
+  "revenue_distributed": 6.7501662990222755,
+  "created_at": "2025-09-03T11:35:57.833696",
+  "transactions": [
+    {
+      "type": "mining_reward",
+      "amount": 27.000665196089102,
+      "original_share": 6.7501662990222755,
+      "improvement": "algorithm_efficiency",
+      "timestamp": 1756899359.7688305
+    }
+  ],
+  "mining_stats": {
+    "improvements": 1,
+    "total_improvement_value": 3.023370428030357,
+    "best_improvement": 3.023370428030357,
+    "average_reward": 33.75083149511138
+  }
+}
