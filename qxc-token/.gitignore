@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Hardhat
+artifacts/
+cache/
+coverage/
+coverage.json
+typechain/
+typechain-types/
+
+# Testing
+test-results/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Build
+build/
+dist/
+out/
+
+# Deployments
+deployments/localhost.json
+deployments/hardhat.json
+
+# Security
+*.pem
+*.key
+*.crt
+ssl/
+
+# Database
+data/
+*.db
+
+# Temporary
+tmp/
+temp/

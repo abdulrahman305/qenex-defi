@@ -1,0 +1,16 @@
+{
+  "contract_name": "QXCToken",
+  "symbol": "QXC",
+  "decimals": 18,
+  "initial_supply": 1525.3,
+  "initial_supply_wei": "1525299999999999868928",
+  "owner_address": "0x44aB7...",
+  "contract_addresses": {
+    "ethereum_mainnet": "0xb17654f3f068aded95a234de2532b9a478b858bf",
+    "ethereum_goerli": "0xb0c2409027d645e3636501dee9118b8e5a36456f",
+    "bsc_testnet": "0xe660b8be8d4c728927f9ee6ea1fa4eb1bbcb6442",
+    "polygon_mumbai": "0x84919221d8db0005165cef30330c79b49e7b1532"
+  },
+  "deployment_status": "ready_to_deploy",
+  "timestamp": "2025-09-03T15:05:13.951248"
+}

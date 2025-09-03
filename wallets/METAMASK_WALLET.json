@@ -1,0 +1,42 @@
+{
+  "YOUR_WALLET_INFO": {
+    "ethereum_address": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    "private_key": "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
+    "qxc_balance": 1525.3,
+    "qxc_in_wei": "1525299999999999868928"
+  },
+  "METAMASK_IMPORT_STEPS": [
+    "1. Open MetaMask",
+    "2. Click on the account selector (circle icon at top right)",
+    "3. Select 'Import Account'",
+    "4. Choose 'Private Key' from dropdown",
+    "5. Paste this private key: 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
+    "6. Click 'Import'",
+    "7. Your wallet will show address: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+  ],
+  "ADD_QXC_TOKEN": {
+    "steps": [
+      "1. In MetaMask, go to 'Assets' tab",
+      "2. Click 'Import tokens' at bottom",
+      "3. Click 'Custom token' tab",
+      "4. Enter Token Contract Address: 0xb17654f3f068aded95a234de2532b9a478b858bf",
+      "5. Token Symbol will auto-fill as: QXC",
+      "6. Token Decimal: 18",
+      "7. Click 'Add custom token'",
+      "8. Click 'Import tokens'"
+    ],
+    "contracts": {
+      "ethereum_mainnet": "0xb17654f3f068aded95a234de2532b9a478b858bf",
+      "goerli_testnet": "0xb0c2409027d645e3636501dee9118b8e5a36456f",
+      "bsc_testnet": "0xe660b8be8d4c728927f9ee6ea1fa4eb1bbcb6442",
+      "polygon_mumbai": "0x84919221d8db0005165cef30330c79b49e7b1532"
+    }
+  },
+  "ADD_QENEX_NETWORK": {
+    "network_name": "QENEX Network",
+    "rpc_url": "http://localhost:8545",
+    "chain_id": 9999,
+    "currency_symbol": "QXC",
+    "block_explorer": "http://localhost:3000"
+  }
+}

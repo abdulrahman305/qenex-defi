@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  qxc-api:
+    build: .
+    container_name: qxc-api
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - mongodb
+    restart: unless-stopped
+    networks:
+      - qxc-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: qxc-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    networks:
+      - qxc-network
+
+  mongodb:
+    image: mongo:6
+    container_name: qxc-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=secure_password
+      - MONGO_INITDB_DATABASE=qxc_ecosystem
+    volumes:
+      - mongo-data:/data/db
+    restart: unless-stopped
+    networks:
+      - qxc-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: qxc-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - qxc-api
+    restart: unless-stopped
+    networks:
+      - qxc-network
+
+networks:
+  qxc-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+  mongo-data:

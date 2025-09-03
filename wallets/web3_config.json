@@ -2,7 +2,8 @@
   "contracts": {
     "ethereum_goerli": "0xb0c2409027d645e3636501dee9118b8e5a36456f",
     "bsc_testnet": "0xe660b8be8d4c728927f9ee6ea1fa4eb1bbcb6442",
-    "polygon_mumbai": "0x84919221d8db0005165cef30330c79b49e7b1532"
+    "polygon_mumbai": "0x84919221d8db0005165cef30330c79b49e7b1532",
+    "ethereum": "0xb17654f3f068aded95a234de2532b9a478b858bf"
   },
-  "last_updated": 1756904051.6865668
+  "last_updated": 1756906803.6698875
 }
