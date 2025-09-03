@@ -1,0 +1,26 @@
+apiVersion: v2
+name: qenex-os
+description: QENEX Unified AI Operating System Helm Chart
+type: application
+version: 5.0.0
+appVersion: "5.0.0"
+keywords:
+  - ai
+  - operating-system
+  - self-healing
+  - autonomous
+maintainers:
+  - name: QENEX Team
+    email: support@qenex.ai
+home: https://qenex.ai
+sources:
+  - https://github.com/abdulrahman305/qenex-os
+dependencies:
+  - name: postgresql
+    version: "11.x.x"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: postgresql.enabled
+  - name: redis
+    version: "17.x.x"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: redis.enabled
