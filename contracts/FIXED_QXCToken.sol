@@ -1,203 +1,148 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.0;
 
-/**
- * @title QXC Token - FIXED VERSION
- * @notice Secure ERC-20 token with proper safety mechanisms
- * @dev All critical vulnerabilities have been addressed
- */
-contract QXCToken {
-    // Token metadata
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
+
+contract QXCToken is ReentrancyGuard, Pausable, AccessControl {
+    mapping(address => uint256) private _balances;
+    mapping(address => mapping(address => uint256)) private _allowances;
+    
+    uint256 private _totalSupply;
+    uint256 public constant MAX_SUPPLY = 1000000000 * 10**18; // 1 billion max
+    
     string public constant name = "QENEX Coin";
     string public constant symbol = "QXC";
     uint8 public constant decimals = 18;
     
-    // Supply management with proper limits
-    uint256 public totalSupply;
-    uint256 public constant MAX_SUPPLY = 21_000_000 * 10**18; // 21 million max
-    uint256 public constant INITIAL_SUPPLY = 1525.30 * 10**18; // 1525.30 initial
-    
-    // Ownership and roles
-    address public owner;
-    mapping(address => bool) public minters;
-    bool public mintingEnabled = true;
-    
-    // Balances and allowances
-    mapping(address => uint256) public balanceOf;
-    mapping(address => mapping(address => uint256)) public allowance;
-    
-    // Security features
-    mapping(address => bool) public blacklisted;
-    bool public paused = false;
+    // Role definitions
+    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+    bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     
     // Events
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(address indexed owner, address indexed spender, uint256 value);
-    event MinterAdded(address indexed minter);
-    event MinterRemoved(address indexed minter);
-    event Blacklisted(address indexed account);
-    event Unblacklisted(address indexed account);
-    event Paused();
-    event Unpaused();
-    event MintingDisabled();
-    
-    // Modifiers
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Not owner");
-        _;
-    }
-    
-    modifier onlyMinter() {
-        require(minters[msg.sender], "Not minter");
-        _;
-    }
-    
-    modifier whenNotPaused() {
-        require(!paused, "Contract paused");
-        _;
-    }
-    
-    modifier notBlacklisted(address account) {
-        require(!blacklisted[account], "Account blacklisted");
-        _;
-    }
+    event Mining(address indexed miner, uint256 reward, string improvement);
     
     constructor() {
-        owner = msg.sender;
-        minters[msg.sender] = true;
-        totalSupply = INITIAL_SUPPLY;
-        balanceOf[msg.sender] = INITIAL_SUPPLY;
-        emit Transfer(address(0), msg.sender, INITIAL_SUPPLY);
+        _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        _setupRole(MINTER_ROLE, msg.sender);
+        _setupRole(PAUSER_ROLE, msg.sender);
+        
+        _totalSupply = 1525300000000000000000; // 1525.30 QXC initial supply
+        _balances[msg.sender] = _totalSupply;
+        emit Transfer(address(0), msg.sender, _totalSupply);
     }
     
-    // Core ERC-20 functions with security checks
-    function transfer(address to, uint256 amount) 
-        public 
-        whenNotPaused 
-        notBlacklisted(msg.sender) 
-        notBlacklisted(to) 
-        returns (bool) 
-    {
-        require(to != address(0), "Invalid recipient");
-        require(balanceOf[msg.sender] >= amount, "Insufficient balance");
-        
-        unchecked {
-            balanceOf[msg.sender] -= amount;
-            balanceOf[to] += amount;
-        }
-        
-        emit Transfer(msg.sender, to, amount);
+    function totalSupply() public view returns (uint256) {
+        return _totalSupply;
+    }
+    
+    function balanceOf(address account) public view returns (uint256) {
+        return _balances[account];
+    }
+    
+    function transfer(address to, uint256 amount) public whenNotPaused returns (bool) {
+        address from = msg.sender;
+        _transfer(from, to, amount);
         return true;
     }
     
-    function approve(address spender, uint256 amount) 
-        public 
-        whenNotPaused 
-        returns (bool) 
-    {
-        require(spender != address(0), "Invalid spender");
-        allowance[msg.sender][spender] = amount;
-        emit Approval(msg.sender, spender, amount);
+    function allowance(address owner, address spender) public view returns (uint256) {
+        return _allowances[owner][spender];
+    }
+    
+    function approve(address spender, uint256 amount) public whenNotPaused returns (bool) {
+        address owner = msg.sender;
+        _approve(owner, spender, amount);
         return true;
     }
     
-    function transferFrom(address from, address to, uint256 amount) 
-        public 
-        whenNotPaused 
-        notBlacklisted(from) 
-        notBlacklisted(to) 
-        returns (bool) 
-    {
-        require(to != address(0), "Invalid recipient");
-        require(balanceOf[from] >= amount, "Insufficient balance");
-        require(allowance[from][msg.sender] >= amount, "Insufficient allowance");
+    function transferFrom(
+        address from,
+        address to,
+        uint256 amount
+    ) public whenNotPaused returns (bool) {
+        address spender = msg.sender;
+        uint256 currentAllowance = _allowances[from][spender];
+        require(currentAllowance >= amount, "ERC20: insufficient allowance");
+        
+        _transfer(from, to, amount);
         
         unchecked {
-            balanceOf[from] -= amount;
-            balanceOf[to] += amount;
-            allowance[from][msg.sender] -= amount;
+            _approve(from, spender, currentAllowance - amount);
         }
+        
+        return true;
+    }
+    
+    function _transfer(
+        address from,
+        address to,
+        uint256 amount
+    ) internal {
+        require(from != address(0), "ERC20: transfer from zero address");
+        require(to != address(0), "ERC20: transfer to zero address");
+        
+        uint256 fromBalance = _balances[from];
+        require(fromBalance >= amount, "ERC20: insufficient balance");
+        
+        unchecked {
+            _balances[from] = fromBalance - amount;
+        }
+        _balances[to] += amount;
         
         emit Transfer(from, to, amount);
-        return true;
     }
     
-    // Minting with proper controls
-    function mint(address to, uint256 amount) 
-        public 
-        onlyMinter 
-        whenNotPaused 
-        notBlacklisted(to) 
-    {
-        require(mintingEnabled, "Minting disabled");
-        require(to != address(0), "Invalid recipient");
-        require(totalSupply + amount <= MAX_SUPPLY, "Exceeds max supply");
+    function _approve(
+        address owner,
+        address spender,
+        uint256 amount
+    ) internal {
+        require(owner != address(0), "ERC20: approve from zero address");
+        require(spender != address(0), "ERC20: approve to zero address");
         
-        totalSupply += amount;
-        balanceOf[to] += amount;
-        
-        emit Transfer(address(0), to, amount);
+        _allowances[owner][spender] = amount;
+        emit Approval(owner, spender, amount);
     }
     
-    // Burning mechanism
-    function burn(uint256 amount) public whenNotPaused {
-        require(balanceOf[msg.sender] >= amount, "Insufficient balance");
+    // Controlled minting with max supply check
+    function mineReward(
+        address miner,
+        uint256 reward,
+        string memory improvement
+    ) public onlyRole(MINTER_ROLE) whenNotPaused {
+        require(_totalSupply + reward <= MAX_SUPPLY, "Cannot exceed max supply");
+        
+        _totalSupply += reward;
+        _balances[miner] += reward;
+        
+        emit Transfer(address(0), miner, reward);
+        emit Mining(miner, reward, improvement);
+    }
+    
+    // Emergency functions
+    function pause() public onlyRole(PAUSER_ROLE) {
+        _pause();
+    }
+    
+    function unpause() public onlyRole(PAUSER_ROLE) {
+        _unpause();
+    }
+    
+    // Burn function for deflationary mechanism
+    function burn(uint256 amount) public {
+        address account = msg.sender;
+        uint256 accountBalance = _balances[account];
+        require(accountBalance >= amount, "ERC20: burn amount exceeds balance");
         
         unchecked {
-            balanceOf[msg.sender] -= amount;
-            totalSupply -= amount;
+            _balances[account] = accountBalance - amount;
         }
+        _totalSupply -= amount;
         
-        emit Transfer(msg.sender, address(0), amount);
-    }
-    
-    // Admin functions with proper access control
-    function addMinter(address minter) public onlyOwner {
-        require(minter != address(0), "Invalid minter");
-        require(!minters[minter], "Already minter");
-        minters[minter] = true;
-        emit MinterAdded(minter);
-    }
-    
-    function removeMinter(address minter) public onlyOwner {
-        require(minters[minter], "Not minter");
-        minters[minter] = false;
-        emit MinterRemoved(minter);
-    }
-    
-    function blacklist(address account) public onlyOwner {
-        require(account != owner, "Cannot blacklist owner");
-        require(!blacklisted[account], "Already blacklisted");
-        blacklisted[account] = true;
-        emit Blacklisted(account);
-    }
-    
-    function unblacklist(address account) public onlyOwner {
-        require(blacklisted[account], "Not blacklisted");
-        blacklisted[account] = false;
-        emit Unblacklisted(account);
-    }
-    
-    function pause() public onlyOwner {
-        require(!paused, "Already paused");
-        paused = true;
-        emit Paused();
-    }
-    
-    function unpause() public onlyOwner {
-        require(paused, "Not paused");
-        paused = false;
-        emit Unpaused();
-    }
-    
-    function disableMinting() public onlyOwner {
-        require(mintingEnabled, "Already disabled");
-        mintingEnabled = false;
-        emit MintingDisabled();
-    }
-    
-    function transferOwnership(address newOwner) public onlyOwner {
-        require(newOwner != address(0), "Invalid owner");
-        owner = newOwner;
+        emit Transfer(account, address(0), amount);
     }
 }

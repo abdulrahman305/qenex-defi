@@ -1,232 +1,272 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 /**
- * @title QXC Staking - FIXED VERSION
- * @notice Secure staking contract with reentrancy protection
- * @dev Implements checks-effects-interactions pattern
+ * @title QXC Staking Platform - Security Hardened
+ * @dev Stake QXC tokens to earn rewards with comprehensive security measures
  */
-
-interface IERC20 {
-    function transfer(address to, uint256 amount) external returns (bool);
-    function transferFrom(address from, address to, uint256 amount) external returns (bool);
-    function balanceOf(address account) external view returns (uint256);
-}
-
-contract QXCStaking {
+contract QXCStaking is ReentrancyGuard, Pausable, Ownable {
+    using SafeERC20 for IERC20;
+    
     IERC20 public immutable qxcToken;
-    address public owner;
     
-    // Staking parameters
-    uint256 public constant REWARD_RATE = 15; // 15% APY
-    uint256 public constant MIN_STAKE = 10 * 10**18; // Minimum 10 QXC
-    uint256 public constant LOCK_PERIOD = 7 days; // Minimum lock period
-    
-    // Staking state
     struct Stake {
         uint256 amount;
         uint256 timestamp;
         uint256 rewardsClaimed;
-        uint256 lastClaimTime;
+        uint256 lastRewardCalculation;
     }
     
     mapping(address => Stake) public stakes;
+    mapping(address => uint256) public pendingRewards;
+    
     uint256 public totalStaked;
+    uint256 public rewardRate = 15; // 15% APY
+    uint256 public minStakeAmount = 100 * 10**18; // 100 QXC minimum
+    uint256 public maxStakeAmount = 1000000 * 10**18; // 1M QXC maximum per user
+    uint256 public lockupPeriod = 7 days; // Minimum staking period
+    
+    // Security: Track reward pool separately
     uint256 public rewardPool;
+    uint256 public constant MAX_REWARD_RATE = 50; // Maximum 50% APY
     
-    // Security
-    bool private locked;
-    bool public paused;
-    
-    // Events
-    event Staked(address indexed user, uint256 amount);
+    event Staked(address indexed user, uint256 amount, uint256 timestamp);
     event Unstaked(address indexed user, uint256 amount, uint256 reward);
     event RewardsClaimed(address indexed user, uint256 amount);
+    event RewardRateUpdated(uint256 oldRate, uint256 newRate);
     event RewardPoolFunded(uint256 amount);
     event EmergencyWithdraw(address indexed user, uint256 amount);
     
-    // Modifiers
-    modifier nonReentrant() {
-        require(!locked, "Reentrant call");
-        locked = true;
-        _;
-        locked = false;
-    }
-    
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Not owner");
-        _;
-    }
-    
-    modifier whenNotPaused() {
-        require(!paused, "Contract paused");
-        _;
-    }
-    
-    constructor(address _token) {
-        require(_token != address(0), "Invalid token");
-        qxcToken = IERC20(_token);
-        owner = msg.sender;
+    constructor(address _qxcToken) {
+        require(_qxcToken != address(0), "Invalid token address");
+        qxcToken = IERC20(_qxcToken);
     }
     
     /**
-     * @notice Stake QXC tokens
-     * @param amount Amount to stake
+     * @dev Stake QXC tokens with enhanced security checks
      */
     function stake(uint256 amount) external nonReentrant whenNotPaused {
-        require(amount >= MIN_STAKE, "Below minimum stake");
-        require(qxcToken.balanceOf(msg.sender) >= amount, "Insufficient balance");
+        require(amount >= minStakeAmount, "Below minimum stake");
+        require(amount <= maxStakeAmount, "Exceeds maximum stake");
         
-        // Calculate pending rewards before updating stake
-        if (stakes[msg.sender].amount > 0) {
-            _claimRewards(msg.sender);
+        address user = msg.sender;
+        Stake storage userStake = stakes[user];
+        
+        // Check total stake doesn't exceed max
+        require(
+            userStake.amount + amount <= maxStakeAmount,
+            "Total stake exceeds maximum"
+        );
+        
+        // Calculate and store pending rewards before updating stake
+        if (userStake.amount > 0) {
+            uint256 reward = _calculateRewards(user);
+            pendingRewards[user] += reward;
+            userStake.lastRewardCalculation = block.timestamp;
         }
         
-        // Effects
-        stakes[msg.sender].amount += amount;
-        stakes[msg.sender].timestamp = block.timestamp;
-        stakes[msg.sender].lastClaimTime = block.timestamp;
+        // Update stake
+        userStake.amount += amount;
+        userStake.timestamp = block.timestamp;
         totalStaked += amount;
         
-        // Interactions
-        require(qxcToken.transferFrom(msg.sender, address(this), amount), "Transfer failed");
+        // Transfer tokens using SafeERC20
+        qxcToken.safeTransferFrom(user, address(this), amount);
         
-        emit Staked(msg.sender, amount);
+        emit Staked(user, amount, block.timestamp);
     }
     
     /**
-     * @notice Unstake tokens and claim rewards
+     * @dev Unstake QXC tokens with lockup period check
      */
-    function unstake() external nonReentrant whenNotPaused {
-        Stake storage userStake = stakes[msg.sender];
-        require(userStake.amount > 0, "No stake");
-        require(block.timestamp >= userStake.timestamp + LOCK_PERIOD, "Lock period active");
+    function unstake(uint256 amount) external nonReentrant whenNotPaused {
+        address user = msg.sender;
+        Stake storage userStake = stakes[user];
         
-        uint256 amount = userStake.amount;
-        uint256 reward = calculateReward(msg.sender);
+        require(userStake.amount >= amount, "Insufficient stake");
+        require(
+            block.timestamp >= userStake.timestamp + lockupPeriod,
+            "Stake still locked"
+        );
         
-        // Check reward pool has sufficient funds
-        if (reward > rewardPool) {
-            reward = rewardPool; // Cap reward at available pool
-        }
+        // Calculate all pending rewards
+        uint256 rewards = pendingRewards[user] + _calculateRewards(user);
+        require(rewardPool >= rewards, "Insufficient reward pool");
         
-        // Effects
+        // Update state BEFORE external calls
+        userStake.amount -= amount;
+        userStake.lastRewardCalculation = block.timestamp;
         totalStaked -= amount;
-        rewardPool -= reward;
-        delete stakes[msg.sender];
+        pendingRewards[user] = 0;
+        rewardPool -= rewards;
         
-        // Interactions
-        require(qxcToken.transfer(msg.sender, amount + reward), "Transfer failed");
+        // Transfer tokens and rewards
+        uint256 totalTransfer = amount + rewards;
+        qxcToken.safeTransfer(user, totalTransfer);
         
-        emit Unstaked(msg.sender, amount, reward);
+        emit Unstaked(user, amount, rewards);
     }
     
     /**
-     * @notice Claim accumulated rewards without unstaking
+     * @dev Claim staking rewards without unstaking
      */
     function claimRewards() external nonReentrant whenNotPaused {
-        require(stakes[msg.sender].amount > 0, "No stake");
-        _claimRewards(msg.sender);
-    }
-    
-    /**
-     * @notice Internal function to claim rewards
-     */
-    function _claimRewards(address user) private {
-        uint256 reward = calculateReward(user);
+        address user = msg.sender;
+        Stake storage userStake = stakes[user];
         
-        if (reward > 0) {
-            // Check reward pool has sufficient funds
-            if (reward > rewardPool) {
-                reward = rewardPool; // Cap reward at available pool
-            }
-            
-            // Effects
-            stakes[user].rewardsClaimed += reward;
-            stakes[user].lastClaimTime = block.timestamp;
-            rewardPool -= reward;
-            
-            // Interactions
-            require(qxcToken.transfer(user, reward), "Reward transfer failed");
-            
-            emit RewardsClaimed(user, reward);
-        }
+        uint256 rewards = pendingRewards[user] + _calculateRewards(user);
+        require(rewards > 0, "No rewards available");
+        require(rewardPool >= rewards, "Insufficient reward pool");
+        
+        // Update state BEFORE external call
+        pendingRewards[user] = 0;
+        userStake.lastRewardCalculation = block.timestamp;
+        userStake.rewardsClaimed += rewards;
+        rewardPool -= rewards;
+        
+        // Transfer rewards
+        qxcToken.safeTransfer(user, rewards);
+        
+        emit RewardsClaimed(user, rewards);
     }
     
     /**
-     * @notice Calculate pending rewards for a user
+     * @dev Emergency withdraw without rewards (penalty situation)
      */
-    function calculateReward(address user) public view returns (uint256) {
+    function emergencyWithdraw() external nonReentrant {
+        address user = msg.sender;
+        Stake storage userStake = stakes[user];
+        uint256 amount = userStake.amount;
+        
+        require(amount > 0, "No stake to withdraw");
+        
+        // Reset user stake
+        userStake.amount = 0;
+        userStake.timestamp = 0;
+        userStake.lastRewardCalculation = 0;
+        totalStaked -= amount;
+        pendingRewards[user] = 0;
+        
+        // Transfer only principal (no rewards)
+        qxcToken.safeTransfer(user, amount);
+        
+        emit EmergencyWithdraw(user, amount);
+    }
+    
+    /**
+     * @dev Calculate pending rewards with overflow protection
+     */
+    function _calculateRewards(address user) private view returns (uint256) {
         Stake memory userStake = stakes[user];
         if (userStake.amount == 0) return 0;
         
-        uint256 stakingDuration = block.timestamp - userStake.lastClaimTime;
-        uint256 annualReward = (userStake.amount * REWARD_RATE) / 100;
-        uint256 reward = (annualReward * stakingDuration) / 365 days;
+        uint256 timeElapsed = block.timestamp - userStake.lastRewardCalculation;
+        if (timeElapsed == 0) return 0;
+        
+        // Prevent overflow with safe math
+        uint256 annualReward = (userStake.amount * rewardRate) / 100;
+        uint256 reward = (annualReward * timeElapsed) / 365 days;
         
         return reward;
     }
     
     /**
-     * @notice Fund the reward pool
-     * @param amount Amount to add to reward pool
+     * @dev Get user's total pending rewards
      */
-    function fundRewardPool(uint256 amount) external onlyOwner {
-        require(amount > 0, "Invalid amount");
-        require(qxcToken.transferFrom(msg.sender, address(this), amount), "Transfer failed");
-        
-        rewardPool += amount;
-        emit RewardPoolFunded(amount);
+    function getPendingRewards(address user) external view returns (uint256) {
+        return pendingRewards[user] + _calculateRewards(user);
     }
     
     /**
-     * @notice Emergency withdraw without rewards (only if paused)
+     * @dev Get user staking info
      */
-    function emergencyWithdraw() external nonReentrant {
-        require(paused, "Not emergency");
-        
-        Stake storage userStake = stakes[msg.sender];
-        require(userStake.amount > 0, "No stake");
-        
-        uint256 amount = userStake.amount;
-        
-        // Effects
-        totalStaked -= amount;
-        delete stakes[msg.sender];
-        
-        // Interactions
-        require(qxcToken.transfer(msg.sender, amount), "Transfer failed");
-        
-        emit EmergencyWithdraw(msg.sender, amount);
-    }
-    
-    /**
-     * @notice Pause contract (emergency only)
-     */
-    function pause() external onlyOwner {
-        paused = true;
-    }
-    
-    /**
-     * @notice Unpause contract
-     */
-    function unpause() external onlyOwner {
-        paused = false;
-    }
-    
-    /**
-     * @notice Get staking info for a user
-     */
-    function getStakeInfo(address user) external view returns (
+    function getUserInfo(address user) external view returns (
         uint256 stakedAmount,
         uint256 pendingReward,
+        uint256 totalClaimed,
         uint256 stakingTime,
         bool canUnstake
     ) {
         Stake memory userStake = stakes[user];
         stakedAmount = userStake.amount;
-        pendingReward = calculateReward(user);
+        pendingReward = pendingRewards[user] + _calculateRewards(user);
+        totalClaimed = userStake.rewardsClaimed;
         stakingTime = userStake.timestamp;
-        canUnstake = block.timestamp >= userStake.timestamp + LOCK_PERIOD;
+        canUnstake = block.timestamp >= userStake.timestamp + lockupPeriod;
+    }
+    
+    // ========== ADMIN FUNCTIONS ==========
+    
+    /**
+     * @dev Fund the reward pool
+     */
+    function fundRewardPool(uint256 amount) external onlyOwner {
+        require(amount > 0, "Invalid amount");
+        
+        rewardPool += amount;
+        qxcToken.safeTransferFrom(msg.sender, address(this), amount);
+        
+        emit RewardPoolFunded(amount);
+    }
+    
+    /**
+     * @dev Update reward rate with maximum cap
+     */
+    function updateRewardRate(uint256 newRate) external onlyOwner {
+        require(newRate <= MAX_REWARD_RATE, "Rate exceeds maximum");
+        
+        uint256 oldRate = rewardRate;
+        rewardRate = newRate;
+        
+        emit RewardRateUpdated(oldRate, newRate);
+    }
+    
+    /**
+     * @dev Update minimum stake amount
+     */
+    function updateMinStake(uint256 newMinimum) external onlyOwner {
+        require(newMinimum > 0, "Invalid minimum");
+        minStakeAmount = newMinimum;
+    }
+    
+    /**
+     * @dev Pause contract in emergency
+     */
+    function pause() external onlyOwner {
+        _pause();
+    }
+    
+    /**
+     * @dev Unpause contract
+     */
+    function unpause() external onlyOwner {
+        _unpause();
+    }
+    
+    /**
+     * @dev Get platform statistics
+     */
+    function getStats() external view returns (
+        uint256 _totalStaked,
+        uint256 _rewardRate,
+        uint256 _minStake,
+        uint256 _maxStake,
+        uint256 _rewardPool,
+        uint256 _lockupPeriod
+    ) {
+        return (
+            totalStaked,
+            rewardRate,
+            minStakeAmount,
+            maxStakeAmount,
+            rewardPool,
+            lockupPeriod
+        );
     }
 }
