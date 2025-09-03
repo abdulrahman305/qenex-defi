@@ -442,9 +442,9 @@ class RealtimeMiningDashboard:
         """Start the dashboard server"""
         runner = web.AppRunner(self.app)
         await runner.setup()
-        site = web.TCPSite(runner, '0.0.0.0', 8080)
+        site = web.TCPSite(runner, '0.0.0.0', 8081)
         await site.start()
-        logger.info("Mining Dashboard running at http://localhost:8080")
+        logger.info("Mining Dashboard running at http://localhost:8081")
         
 async def main():
     dashboard = RealtimeMiningDashboard()
