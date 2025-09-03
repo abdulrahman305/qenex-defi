@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QXC Token - Simple DeFi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: linear-gradient(to bottom right, #4f46e5, #7c3aed);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .app {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .logo {
+            font-size: 48px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #1f2937;
+            margin-bottom: 30px;
+        }
+        
+        .balance-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .balance-label {
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+        
+        .balance-amount {
+            font-size: 36px;
+            font-weight: bold;
+        }
+        
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .btn {
+            background: #f3f4f6;
+            border: none;
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            background: #e5e7eb;
+            transform: translateY(-2px);
+        }
+        
+        .btn-icon {
+            font-size: 24px;
+        }
+        
+        .btn-primary {
+            background: #4f46e5;
+            color: white;
+            grid-column: 1 / -1;
+        }
+        
+        .btn-primary:hover {
+            background: #4338ca;
+        }
+        
+        .status {
+            text-align: center;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #16a34a;
+            display: none;
+        }
+        
+        .status.show {
+            display: block;
+        }
+        
+        .wallet-info {
+            text-align: center;
+            font-size: 14px;
+            color: #6b7280;
+            margin-top: 20px;
+        }
+        
+        .address {
+            font-family: monospace;
+            background: #f3f4f6;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="logo">💎</div>
+        <h1>QXC Token</h1>
+        
+        <div class="balance-card">
+            <div class="balance-label">Your Balance</div>
+            <div class="balance-amount" id="balance">0.00 QXC</div>
+        </div>
+        
+        <div class="actions">
+            <button class="btn" onclick="action('send')">
+                <span class="btn-icon">📤</span>
+                <span>Send</span>
+            </button>
+            <button class="btn" onclick="action('receive')">
+                <span class="btn-icon">📥</span>
+                <span>Receive</span>
+            </button>
+            <button class="btn" onclick="action('stake')">
+                <span class="btn-icon">🏦</span>
+                <span>Stake</span>
+            </button>
+            <button class="btn" onclick="action('swap')">
+                <span class="btn-icon">🔄</span>
+                <span>Swap</span>
+            </button>
+            <button class="btn btn-primary" id="connectBtn" onclick="connect()">
+                <span class="btn-icon">🔗</span>
+                <span>Connect Wallet</span>
+            </button>
+        </div>
+        
+        <div class="status" id="status">
+            ✅ <span id="statusText">Ready</span>
+        </div>
+        
+        <div class="wallet-info">
+            <div id="walletAddress"></div>
+        </div>
+    </div>
+    
+    <script>
+        let connected = false;
+        let account = null;
+        
+        // Check if MetaMask is installed
+        window.addEventListener('load', () => {
+            if (typeof window.ethereum !== 'undefined') {
+                console.log('MetaMask detected');
+                checkConnection();
+            }
+        });
+        
+        async function checkConnection() {
+            const accounts = await ethereum.request({ method: 'eth_accounts' });
+            if (accounts.length > 0) {
+                handleConnection(accounts[0]);
+            }
+        }
+        
+        async function connect() {
+            if (typeof window.ethereum === 'undefined') {
+                showStatus('Please install MetaMask first');
+                window.open('https://metamask.io/download/', '_blank');
+                return;
+            }
+            
+            try {
+                const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+                handleConnection(accounts[0]);
+            } catch (error) {
+                showStatus('Connection cancelled');
+            }
+        }
+        
+        function handleConnection(address) {
+            connected = true;
+            account = address;
+            document.getElementById('connectBtn').innerHTML = '<span class="btn-icon">✅</span><span>Connected</span>';
+            document.getElementById('walletAddress').innerHTML = `Connected: <span class="address">${address.substring(0, 6)}...${address.substring(38)}</span>`;
+            
+            // Simulate balance
+            const balance = (Math.random() * 1000).toFixed(2);
+            document.getElementById('balance').textContent = `${balance} QXC`;
+            
+            showStatus('Wallet connected successfully');
+        }
+        
+        function action(type) {
+            if (!connected) {
+                showStatus('Please connect wallet first');
+                return;
+            }
+            
+            const messages = {
+                send: 'Opening send dialog...',
+                receive: 'Your address copied to clipboard',
+                stake: 'Staking feature coming soon',
+                swap: 'Swap feature coming soon'
+            };
+            
+            showStatus(messages[type] || 'Processing...');
+            
+            if (type === 'receive' && account) {
+                navigator.clipboard.writeText(account);
+            }
+        }
+        
+        function showStatus(message) {
+            const status = document.getElementById('status');
+            const statusText = document.getElementById('statusText');
+            statusText.textContent = message;
+            status.classList.add('show');
+            
+            setTimeout(() => {
+                status.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Listen for account changes
+        if (window.ethereum) {
+            ethereum.on('accountsChanged', (accounts) => {
+                if (accounts.length === 0) {
+                    connected = false;
+                    account = null;
+                    document.getElementById('connectBtn').innerHTML = '<span class="btn-icon">🔗</span><span>Connect Wallet</span>';
+                    document.getElementById('walletAddress').innerHTML = '';
+                    document.getElementById('balance').textContent = '0.00 QXC';
+                } else {
+                    handleConnection(accounts[0]);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
