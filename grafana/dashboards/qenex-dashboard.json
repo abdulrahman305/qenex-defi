@@ -1,0 +1,246 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "qenex-main",
+    "title": "QENEX Unified AI OS Dashboard",
+    "tags": ["qenex", "cicd", "monitoring"],
+    "timezone": "browser",
+    "schemaVersion": 30,
+    "version": 1,
+    "refresh": "5s",
+    "panels": [
+      {
+        "id": 1,
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+        "type": "graph",
+        "title": "System Load",
+        "targets": [
+          {
+            "expr": "qenex_system_load_average{period=\"1m\"}",
+            "legendFormat": "1 min",
+            "refId": "A"
+          },
+          {
+            "expr": "qenex_system_load_average{period=\"5m\"}",
+            "legendFormat": "5 min",
+            "refId": "B"
+          },
+          {
+            "expr": "qenex_system_load_average{period=\"15m\"}",
+            "legendFormat": "15 min",
+            "refId": "C"
+          }
+        ],
+        "yaxes": [
+          {"format": "short", "show": true},
+          {"format": "short", "show": false}
+        ]
+      },
+      {
+        "id": 2,
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+        "type": "graph",
+        "title": "Memory & CPU Usage",
+        "targets": [
+          {
+            "expr": "qenex_cpu_usage_percent",
+            "legendFormat": "CPU %",
+            "refId": "A"
+          },
+          {
+            "expr": "qenex_memory_usage_percent",
+            "legendFormat": "Memory %",
+            "refId": "B"
+          }
+        ],
+        "yaxes": [
+          {"format": "percent", "max": 100, "min": 0, "show": true},
+          {"format": "short", "show": false}
+        ]
+      },
+      {
+        "id": 3,
+        "gridPos": {"h": 4, "w": 6, "x": 0, "y": 8},
+        "type": "stat",
+        "title": "Active Pipelines",
+        "targets": [
+          {
+            "expr": "qenex_active_processes",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": ["lastNotNull"],
+            "fields": "",
+            "values": false
+          }
+        }
+      },
+      {
+        "id": 4,
+        "gridPos": {"h": 4, "w": 6, "x": 6, "y": 8},
+        "type": "stat",
+        "title": "Success Rate",
+        "targets": [
+          {
+            "expr": "qenex_pipeline_success_rate",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "colorMode": "value",
+          "graphMode": "none",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": ["lastNotNull"],
+            "fields": "",
+            "values": false
+          },
+          "unit": "percent"
+        }
+      },
+      {
+        "id": 5,
+        "gridPos": {"h": 4, "w": 6, "x": 12, "y": 8},
+        "type": "stat",
+        "title": "Total Deployments",
+        "targets": [
+          {
+            "expr": "sum(increase(qenex_deployments_total[24h]))",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": ["lastNotNull"],
+            "fields": "",
+            "values": false
+          }
+        }
+      },
+      {
+        "id": 6,
+        "gridPos": {"h": 4, "w": 6, "x": 18, "y": 8},
+        "type": "stat",
+        "title": "System Uptime",
+        "targets": [
+          {
+            "expr": "qenex_system_uptime_seconds / 3600",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": ["lastNotNull"],
+            "fields": "",
+            "values": false
+          },
+          "unit": "h"
+        }
+      },
+      {
+        "id": 7,
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 12},
+        "type": "graph",
+        "title": "Pipeline Execution Times",
+        "targets": [
+          {
+            "expr": "rate(qenex_pipeline_duration_seconds_sum[5m]) / rate(qenex_pipeline_duration_seconds_count[5m])",
+            "legendFormat": "Avg Duration",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {"format": "s", "show": true},
+          {"format": "short", "show": false}
+        ]
+      },
+      {
+        "id": 8,
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 12},
+        "type": "heatmap",
+        "title": "Request Latency Heatmap",
+        "targets": [
+          {
+            "expr": "sum(rate(qenex_pipeline_duration_seconds_bucket[5m])) by (le)",
+            "format": "heatmap",
+            "refId": "A"
+          }
+        ],
+        "dataFormat": "tsbuckets",
+        "options": {
+          "calculate": false,
+          "cellGap": 1,
+          "color": {
+            "scheme": "Spectral"
+          }
+        }
+      },
+      {
+        "id": 9,
+        "gridPos": {"h": 6, "w": 8, "x": 0, "y": 20},
+        "type": "table",
+        "title": "Recent Webhooks",
+        "targets": [
+          {
+            "expr": "topk(10, qenex_webhooks_received_total)",
+            "format": "table",
+            "instant": true,
+            "refId": "A"
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "gridPos": {"h": 6, "w": 8, "x": 8, "y": 20},
+        "type": "piechart",
+        "title": "Deployments by Environment",
+        "targets": [
+          {
+            "expr": "sum by (environment) (qenex_deployments_total)",
+            "legendFormat": "{{environment}}",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "pieType": "donut",
+          "displayLabels": ["name", "percent"],
+          "legendDisplayMode": "list",
+          "legendPlacement": "right"
+        }
+      },
+      {
+        "id": 11,
+        "gridPos": {"h": 6, "w": 8, "x": 16, "y": 20},
+        "type": "alertlist",
+        "title": "Active Alerts",
+        "options": {
+          "showOptions": "current",
+          "maxItems": 10,
+          "sortOrder": 1,
+          "dashboardAlerts": true,
+          "alertName": "",
+          "dashboardTitle": "",
+          "tags": []
+        }
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {
+      "refresh_intervals": ["5s", "10s", "30s", "1m", "5m", "15m", "30m", "1h"]
+    }
+  }
+}

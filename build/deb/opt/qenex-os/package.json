@@ -1,0 +1,53 @@
+{
+  "name": "qenex-unified-ai-os",
+  "version": "3.0.0",
+  "description": "QENEX Unified AI Operating System - Autonomous CI/CD Platform with AI-driven orchestration",
+  "main": "kernel/unified_ai_os.py",
+  "scripts": {
+    "start": "python3 kernel/unified_ai_os.py boot",
+    "shell": "python3 kernel/qenex_shell.py",
+    "status": "python3 kernel/unified_ai_os.py status",
+    "dashboard": "python3 cicd/dashboard_server.py",
+    "api": "python3 cicd/api_server.py",
+    "install": "./install.sh",
+    "package": "./build_package.sh",
+    "test": "python3 -m pytest tests/",
+    "lint": "python3 -m flake8 .",
+    "docker:build": "docker build -t qenex/unified-ai-os:latest .",
+    "docker:run": "docker run -it --rm -p 8000:8000 -p 8080:8080 -p 8082:8082 qenex/unified-ai-os:latest"
+  },
+  "keywords": [
+    "qenex",
+    "ai",
+    "os",
+    "cicd",
+    "devops",
+    "automation",
+    "kubernetes",
+    "docker",
+    "gitops",
+    "ml",
+    "autonomous"
+  ],
+  "author": "QENEX Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qenex/unified-ai-os.git"
+  },
+  "engines": {
+    "python": ">=3.8",
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "docker": "^6.0.0",
+    "kubernetes": "^1.28.0",
+    "git": "^2.40.0"
+  },
+  "systemRequirements": {
+    "cpu": "4 cores minimum",
+    "memory": "8GB minimum",
+    "disk": "50GB minimum",
+    "os": "Linux/Unix"
+  }
+}

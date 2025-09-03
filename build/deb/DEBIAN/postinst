@@ -1,0 +1,7 @@
+#!/bin/bash
+ln -sf /opt/qenex-os/kernel/qenex_shell.py /usr/local/bin/qenex-shell
+ln -sf /opt/qenex-os/kernel/unified_ai_os.py /usr/local/bin/qenex-os
+chmod +x /usr/local/bin/qenex*
+pip3 install -r /opt/qenex-os/requirements.txt 2>/dev/null || true
+systemctl daemon-reload
+echo "QENEX OS installed. Run 'qenex-shell' to start."

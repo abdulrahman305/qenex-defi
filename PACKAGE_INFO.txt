@@ -1,0 +1,63 @@
+═══════════════════════════════════════════════════════════════
+              QENEX UNIFIED AI OS - PACKAGE v5.0.0
+═══════════════════════════════════════════════════════════════
+
+📦 PACKAGE CONTENTS:
+───────────────────
+✓ qenex-os-v5.0.0.tar.gz (1011KB) - Complete system archive
+✓ qenex-os-v5.0.0-installer.sh - Self-extracting installer
+✓ Docker support (Dockerfile & docker-compose.yml)
+✓ README.md - Documentation
+✓ installer.sh - Manual installation script
+
+🚀 INSTALLATION OPTIONS:
+────────────────────────
+1. SELF-EXTRACTING INSTALLER (Recommended):
+   sudo ./qenex-os-v5.0.0-installer.sh
+
+2. MANUAL EXTRACTION:
+   tar -xzf qenex-os-v5.0.0.tar.gz -C /opt/
+   sudo ./installer.sh
+
+3. DOCKER:
+   docker-compose up -d
+
+4. QUICK INSTALL:
+   curl -fsSL https://get.qenex.io | sudo bash
+
+💡 FEATURES INCLUDED:
+─────────────────────
+• Single Instance Architecture
+• Self-Healing System
+• Natural Language Control
+• Voice Commands
+• AI-Powered Optimization
+• Real-time Monitoring
+• Auto-scaling
+• Backup & Recovery
+• Distributed Processing
+• Zero-Trust Security
+• Visual Pipeline Builder
+• Quantum-Ready Architecture
+
+📊 SYSTEM REQUIREMENTS:
+───────────────────────
+• CPU: 4+ cores
+• RAM: 8GB+ 
+• Disk: 50GB+
+• OS: Ubuntu 20.04+
+• Python: 3.11+
+
+🔗 ACCESS AFTER INSTALLATION:
+──────────────────────────────
+• Dashboard: http://localhost
+• API: http://localhost:8000
+• CLI: qenex [start|stop|status|talk]
+
+📧 SUPPORT:
+───────────
+• GitHub: https://github.com/qenex/qenex-os
+• Docs: https://docs.qenex.io
+• Email: support@qenex.io
+
+═══════════════════════════════════════════════════════════════

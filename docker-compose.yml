@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  qenex:
+    build: .
+    container_name: qenex-os
+    restart: always
+    ports:
+      - "80:80"
+      - "8000-8004:8000-8004"
+    volumes:
+      - ./data:/opt/qenex-os/data
+      - ./logs:/opt/qenex-os/logs
+    environment:
+      - QENEX_VERSION=5.0.0
+    networks:
+      - qenex-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: qenex-redis
+    restart: always
+    networks:
+      - qenex-net
+
+networks:
+  qenex-net:
+    driver: bridge
