@@ -220,31 +220,69 @@ int load_binary(const char* path, universal_pid_t* pid) {
     }
 }
 
-/* ==================== HYPERVISOR FOR LEGACY OS ==================== */
+/* ==================== QENEX KERNEL AS MASTER HYPERVISOR ==================== */
+
+/*
+ * ARCHITECTURE:
+ * 
+ *     [Applications & Services]
+ *              ↓
+ *     [QENEX Universal Kernel]  ← Master Controller (You are here)
+ *         ↙        ↘
+ *    [UNIX VM]   [Windows VM]   ← Guest Operating Systems
+ *         ↓           ↓
+ *    [Virtual HW] [Virtual HW]  ← Emulated Hardware
+ *              ↓
+ *      [Physical Hardware]
+ */
 
 typedef struct {
     bool enabled;
     uint32_t num_guests;
     
+    // UNIX and Windows run UNDER QENEX Kernel
     struct {
         os_type_t guest_os;
         void* vm_context;
         uint64_t memory_size;
         uint32_t num_cpus;
         bool running;
+        
+        // Guest OS runs in restricted mode under QENEX
+        uint32_t privilege_level;  // 3 = user, QENEX runs at 0
+        bool can_access_hardware;  // false - only through QENEX
+        
+        // Resource limits enforced by QENEX
+        uint64_t cpu_quota;
+        uint64_t memory_limit;
+        uint64_t io_bandwidth;
     } guests[256];
+    
+    // QENEX controls everything
+    bool qenex_is_master;
+    void* qenex_control_interface;
 } hypervisor_t;
 
-// Run legacy OS as guest
-int run_legacy_os(hypervisor_t* hv, os_type_t os, uint64_t memory) {
+// QENEX Kernel hosts UNIX/Windows as subordinate guests
+int host_guest_os(hypervisor_t* hv, os_type_t os, uint64_t memory) {
+    printk("QENEX: Hosting %s as guest OS under QENEX control\n", 
+           os == OS_LINUX ? "Linux" : "Windows");
+    
     int guest_id = allocate_guest_slot(hv);
     
     hv->guests[guest_id].guest_os = os;
     hv->guests[guest_id].memory_size = memory;
-    hv->guests[guest_id].vm_context = create_vm_context(os, memory);
+    hv->guests[guest_id].privilege_level = 3;  // Lowest privilege
+    hv->guests[guest_id].can_access_hardware = false;  // No direct hardware
     
-    // Start virtualized OS
-    return start_guest_os(&hv->guests[guest_id]);
+    // Create isolated VM context - guest OS cannot escape
+    hv->guests[guest_id].vm_context = create_isolated_vm_context(os, memory);
+    
+    // QENEX remains in control at all times
+    hv->qenex_is_master = true;
+    
+    // Start guest OS under QENEX supervision
+    return start_guest_under_qenex(&hv->guests[guest_id]);
 }
 
 /* ==================== UNIVERSAL DRIVER INTERFACE ==================== */
