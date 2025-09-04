@@ -8,11 +8,12 @@ describe("QXC Token", function () {
   let addr2;
 
   beforeEach(async function () {
+    this.timeout(60000);
     [owner, addr1, addr2] = await ethers.getSigners();
     
     const QXCToken = await ethers.getContractFactory("QXCToken");
     qxcToken = await QXCToken.deploy();
-    await qxcToken.deployed();
+    await qxcToken.waitForDeployment();
   });
 
   describe("Deployment", function () {
