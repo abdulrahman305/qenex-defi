@@ -114,6 +114,12 @@ async function main() {
   const stakingAddress = await staking.getAddress();
   console.log(`✅ Staking deployed: ${stakingAddress}`);
   
+  // CRITICAL: Transfer staking ownership to multi-sig
+  console.log("\nTransferring staking ownership to multi-sig...");
+  const stakingContract = await ethers.getContractAt("QXCStakingFixed", stakingAddress);
+  await stakingContract.transferOwnership(multiSigAddress);
+  console.log(`✅ Staking ownership transferred to multi-sig`);
+  
   // Verify deployment
   console.log("\n🔍 Verifying deployment...");
   

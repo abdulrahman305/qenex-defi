@@ -34,9 +34,11 @@ contract QXCStakingFixed is ReentrancyGuard, Ownable, Pausable {
     event RewardsDeposited(uint256 amount);
     event EmergencyWithdraw(address indexed user, uint256 amount);
     
-    constructor(address _token) Ownable(msg.sender) {
+    constructor(address _token, uint256 _rewardRate) Ownable(msg.sender) {
         require(_token != address(0), "Invalid token");
+        require(_rewardRate <= 100, "Rate too high");
         stakingToken = IERC20(_token);
+        rewardRate = _rewardRate;
     }
     
     // Owner must fund rewards separately

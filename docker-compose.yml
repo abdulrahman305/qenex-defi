@@ -1,28 +1,30 @@
-version: "3.8"
+version: '3.8'
 
 services:
-  qenex:
+  qenex-node:
     build: .
-    container_name: qenex-os
-    restart: always
+    container_name: qenex-blockchain
     ports:
-      - "80:80"
-      - "8000-8004:8000-8004"
+      - "8545:8545"
     volumes:
-      - ./data:/opt/qenex-os/data
-      - ./logs:/opt/qenex-os/logs
+      - ./deployments:/app/deployments
+      - ./data:/app/data
     environment:
-      - QENEX_VERSION=5.0.0
-    networks:
-      - qenex-net
+      - NODE_ENV=development
+    restart: unless-stopped
 
-  redis:
-    image: redis:7-alpine
-    container_name: qenex-redis
-    restart: always
-    networks:
-      - qenex-net
+  qenex-api:
+    build: .
+    container_name: qenex-api
+    command: ["node", "scripts/api-server.js"]
+    ports:
+      - "3000:3000"
+    depends_on:
+      - qenex-node
+    environment:
+      - BLOCKCHAIN_URL=http://qenex-node:8545
+    restart: unless-stopped
 
 networks:
-  qenex-net:
-    driver: bridge
+  default:
+    name: qenex-network

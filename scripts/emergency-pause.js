@@ -1,400 +1,111 @@
-#!/usr/bin/env node
+const hre = require("hardhat");
+const fs = require('fs');
 
-const { ethers } = require("hardhat");
-const readline = require("readline");
-
-// ANSI color codes
-const colors = {
-    red: "\x1b[31m",
-    yellow: "\x1b[33m",
-    green: "\x1b[32m",
-    cyan: "\x1b[36m",
-    reset: "\x1b[0m"
-};
-
-// Configuration
-const CONTRACTS = {
-    token: process.env.TOKEN_ADDRESS,
-    staking: process.env.STAKING_ADDRESS,
-    amm: process.env.AMM_ADDRESS,
-    lending: process.env.LENDING_ADDRESS,
-    governor: process.env.GOVERNOR_ADDRESS
-};
-
-// Create readline interface for user input
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
-
-function askQuestion(question) {
-    return new Promise((resolve) => {
-        rl.question(question, (answer) => {
-            resolve(answer);
-        });
-    });
-}
-
-async function checkCurrentStatus(provider) {
-    console.log(`\n${colors.cyan}📊 Checking current contract status...${colors.reset}\n`);
-    
-    const status = {};
-    
-    // Check token
-    if (CONTRACTS.token) {
-        try {
-            const token = await ethers.getContractAt("QXCTokenV2", CONTRACTS.token, provider);
-            const paused = await token.paused();
-            const tradingEnabled = await token.tradingEnabled();
-            
-            status.token = {
-                address: CONTRACTS.token,
-                paused,
-                tradingEnabled
-            };
-            
-            console.log(`Token (${CONTRACTS.token}):`);
-            console.log(`  Paused: ${paused ? colors.red + "YES" + colors.reset : colors.green + "NO" + colors.reset}`);
-            console.log(`  Trading: ${tradingEnabled ? colors.green + "ENABLED" + colors.reset : colors.red + "DISABLED" + colors.reset}`);
-        } catch (error) {
-            console.log(`Token: ${colors.red}ERROR - ${error.message}${colors.reset}`);
-        }
-    }
-    
-    // Check staking
-    if (CONTRACTS.staking) {
-        try {
-            const staking = await ethers.getContractAt("QXCStakingV2", CONTRACTS.staking, provider);
-            const paused = await staking.paused();
-            
-            status.staking = {
-                address: CONTRACTS.staking,
-                paused
-            };
-            
-            console.log(`\nStaking (${CONTRACTS.staking}):`);
-            console.log(`  Paused: ${paused ? colors.red + "YES" + colors.reset : colors.green + "NO" + colors.reset}`);
-        } catch (error) {
-            console.log(`Staking: ${colors.red}ERROR - ${error.message}${colors.reset}`);
-        }
-    }
-    
-    return status;
-}
-
-async function pauseContract(contract, name, signer) {
-    try {
-        console.log(`\n${colors.yellow}⏸️  Pausing ${name}...${colors.reset}`);
-        
-        const tx = await contract.pause({ gasLimit: 100000 });
-        console.log(`  Transaction: ${tx.hash}`);
-        
-        const receipt = await tx.wait();
-        console.log(`  ${colors.green}✅ ${name} paused successfully!${colors.reset}`);
-        console.log(`  Gas used: ${receipt.gasUsed.toString()}`);
-        
-        return true;
-    } catch (error) {
-        console.log(`  ${colors.red}❌ Failed to pause ${name}: ${error.message}${colors.reset}`);
-        return false;
-    }
-}
-
-async function unpauseContract(contract, name, signer) {
-    try {
-        console.log(`\n${colors.green}▶️  Unpausing ${name}...${colors.reset}`);
-        
-        const tx = await contract.unpause({ gasLimit: 100000 });
-        console.log(`  Transaction: ${tx.hash}`);
-        
-        const receipt = await tx.wait();
-        console.log(`  ${colors.green}✅ ${name} unpaused successfully!${colors.reset}`);
-        console.log(`  Gas used: ${receipt.gasUsed.toString()}`);
-        
-        return true;
-    } catch (error) {
-        console.log(`  ${colors.red}❌ Failed to unpause ${name}: ${error.message}${colors.reset}`);
-        return false;
-    }
-}
-
-async function emergencyPauseAll(signer) {
-    console.log(`\n${colors.red}🚨 EMERGENCY PAUSE - PAUSING ALL CONTRACTS 🚨${colors.reset}\n`);
-    
-    const results = [];
-    
-    // Pause token
-    if (CONTRACTS.token) {
-        const token = await ethers.getContractAt("QXCTokenV2", CONTRACTS.token, signer);
-        const result = await pauseContract(token, "Token", signer);
-        results.push({ name: "Token", success: result });
-    }
-    
-    // Pause staking
-    if (CONTRACTS.staking) {
-        const staking = await ethers.getContractAt("QXCStakingV2", CONTRACTS.staking, signer);
-        const result = await pauseContract(staking, "Staking", signer);
-        results.push({ name: "Staking", success: result });
-    }
-    
-    // Pause AMM
-    if (CONTRACTS.amm) {
-        const amm = await ethers.getContractAt("QXCAutomatedMarketMaker", CONTRACTS.amm, signer);
-        const result = await pauseContract(amm, "AMM", signer);
-        results.push({ name: "AMM", success: result });
-    }
-    
-    // Pause lending
-    if (CONTRACTS.lending) {
-        const lending = await ethers.getContractAt("QXCLending", CONTRACTS.lending, signer);
-        const result = await pauseContract(lending, "Lending", signer);
-        results.push({ name: "Lending", success: result });
-    }
-    
-    return results;
-}
-
-async function emergencyUnpauseAll(signer) {
-    console.log(`\n${colors.green}✅ RESUMING OPERATIONS - UNPAUSING ALL CONTRACTS ✅${colors.reset}\n`);
-    
-    const results = [];
-    
-    // Unpause token
-    if (CONTRACTS.token) {
-        const token = await ethers.getContractAt("QXCTokenV2", CONTRACTS.token, signer);
-        const result = await unpauseContract(token, "Token", signer);
-        results.push({ name: "Token", success: result });
-    }
-    
-    // Unpause staking
-    if (CONTRACTS.staking) {
-        const staking = await ethers.getContractAt("QXCStakingV2", CONTRACTS.staking, signer);
-        const result = await unpauseContract(staking, "Staking", signer);
-        results.push({ name: "Staking", success: result });
-    }
-    
-    // Unpause AMM
-    if (CONTRACTS.amm) {
-        const amm = await ethers.getContractAt("QXCAutomatedMarketMaker", CONTRACTS.amm, signer);
-        const result = await unpauseContract(amm, "AMM", signer);
-        results.push({ name: "AMM", success: result });
-    }
-    
-    // Unpause lending
-    if (CONTRACTS.lending) {
-        const lending = await ethers.getContractAt("QXCLending", CONTRACTS.lending, signer);
-        const result = await unpauseContract(lending, "Lending", signer);
-        results.push({ name: "Lending", success: result });
-    }
-    
-    return results;
-}
-
+/**
+ * Emergency Pause Script
+ * Pauses all contracts to prevent further operations
+ * Requires multi-sig approval for token, direct for staking
+ */
 async function main() {
-    console.log(`${colors.red}=====================================`);
-    console.log(`    🚨 EMERGENCY CONTROL PANEL 🚨`);
-    console.log(`=====================================${colors.reset}\n`);
+  console.log("🚨 EMERGENCY PAUSE PROCEDURE 🚨\n");
+  
+  // Load deployment
+  if (!fs.existsSync('mainnet-deployment.json')) {
+    throw new Error("❌ No deployment file found");
+  }
+  
+  const deployment = JSON.parse(fs.readFileSync('mainnet-deployment.json'));
+  const [signer] = await ethers.getSigners();
+  
+  console.log(`Executing from: ${signer.address}\n`);
+  
+  try {
+    // 1. Pause Token (via multi-sig)
+    console.log("1️⃣ Pausing QXC Token...");
+    const token = await ethers.getContractAt("QXCTokenProduction", deployment.contracts.token);
+    const multiSig = await ethers.getContractAt("TimelockMultiSig", deployment.contracts.multiSig);
     
-    try {
-        // Get signer
-        const [signer] = await ethers.getSigners();
-        const provider = signer.provider;
-        const network = await provider.getNetwork();
-        
-        console.log(`Network: ${network.name || "Unknown"} (Chain ID: ${network.chainId})`);
-        console.log(`Operator: ${signer.address}`);
-        
-        // Check if operator has necessary roles
-        console.log(`\n${colors.yellow}⚠️  WARNING: You must have PAUSER_ROLE to execute emergency functions${colors.reset}`);
-        
-        // Check current status
-        const status = await checkCurrentStatus(provider);
-        
-        // Show menu
-        console.log(`\n${colors.cyan}═══════════════════════════════`);
-        console.log(`         ACTIONS MENU`);
-        console.log(`═══════════════════════════════${colors.reset}`);
-        console.log(`1. ${colors.red}EMERGENCY PAUSE ALL${colors.reset} - Stop all contract operations`);
-        console.log(`2. ${colors.green}RESUME ALL${colors.reset} - Unpause all contracts`);
-        console.log(`3. ${colors.yellow}PAUSE SPECIFIC${colors.reset} - Pause individual contract`);
-        console.log(`4. ${colors.green}UNPAUSE SPECIFIC${colors.reset} - Unpause individual contract`);
-        console.log(`5. ${colors.cyan}REFRESH STATUS${colors.reset} - Check current status`);
-        console.log(`6. ${colors.red}EXIT${colors.reset} - Exit emergency panel\n`);
-        
-        const action = await askQuestion("Select action (1-6): ");
-        
-        switch (action) {
-            case "1": {
-                // Emergency pause all
-                const confirm = await askQuestion(
-                    `\n${colors.red}⚠️  This will PAUSE ALL contracts. Are you sure? (yes/no): ${colors.reset}`
-                );
-                
-                if (confirm.toLowerCase() === "yes") {
-                    const results = await emergencyPauseAll(signer);
-                    
-                    console.log(`\n${colors.cyan}═══════════════════════════════`);
-                    console.log(`       PAUSE RESULTS`);
-                    console.log(`═══════════════════════════════${colors.reset}`);
-                    
-                    results.forEach((result) => {
-                        const icon = result.success ? "✅" : "❌";
-                        const color = result.success ? colors.green : colors.red;
-                        console.log(`${icon} ${result.name}: ${color}${result.success ? "PAUSED" : "FAILED"}${colors.reset}`);
-                    });
-                    
-                    const allSuccess = results.every(r => r.success);
-                    
-                    if (allSuccess) {
-                        console.log(`\n${colors.green}✅ All contracts paused successfully!${colors.reset}`);
-                        console.log(`${colors.yellow}⚠️  Remember to investigate the issue and unpause when safe${colors.reset}`);
-                    } else {
-                        console.log(`\n${colors.red}⚠️  Some contracts failed to pause. Manual intervention required!${colors.reset}`);
-                    }
-                }
-                break;
-            }
-            
-            case "2": {
-                // Resume all
-                const confirm = await askQuestion(
-                    `\n${colors.green}⚠️  This will UNPAUSE ALL contracts. Are you sure the issue is resolved? (yes/no): ${colors.reset}`
-                );
-                
-                if (confirm.toLowerCase() === "yes") {
-                    const results = await emergencyUnpauseAll(signer);
-                    
-                    console.log(`\n${colors.cyan}═══════════════════════════════`);
-                    console.log(`      UNPAUSE RESULTS`);
-                    console.log(`═══════════════════════════════${colors.reset}`);
-                    
-                    results.forEach((result) => {
-                        const icon = result.success ? "✅" : "❌";
-                        const color = result.success ? colors.green : colors.red;
-                        console.log(`${icon} ${result.name}: ${color}${result.success ? "RESUMED" : "FAILED"}${colors.reset}`);
-                    });
-                    
-                    const allSuccess = results.every(r => r.success);
-                    
-                    if (allSuccess) {
-                        console.log(`\n${colors.green}✅ All contracts resumed successfully!${colors.reset}`);
-                        console.log(`${colors.cyan}ℹ️  Normal operations have been restored${colors.reset}`);
-                    } else {
-                        console.log(`\n${colors.red}⚠️  Some contracts failed to unpause. Manual intervention required!${colors.reset}`);
-                    }
-                }
-                break;
-            }
-            
-            case "3": {
-                // Pause specific
-                console.log(`\n${colors.yellow}Select contract to pause:${colors.reset}`);
-                console.log("1. Token");
-                console.log("2. Staking");
-                console.log("3. AMM");
-                console.log("4. Lending");
-                
-                const choice = await askQuestion("Select (1-4): ");
-                
-                let contractAddress, contractName;
-                switch (choice) {
-                    case "1":
-                        contractAddress = CONTRACTS.token;
-                        contractName = "Token";
-                        break;
-                    case "2":
-                        contractAddress = CONTRACTS.staking;
-                        contractName = "Staking";
-                        break;
-                    case "3":
-                        contractAddress = CONTRACTS.amm;
-                        contractName = "AMM";
-                        break;
-                    case "4":
-                        contractAddress = CONTRACTS.lending;
-                        contractName = "Lending";
-                        break;
-                    default:
-                        console.log(`${colors.red}Invalid selection${colors.reset}`);
-                        break;
-                }
-                
-                if (contractAddress && contractName) {
-                    const contract = await ethers.getContractAt(`QXC${contractName}V2`, contractAddress, signer);
-                    await pauseContract(contract, contractName, signer);
-                }
-                break;
-            }
-            
-            case "4": {
-                // Unpause specific
-                console.log(`\n${colors.green}Select contract to unpause:${colors.reset}`);
-                console.log("1. Token");
-                console.log("2. Staking");
-                console.log("3. AMM");
-                console.log("4. Lending");
-                
-                const choice = await askQuestion("Select (1-4): ");
-                
-                let contractAddress, contractName;
-                switch (choice) {
-                    case "1":
-                        contractAddress = CONTRACTS.token;
-                        contractName = "Token";
-                        break;
-                    case "2":
-                        contractAddress = CONTRACTS.staking;
-                        contractName = "Staking";
-                        break;
-                    case "3":
-                        contractAddress = CONTRACTS.amm;
-                        contractName = "AMM";
-                        break;
-                    case "4":
-                        contractAddress = CONTRACTS.lending;
-                        contractName = "Lending";
-                        break;
-                    default:
-                        console.log(`${colors.red}Invalid selection${colors.reset}`);
-                        break;
-                }
-                
-                if (contractAddress && contractName) {
-                    const contract = await ethers.getContractAt(`QXC${contractName}V2`, contractAddress, signer);
-                    await unpauseContract(contract, contractName, signer);
-                }
-                break;
-            }
-            
-            case "5": {
-                // Refresh status
-                await checkCurrentStatus(provider);
-                break;
-            }
-            
-            case "6": {
-                // Exit
-                console.log(`\n${colors.cyan}Exiting emergency panel...${colors.reset}`);
-                break;
-            }
-            
-            default:
-                console.log(`${colors.red}Invalid selection${colors.reset}`);
-        }
-        
-        rl.close();
-        
-    } catch (error) {
-        console.error(`\n${colors.red}❌ Emergency action failed:${colors.reset}`, error.message);
-        rl.close();
-        process.exit(1);
+    // Check if already paused
+    const isTokenPaused = await token.paused();
+    if (isTokenPaused) {
+      console.log("   ✅ Token already paused");
+    } else {
+      // Create pause transaction for multi-sig
+      const pauseData = token.interface.encodeFunctionData("pause");
+      const txId = await multiSig.queueTransaction(
+        deployment.contracts.token,
+        pauseData,
+        0,
+        true // Emergency flag for 24-hour timelock
+      );
+      console.log(`   ⏳ Pause transaction queued (ID: ${txId})`);
+      console.log("   ⚠️  Requires 2-of-3 signatures + 24hr timelock");
     }
+    
+    // 2. Pause Staking (if multi-sig is owner)
+    console.log("\n2️⃣ Pausing Staking Contract...");
+    const staking = await ethers.getContractAt("QXCStakingFixed", deployment.contracts.staking);
+    
+    // Check current owner
+    const stakingOwner = await staking.owner();
+    const isStakingPaused = await staking.paused();
+    
+    if (isStakingPaused) {
+      console.log("   ✅ Staking already paused");
+    } else if (stakingOwner.toLowerCase() === signer.address.toLowerCase()) {
+      // Direct pause if we're the owner
+      await staking.pause();
+      console.log("   ✅ Staking paused directly");
+    } else if (stakingOwner.toLowerCase() === deployment.contracts.multiSig.toLowerCase()) {
+      // Queue via multi-sig
+      const pauseStakingData = staking.interface.encodeFunctionData("pause");
+      const stakingTxId = await multiSig.queueTransaction(
+        deployment.contracts.staking,
+        pauseStakingData,
+        0,
+        true // Emergency
+      );
+      console.log(`   ⏳ Pause transaction queued (ID: ${stakingTxId})`);
+      console.log("   ⚠️  Requires 2-of-3 signatures + 24hr timelock");
+    } else {
+      console.log(`   ❌ Cannot pause - owner is ${stakingOwner}`);
+    }
+    
+    // 3. Summary
+    console.log("\n" + "=".repeat(50));
+    console.log("📊 EMERGENCY PAUSE STATUS");
+    console.log("=".repeat(50));
+    
+    const finalTokenPaused = await token.paused();
+    const finalStakingPaused = await staking.paused();
+    
+    console.log(`Token:   ${finalTokenPaused ? "✅ PAUSED" : "⏳ PENDING"}`);
+    console.log(`Staking: ${finalStakingPaused ? "✅ PAUSED" : "⏳ PENDING"}`);
+    
+    if (!finalTokenPaused || !finalStakingPaused) {
+      console.log("\n⚠️  ACTION REQUIRED:");
+      console.log("1. Get 2-of-3 multi-sig signatures");
+      console.log("2. Wait for 24-hour emergency timelock");
+      console.log("3. Execute queued transactions");
+    }
+    
+    // 4. Alert
+    console.log("\n🔔 NEXT STEPS:");
+    console.log("1. Alert all team members immediately");
+    console.log("2. Investigate the incident");
+    console.log("3. Prepare fix if needed");
+    console.log("4. Document incident for post-mortem");
+    
+  } catch (error) {
+    console.error("\n❌ EMERGENCY PAUSE FAILED:", error.message);
+    console.error("\n🚨 MANUAL INTERVENTION REQUIRED!");
+    process.exit(1);
+  }
 }
 
-// Run emergency panel
 main()
-    .then(() => process.exit(0))
-    .catch((error) => {
-        console.error(error);
-        process.exit(1);
-    });
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error("❌ Script failed:", error);
+    process.exit(1);
+  });

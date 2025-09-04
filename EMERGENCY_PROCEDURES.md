@@ -37,12 +37,13 @@ npx hardhat run scripts/verify-deployment.js --network mainnet
 
 # 2. If one multi-sig signer compromised:
 #    - Other 2 signers must act immediately
-#    - Remove compromised signer
-npx hardhat run scripts/remove-signer.js --network mainnet
+#    - NOTE: Cannot remove signers (not supported in contract)
+#    - Remaining 2 signers still have control
 
 # 3. If 2+ signers compromised:
-#    - EMERGENCY: Pause all contracts
-#    - Deploy emergency migration contract
+#    - EMERGENCY: System compromised
+#    - Pause all contracts if possible
+#    - Consider emergency migration
 ```
 
 ---
@@ -99,14 +100,16 @@ npx hardhat run scripts/resume-staking.js --network mainnet
 
 **IMMEDIATE ACTIONS:**
 ```bash
-# 1. Pause DEX interactions (if possible)
-npx hardhat run scripts/pause-dex.js --network mainnet
+# 1. Transfer limits already active (built-in)
+#    - 100,000 QXC max per transaction
+#    - 60-second cooldown between transfers
 
-# 2. Add emergency liquidity
-npx hardhat run scripts/add-emergency-liquidity.js --network mainnet
+# 2. Monitor liquidity pool
+npx hardhat run scripts/monitor-contracts.js --network mainnet
 
-# 3. Implement transfer limits
-npx hardhat run scripts/set-transfer-limits.js --network mainnet
+# 3. Add emergency liquidity if needed
+#    - Use QXCLiquidityProvider contract
+#    - Requires manual intervention
 ```
 
 ---
