@@ -1,11 +1,18 @@
-# DeFi Platform - Automated Market Maker
+# QENEX DeFi Platform
 
-Decentralized Finance platform with constant product AMM implementation.
+Enterprise-grade Decentralized Finance platform with automated market maker, smart contracts, and multi-blockchain support.
 
 ## 🚀 Quick Start
 
 ```bash
+# Install dependencies
+pip install web3 eth-account solcx
+
+# Run AMM system
 python amm.py
+
+# Deploy smart contracts
+python smart_contract_deployer.py
 ```
 
 ## 📊 AMM Formula
