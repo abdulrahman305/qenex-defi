@@ -1,19 +1,22 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Pausable.sol";
 
 /**
- * @title QXC Staking Platform
- * @dev Stake QXC tokens to earn rewards from AI mining
+ * @title QXC Staking
+ * @author QENEX Team
+ * @notice Staking contract with rewards
+ * @dev Simple staking implementation with security features
  */
-
-interface IERC20 {
-    function transfer(address to, uint256 amount) external returns (bool);
-    function transferFrom(address from, address to, uint256 amount) external returns (bool);
-    function balanceOf(address account) external view returns (uint256);
-}
-
-contract QXCStaking {
-    IERC20 public qxcToken;
+contract QXCStaking is ReentrancyGuard, Ownable, Pausable {
+    using SafeERC20 for IERC20;
+    
+    IERC20 public immutable stakingToken;
     
     struct Stake {
         uint256 amount;
@@ -22,31 +25,29 @@ contract QXCStaking {
     }
     
     mapping(address => Stake) public stakes;
-    mapping(address => uint256) public rewards;
-    
     uint256 public totalStaked;
     uint256 public rewardRate = 15; // 15% APY
-    uint256 public minStakeAmount = 100 * 10**18; // 100 QXC minimum
+    uint256 public constant SECONDS_IN_YEAR = 365 days;
     
     event Staked(address indexed user, uint256 amount);
-    event Unstaked(address indexed user, uint256 amount);
-    event RewardsClaimed(address indexed user, uint256 amount);
+    event Unstaked(address indexed user, uint256 amount, uint256 reward);
+    event RewardsClaimed(address indexed user, uint256 reward);
+    event RewardRateUpdated(uint256 newRate);
     
-    constructor(address _qxcToken) {
-        qxcToken = IERC20(_qxcToken);
+    constructor(address _token) Ownable(msg.sender) {
+        require(_token != address(0), "Invalid token");
+        stakingToken = IERC20(_token);
     }
     
-    /**
-     * @dev Stake QXC tokens
-     */
-    function stake(uint256 amount) external {
-        require(amount >= minStakeAmount, "Below minimum stake");
-        require(qxcToken.transferFrom(msg.sender, address(this), amount), "Transfer failed");
+    function stake(uint256 amount) external nonReentrant whenNotPaused {
+        require(amount > 0, "Amount must be > 0");
         
-        // Calculate pending rewards before updating stake
+        // Claim pending rewards first
         if (stakes[msg.sender].amount > 0) {
-            rewards[msg.sender] += calculateRewards(msg.sender);
+            _claimRewards(msg.sender);
         }
+        
+        stakingToken.safeTransferFrom(msg.sender, address(this), amount);
         
         stakes[msg.sender].amount += amount;
         stakes[msg.sender].timestamp = block.timestamp;
@@ -55,79 +56,66 @@ contract QXCStaking {
         emit Staked(msg.sender, amount);
     }
     
-    /**
-     * @dev Unstake QXC tokens
-     */
-    function unstake(uint256 amount) external {
-        require(stakes[msg.sender].amount >= amount, "Insufficient stake");
+    function unstake() external nonReentrant whenNotPaused {
+        Stake memory userStake = stakes[msg.sender];
+        require(userStake.amount > 0, "No stake found");
         
-        // Calculate rewards before unstaking
-        rewards[msg.sender] += calculateRewards(msg.sender);
+        uint256 reward = _calculateReward(msg.sender);
+        uint256 totalAmount = userStake.amount + reward;
         
-        stakes[msg.sender].amount -= amount;
-        stakes[msg.sender].timestamp = block.timestamp;
-        totalStaked -= amount;
+        // Reset stake
+        delete stakes[msg.sender];
+        totalStaked -= userStake.amount;
         
-        require(qxcToken.transfer(msg.sender, amount), "Transfer failed");
+        // Transfer tokens and rewards
+        stakingToken.safeTransfer(msg.sender, totalAmount);
         
-        emit Unstaked(msg.sender, amount);
+        emit Unstaked(msg.sender, userStake.amount, reward);
     }
     
-    /**
-     * @dev Claim staking rewards
-     */
-    function claimRewards() external {
-        uint256 reward = rewards[msg.sender] + calculateRewards(msg.sender);
-        require(reward > 0, "No rewards available");
-        
-        rewards[msg.sender] = 0;
-        stakes[msg.sender].timestamp = block.timestamp;
-        stakes[msg.sender].rewardsClaimed += reward;
-        
-        require(qxcToken.transfer(msg.sender, reward), "Transfer failed");
-        
-        emit RewardsClaimed(msg.sender, reward);
+    function claimRewards() external nonReentrant whenNotPaused {
+        _claimRewards(msg.sender);
     }
     
-    /**
-     * @dev Calculate pending rewards
-     */
-    function calculateRewards(address user) public view returns (uint256) {
+    function _claimRewards(address user) private {
+        uint256 reward = _calculateReward(user);
+        if (reward > 0) {
+            stakes[user].rewardsClaimed += reward;
+            stakes[user].timestamp = block.timestamp;
+            stakingToken.safeTransfer(user, reward);
+            emit RewardsClaimed(user, reward);
+        }
+    }
+    
+    function _calculateReward(address user) private view returns (uint256) {
         Stake memory userStake = stakes[user];
         if (userStake.amount == 0) return 0;
         
-        uint256 stakingDuration = block.timestamp - userStake.timestamp;
-        uint256 annualReward = (userStake.amount * rewardRate) / 100;
-        uint256 reward = (annualReward * stakingDuration) / 365 days;
+        uint256 duration = block.timestamp - userStake.timestamp;
+        uint256 reward = (userStake.amount * rewardRate * duration) / (100 * SECONDS_IN_YEAR);
         
         return reward;
     }
     
-    /**
-     * @dev Get user staking info
-     */
-    function getUserInfo(address user) external view returns (
-        uint256 stakedAmount,
-        uint256 pendingRewards,
-        uint256 totalClaimed,
-        uint256 stakingTime
-    ) {
-        stakedAmount = stakes[user].amount;
-        pendingRewards = rewards[user] + calculateRewards(user);
-        totalClaimed = stakes[user].rewardsClaimed;
-        stakingTime = stakes[user].timestamp;
+    function getPendingReward(address user) external view returns (uint256) {
+        return _calculateReward(user);
     }
     
-    /**
-     * @dev Get platform statistics
-     */
-    function getStats() external view returns (
-        uint256 _totalStaked,
-        uint256 _rewardRate,
-        uint256 _minStake
-    ) {
-        _totalStaked = totalStaked;
-        _rewardRate = rewardRate;
-        _minStake = minStakeAmount;
+    function updateRewardRate(uint256 newRate) external onlyOwner {
+        require(newRate <= 100, "Rate too high");
+        rewardRate = newRate;
+        emit RewardRateUpdated(newRate);
+    }
+    
+    function pause() external onlyOwner {
+        _pause();
+    }
+    
+    function unpause() external onlyOwner {
+        _unpause();
+    }
+    
+    function emergencyWithdraw(address token, uint256 amount) external onlyOwner {
+        IERC20(token).safeTransfer(owner(), amount);
     }
 }

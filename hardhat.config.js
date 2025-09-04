@@ -19,7 +19,7 @@ if (process.env.NETWORK === "mainnet" && PRIVATE_KEY.startsWith("0xac0974")) {
 
 module.exports = {
     solidity: {
-        version: "0.8.19",
+        version: "0.8.20",
         settings: {
             optimizer: {
                 enabled: true,
@@ -96,6 +96,10 @@ module.exports = {
         tests: "./test",
         cache: "./cache",
         artifacts: "./artifacts"
+    },
+    // Exclude archive folder
+    contractSizer: {
+        except: ["contracts/archive/**/*"]
     },
     mocha: {
         timeout: 40000

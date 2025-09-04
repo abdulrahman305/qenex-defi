@@ -1,92 +1,82 @@
-
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
-contract QXCToken {
-    mapping(address => uint256) private _balances;
-    mapping(address => mapping(address => uint256)) private _allowances;
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Capped.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/utils/Pausable.sol";
+
+/**
+ * @title QXC Token
+ * @author QENEX Team
+ * @notice Production-ready QXC token with security features
+ * @dev ERC20 token with cap, burn, pause, and access control
+ */
+contract QXCToken is ERC20, ERC20Burnable, ERC20Capped, AccessControl, Pausable {
+    // Roles
+    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+    bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
+
+    // Constants
+    uint256 public constant INITIAL_SUPPLY = 1525.30 ether;
+    uint256 public constant MAX_SUPPLY = 21_000_000 ether;
     
-    uint256 private _totalSupply;
-    string public name = "QENEX Coin";
-    string public symbol = "QXC";
-    uint8 public decimals = 18;
+    // State
+    bool public tradingEnabled = false;
+    mapping(address => bool) public blacklisted;
     
-    address public owner;
+    // Events
+    event TradingEnabled();
+    event Blacklisted(address indexed account, bool status);
     
-    event Transfer(address indexed from, address indexed to, uint256 value);
-    event Approval(address indexed owner, address indexed spender, uint256 value);
-    event Mining(address indexed miner, uint256 reward, string improvement);
-    
-    constructor() {
-        owner = msg.sender;
-        _totalSupply = 1525300000000000000000; // 1525.30 QXC initial supply
-        _balances[msg.sender] = _totalSupply;
-        emit Transfer(address(0), msg.sender, _totalSupply);
-    }
-    
-    function totalSupply() public view returns (uint256) {
-        return _totalSupply;
-    }
-    
-    function balanceOf(address account) public view returns (uint256) {
-        return _balances[account];
-    }
-    
-    function transfer(address to, uint256 amount) public returns (bool) {
-        address from = msg.sender;
-        _transfer(from, to, amount);
-        return true;
-    }
-    
-    function allowance(address owner, address spender) public view returns (uint256) {
-        return _allowances[owner][spender];
-    }
-    
-    function approve(address spender, uint256 amount) public returns (bool) {
-        address owner = msg.sender;
-        _approve(owner, spender, amount);
-        return true;
-    }
-    
-    function transferFrom(address from, address to, uint256 amount) public returns (bool) {
-        address spender = msg.sender;
-        uint256 currentAllowance = _allowances[from][spender];
-        require(currentAllowance >= amount, "ERC20: insufficient allowance");
+    constructor() 
+        ERC20("QENEX Coin", "QXC")
+        ERC20Capped(MAX_SUPPLY)
+    {
+        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        _grantRole(MINTER_ROLE, msg.sender);
+        _grantRole(PAUSER_ROLE, msg.sender);
         
-        _transfer(from, to, amount);
-        _approve(from, spender, currentAllowance - amount);
-        
-        return true;
+        _mint(msg.sender, INITIAL_SUPPLY);
+    }
+
+    function mint(address to, uint256 amount) public onlyRole(MINTER_ROLE) {
+        _mint(to, amount);
+    }
+
+    function pause() public onlyRole(PAUSER_ROLE) {
+        _pause();
+    }
+
+    function unpause() public onlyRole(PAUSER_ROLE) {
+        _unpause();
     }
     
-    function _transfer(address from, address to, uint256 amount) internal {
-        require(from != address(0), "ERC20: transfer from zero address");
-        require(to != address(0), "ERC20: transfer to zero address");
-        
-        uint256 fromBalance = _balances[from];
-        require(fromBalance >= amount, "ERC20: insufficient balance");
-        
-        _balances[from] = fromBalance - amount;
-        _balances[to] += amount;
-        
-        emit Transfer(from, to, amount);
+    function enableTrading() public onlyRole(DEFAULT_ADMIN_ROLE) {
+        tradingEnabled = true;
+        emit TradingEnabled();
     }
     
-    function _approve(address owner, address spender, uint256 amount) internal {
-        require(owner != address(0), "ERC20: approve from zero address");
-        require(spender != address(0), "ERC20: approve to zero address");
-        
-        _allowances[owner][spender] = amount;
-        emit Approval(owner, spender, amount);
+    function setBlacklist(address account, bool status) public onlyRole(DEFAULT_ADMIN_ROLE) {
+        blacklisted[account] = status;
+        emit Blacklisted(account, status);
     }
-    
-    // AI Mining function - rewards for AI improvements
-    function mineReward(address miner, uint256 reward, string memory improvement) public {
-        require(msg.sender == owner, "Only owner can issue mining rewards");
-        require(_totalSupply + reward <= maxSupply, "Cannot exceed max supply");
-        _totalSupply += reward;
-        _balances[miner] += reward;
-        emit Transfer(address(0), miner, reward);
-        emit Mining(miner, reward, improvement);
+
+    function _update(address from, address to, uint256 amount)
+        internal
+        override(ERC20, ERC20Capped)
+        whenNotPaused
+    {
+        require(!blacklisted[from] && !blacklisted[to], "Blacklisted");
+        
+        if (!tradingEnabled && from != address(0) && to != address(0)) {
+            require(
+                hasRole(DEFAULT_ADMIN_ROLE, from) || hasRole(DEFAULT_ADMIN_ROLE, to),
+                "Trading not enabled"
+            );
+        }
+        
+        super._update(from, to, amount);
     }
 }
