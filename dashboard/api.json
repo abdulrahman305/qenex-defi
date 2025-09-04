@@ -1,10 +1,10 @@
 {
-  "timestamp": "2025-09-03T07:06:48.766331",
-  "uptime_hours": 15,
-  "memory_usage": 95,
-  "cpu_percent": 68.8,
-  "load_average": 204.77,
-  "disk_usage": 48,
-  "services": 9,
-  "version": "4.0.0"
+  "timestamp": "2025-09-04T03:57:43.049808",
+  "uptime_hours": 0,
+  "memory_usage": 84,
+  "cpu_percent": 83.5,
+  "load_average": 19.48,
+  "disk_usage": 46,
+  "services": 1,
+  "version": "5.0.0"
 }
