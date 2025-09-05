@@ -509,17 +509,10 @@ The QENEX Unified Financial Operating System represents a breakthrough in financ
 ## 📞 Support & Contact
 
 ### Enterprise Support
-- **Email**: enterprise@qenex.ai
-- **Phone**: +1-800-QENEX-OS
-- **Website**: https://www.qenex.ai
-- **Documentation**: https://docs.qenex.ai
-- **Community**: https://community.qenex.ai
-
-### Technical Support
+- **Email**: ceo@qenex.ai
+- **Phone**: +447888867644
+- **Website**: https://qenex.ai
 - **GitHub Issues**: https://github.com/abdulrahman305/qenex-os/issues
-- **Stack Overflow**: Tag questions with `qenex-os`
-- **Discord**: https://discord.gg/qenex
-- **Technical Blog**: https://blog.qenex.ai
 
 ---
 
