@@ -1,8 +1,8 @@
 {
   "id": "UNIFIED_DEVELOPER",
   "address": "7c9d02e577949aca888b3012e166c7260a8948e3fd04ec57ccc15fc714fed9d8",
-  "balance": 0,
-  "total_mined": 35.858935247451015,
+  "balance": 384.8743701804508,
+  "total_mined": 420.73330542790177,
   "improvements": {
     "mathematics": [
       {
@@ -15,6 +15,197 @@
           "geometry_accuracy": 2.090195739028605
         },
         "reward": 11.952978415817004
+      },
+      {
+        "timestamp": 1757151001.4160912,
+        "improvements": {
+          "arithmetic_accuracy": 3.177016638130793,
+          "algebra_accuracy": 3.4830466989285824,
+          "calculus_accuracy": 2.7256526020113396,
+          "statistics_accuracy": 2.5250650090794684,
+          "geometry_accuracy": 3.4313910085961234
+        },
+        "reward": 11.732900265810152
+      },
+      {
+        "timestamp": 1757151016.5524158,
+        "improvements": {
+          "arithmetic_accuracy": 2.390589349481311,
+          "algebra_accuracy": 3.216736893474047,
+          "calculus_accuracy": 4.506887590495483,
+          "statistics_accuracy": 4.139263857339566,
+          "geometry_accuracy": 2.9762080784902447
+        },
+        "reward": 8.254712809750366
+      },
+      {
+        "timestamp": 1757151032.6247718,
+        "improvements": {
+          "arithmetic_accuracy": 2.2779966606310977,
+          "algebra_accuracy": 2.315389134324305,
+          "calculus_accuracy": 2.602708601785869,
+          "statistics_accuracy": 2.5128809971179624,
+          "geometry_accuracy": 1.083817731506885
+        },
+        "reward": 7.819068042229095
+      },
+      {
+        "timestamp": 1757151047.6520066,
+        "improvements": {
+          "arithmetic_accuracy": 0.95708908913199,
+          "algebra_accuracy": 1.8372131353808323,
+          "calculus_accuracy": 2.5858613883687953,
+          "statistics_accuracy": 1.7333201622158074,
+          "geometry_accuracy": 2.960590433218124
+        },
+        "reward": 9.104809500024707
+      },
+      {
+        "timestamp": 1757151062.7036445,
+        "improvements": {
+          "arithmetic_accuracy": 2.7455586604438356,
+          "algebra_accuracy": 1.8117317996583997,
+          "calculus_accuracy": 2.5625614936317147,
+          "statistics_accuracy": 3.7641030852836552,
+          "geometry_accuracy": 2.284584751347523
+        },
+        "reward": 7.61635865108926
+      },
+      {
+        "timestamp": 1757151077.9692657,
+        "improvements": {
+          "arithmetic_accuracy": 1.0847032110916353,
+          "algebra_accuracy": 2.1738652657863664,
+          "calculus_accuracy": 2.8810288073670285,
+          "statistics_accuracy": 2.8070461107607527,
+          "geometry_accuracy": 1.264470312198244
+        },
+        "reward": 4.827064838028478
+      },
+      {
+        "timestamp": 1757151093.1864316,
+        "improvements": {
+          "arithmetic_accuracy": 2.7369190886024652,
+          "algebra_accuracy": 2.802292274148372,
+          "calculus_accuracy": 2.432900122456498,
+          "statistics_accuracy": 1.733372754614214,
+          "geometry_accuracy": 4.0637576587508235
+        },
+        "reward": 8.374324270894277
+      },
+      {
+        "timestamp": 1757151108.3493724,
+        "improvements": {
+          "arithmetic_accuracy": 0.685947551918426,
+          "algebra_accuracy": 1.0267834498074817,
+          "calculus_accuracy": 2.0104519649737296,
+          "statistics_accuracy": 2.7573492789342904,
+          "geometry_accuracy": 2.0019832953365144
+        },
+        "reward": 5.060001082129306
+      },
+      {
+        "timestamp": 1757151124.306345,
+        "improvements": {
+          "arithmetic_accuracy": 0.38645892938379456,
+          "algebra_accuracy": 2.019806652987127,
+          "calculus_accuracy": 1.2564735676376817,
+          "statistics_accuracy": 3.3701777847821774,
+          "geometry_accuracy": 2.8067793394947294
+        },
+        "reward": 7.929070959076651
+      },
+      {
+        "timestamp": 1757151139.7968545,
+        "improvements": {
+          "algebra_accuracy": 3.346931143517355,
+          "calculus_accuracy": 2.9964252284999873,
+          "statistics_accuracy": 1.0248563891919198,
+          "geometry_accuracy": 3.1660401221453363
+        },
+        "reward": 5.184229211846408
+      },
+      {
+        "timestamp": 1757151155.4899755,
+        "improvements": {
+          "algebra_accuracy": 3.727911186030189,
+          "calculus_accuracy": 3.032411421592467,
+          "statistics_accuracy": 2.768227461783491,
+          "geometry_accuracy": 0.8993431497941504
+        },
+        "reward": 4.369784918382754
+      },
+      {
+        "timestamp": 1757151171.4068494,
+        "improvements": {
+          "algebra_accuracy": 1.3951665169529441,
+          "calculus_accuracy": 2.0780659646241806,
+          "statistics_accuracy": 1.869163870596988,
+          "geometry_accuracy": 2.065950504643189
+        },
+        "reward": 4.636924435366099
+      },
+      {
+        "timestamp": 1757151187.2884362,
+        "improvements": {
+          "calculus_accuracy": 0.476899080575398,
+          "statistics_accuracy": 1.338475173800833,
+          "geometry_accuracy": 2.437361993229908
+        },
+        "reward": 4.148877341785119
+      },
+      {
+        "timestamp": 1757151202.3408976,
+        "improvements": {
+          "calculus_accuracy": 1.5961618999566718,
+          "statistics_accuracy": 2.408178667575845,
+          "geometry_accuracy": 0.9480811489277701
+        },
+        "reward": 4.253495131028402
+      },
+      {
+        "timestamp": 1757151217.4156063,
+        "improvements": {
+          "calculus_accuracy": 2.2252407631694444,
+          "statistics_accuracy": 1.3993737903197407,
+          "geometry_accuracy": 0.8941504641591436
+        },
+        "reward": 4.487208265606433
+      },
+      {
+        "timestamp": 1757151232.5536184,
+        "improvements": {
+          "calculus_accuracy": 1.4954314866474365
+        },
+        "reward": 2.6373711349463034
+      },
+      {
+        "timestamp": 1757151247.917412,
+        "improvements": {
+          "calculus_accuracy": 3.4148486842803893
+        },
+        "reward": 1.9387559818703655
+      },
+      {
+        "timestamp": 1757151263.792149,
+        "improvements": {
+          "calculus_accuracy": 2.077958306486185
+        },
+        "reward": 2.176628382959631
+      },
+      {
+        "timestamp": 1757151280.7913978,
+        "improvements": {
+          "calculus_accuracy": 0.6033346287072116
+        },
+        "reward": 2.139720415448275
+      },
+      {
+        "timestamp": 1757151296.0884216,
+        "improvements": {
+          "calculus_accuracy": 0.0878884065453899
+        },
+        "reward": 4.801238001409245
       }
     ],
     "language": [
@@ -29,6 +220,220 @@
           "qa_accuracy": 9.253124032958162
         },
         "reward": 14.343574098980406
+      },
+      {
+        "timestamp": 1757151001.4160912,
+        "improvements": {
+          "grammar_accuracy": 0.4122806633217255,
+          "comprehension_accuracy": 7.208577526623373,
+          "translation_accuracy": 2.2289232503600043,
+          "sentiment_accuracy": 1.7350056200908053,
+          "summarization_accuracy": 8.434838231558631,
+          "qa_accuracy": 8.158520105097464
+        },
+        "reward": 14.079480318972182
+      },
+      {
+        "timestamp": 1757151016.5524158,
+        "improvements": {
+          "grammar_accuracy": 2.0909953027708097,
+          "comprehension_accuracy": 2.2955054852259495,
+          "translation_accuracy": 2.203045030645968,
+          "sentiment_accuracy": 2.1546214933720123,
+          "summarization_accuracy": 2.9621755315679184,
+          "qa_accuracy": 2.0311863177346527
+        },
+        "reward": 9.90565537170044
+      },
+      {
+        "timestamp": 1757151032.6247718,
+        "improvements": {
+          "grammar_accuracy": 0.7103050181517093,
+          "comprehension_accuracy": 1.6387320310506444,
+          "translation_accuracy": 2.2474264130397934,
+          "sentiment_accuracy": 1.6850502806205776,
+          "summarization_accuracy": 1.153413776859351,
+          "qa_accuracy": 1.364906382206899
+        },
+        "reward": 9.382881650674914
+      },
+      {
+        "timestamp": 1757151047.6520066,
+        "improvements": {
+          "grammar_accuracy": 1.1747794401293614,
+          "comprehension_accuracy": 1.728398616003975,
+          "translation_accuracy": 0.7965320922106987,
+          "sentiment_accuracy": 2.9731420364831993,
+          "qa_accuracy": 2.0002579226184816
+        },
+        "reward": 9.104809500024707
+      },
+      {
+        "timestamp": 1757151062.7036445,
+        "improvements": {
+          "grammar_accuracy": 1.7196699008253407,
+          "comprehension_accuracy": 3.302581321100572,
+          "translation_accuracy": 1.5854898182528099,
+          "sentiment_accuracy": 1.8612277116941942,
+          "summarization_accuracy": 1.6027856591283585,
+          "qa_accuracy": 1.9437572813246404
+        },
+        "reward": 9.139630381307112
+      },
+      {
+        "timestamp": 1757151077.9692657,
+        "improvements": {
+          "grammar_accuracy": 0.9798338701150087,
+          "comprehension_accuracy": 1.5929147667339871,
+          "translation_accuracy": 0.12550627805699477,
+          "sentiment_accuracy": 1.454449371765777,
+          "summarization_accuracy": 1.342564806046216,
+          "qa_accuracy": 2.595287566601999
+        },
+        "reward": 5.7924778056341735
+      },
+      {
+        "timestamp": 1757151093.1864316,
+        "improvements": {
+          "grammar_accuracy": 1.400551909178576,
+          "comprehension_accuracy": 2.308474334729085,
+          "translation_accuracy": 0.7887261295033492,
+          "sentiment_accuracy": 1.544121578389595,
+          "summarization_accuracy": 0.9348374685243667,
+          "qa_accuracy": 2.173692724452497
+        },
+        "reward": 10.049189125073132
+      },
+      {
+        "timestamp": 1757151108.3493724,
+        "improvements": {
+          "grammar_accuracy": 1.7560866078972472,
+          "comprehension_accuracy": 0.7134432948662994,
+          "translation_accuracy": 0.8077970904036758,
+          "sentiment_accuracy": 0.9960455665497667,
+          "summarization_accuracy": 1.0452883792070833,
+          "qa_accuracy": 0.2537860525156252
+        },
+        "reward": 6.0720012985551675
+      },
+      {
+        "timestamp": 1757151124.306345,
+        "improvements": {
+          "grammar_accuracy": 1.001590367777288,
+          "comprehension_accuracy": 2.711881454561107,
+          "translation_accuracy": 2.06719838064083,
+          "sentiment_accuracy": 1.3510350748506892,
+          "summarization_accuracy": 0.23600832195157323,
+          "qa_accuracy": 2.263627238068758
+        },
+        "reward": 9.514885150891983
+      },
+      {
+        "timestamp": 1757151139.7968545,
+        "improvements": {
+          "grammar_accuracy": 1.4791554810083738,
+          "translation_accuracy": 1.375101657151149,
+          "sentiment_accuracy": 1.3463963394279936,
+          "summarization_accuracy": 2.639470013822525,
+          "qa_accuracy": 1.3080854032245042
+        },
+        "reward": 6.480286514808011
+      },
+      {
+        "timestamp": 1757151155.4899755,
+        "improvements": {
+          "grammar_accuracy": 0.15012955145753756,
+          "comprehension_accuracy": 1.2829055087853098,
+          "translation_accuracy": 0.7415789430846664,
+          "sentiment_accuracy": 0.23719161172897246,
+          "summarization_accuracy": 1.9272893355583096,
+          "qa_accuracy": 2.167213877582215
+        },
+        "reward": 6.554677377574131
+      },
+      {
+        "timestamp": 1757151171.4068494,
+        "improvements": {
+          "comprehension_accuracy": 2.152971816245361,
+          "translation_accuracy": 1.869018193262472,
+          "sentiment_accuracy": 0.2551425027325439,
+          "summarization_accuracy": 1.8432636229501858,
+          "qa_accuracy": 0.48291432943739315
+        },
+        "reward": 5.796155544207624
+      },
+      {
+        "timestamp": 1757151187.2884362,
+        "improvements": {
+          "comprehension_accuracy": 0.6788911060681551,
+          "translation_accuracy": 0.9898986364410233,
+          "summarization_accuracy": 2.6518408699800005,
+          "qa_accuracy": 2.6195529704688214
+        },
+        "reward": 5.531836455713493
+      },
+      {
+        "timestamp": 1757151202.3408976,
+        "improvements": {
+          "comprehension_accuracy": 1.7571029287310105,
+          "translation_accuracy": 2.5411564295960125,
+          "summarization_accuracy": 1.298158011930337,
+          "qa_accuracy": 3.164817340391039
+        },
+        "reward": 5.6713268413712035
+      },
+      {
+        "timestamp": 1757151217.4156063,
+        "improvements": {
+          "comprehension_accuracy": 1.3230740974420139,
+          "translation_accuracy": 1.0499229990899601,
+          "qa_accuracy": 0.6757740790602075
+        },
+        "reward": 4.487208265606433
+      },
+      {
+        "timestamp": 1757151232.5536184,
+        "improvements": {
+          "comprehension_accuracy": 1.867831235247996,
+          "translation_accuracy": 1.7097023327334675,
+          "summarization_accuracy": 0.7981925536186494,
+          "qa_accuracy": 3.0945457340279794
+        },
+        "reward": 10.549484539785213
+      },
+      {
+        "timestamp": 1757151247.917412,
+        "improvements": {
+          "comprehension_accuracy": 0.8975401310155043,
+          "translation_accuracy": 1.90464902317821,
+          "summarization_accuracy": 2.508217492095543
+        },
+        "reward": 5.816267945611097
+      },
+      {
+        "timestamp": 1757151263.792149,
+        "improvements": {
+          "comprehension_accuracy": 0.9365687828124201,
+          "translation_accuracy": 1.0903387202066726,
+          "summarization_accuracy": 1.9825543320371575
+        },
+        "reward": 6.529885148878893
+      },
+      {
+        "timestamp": 1757151280.7913978,
+        "improvements": {
+          "comprehension_accuracy": 1.0236812140233964,
+          "translation_accuracy": 1.5597885144756014,
+          "summarization_accuracy": 2.932769490168617
+        },
+        "reward": 6.419161246344824
+      },
+      {
+        "timestamp": 1757151296.0884216,
+        "improvements": {
+          "comprehension_accuracy": 0.7701854174613861
+        },
+        "reward": 4.801238001409245
       }
     ],
     "code": [
@@ -41,6 +446,200 @@
           "test_generation": 0.6959153889406365
         },
         "reward": 9.562382732653603
+      },
+      {
+        "timestamp": 1757151001.4160912,
+        "improvements": {
+          "optimization_score": 2.814140605642181,
+          "bug_detection_rate": 2.773741551301866,
+          "refactoring_quality": 2.4660165246151844,
+          "test_generation": 1.4952116421258523
+        },
+        "reward": 9.38632021264812
+      },
+      {
+        "timestamp": 1757151016.5524158,
+        "improvements": {
+          "optimization_score": 0.8868041740029651,
+          "bug_detection_rate": 2.873625052200583,
+          "refactoring_quality": 3.1918447069300937,
+          "test_generation": 2.5738836689691844
+        },
+        "reward": 6.603770247800294
+      },
+      {
+        "timestamp": 1757151032.6247718,
+        "improvements": {
+          "optimization_score": 2.781999433612228,
+          "bug_detection_rate": 3.2779044547212246,
+          "refactoring_quality": 2.5907336904677627,
+          "test_generation": 2.196767137652028
+        },
+        "reward": 6.255254433783276
+      },
+      {
+        "timestamp": 1757151047.6520066,
+        "improvements": {
+          "optimization_score": 1.1641451418902538,
+          "bug_detection_rate": 2.9218567373918924,
+          "test_generation": 4.983511805384838
+        },
+        "reward": 5.462885700014825
+      },
+      {
+        "timestamp": 1757151062.7036445,
+        "improvements": {
+          "functional_correctness": 0.8628765227690195,
+          "optimization_score": 4.158915024709911,
+          "bug_detection_rate": 2.006236397911361,
+          "refactoring_quality": 3.9756538982865757,
+          "test_generation": 3.790504076591135
+        },
+        "reward": 7.61635865108926
+      },
+      {
+        "timestamp": 1757151077.9692657,
+        "improvements": {
+          "functional_correctness": 1.7782415706047168,
+          "optimization_score": 2.88951276884631,
+          "bug_detection_rate": 2.8109924640576427,
+          "refactoring_quality": 1.7531465145023086,
+          "test_generation": 2.578528397817362
+        },
+        "reward": 4.827064838028478
+      },
+      {
+        "timestamp": 1757151093.1864316,
+        "improvements": {
+          "optimization_score": 1.6175433276796676,
+          "bug_detection_rate": 1.2490736761866923,
+          "refactoring_quality": 2.5591274240943753
+        },
+        "reward": 5.024594562536566
+      },
+      {
+        "timestamp": 1757151108.3493724,
+        "improvements": {
+          "optimization_score": 1.8179132418390416,
+          "bug_detection_rate": 2.0501854870768716,
+          "refactoring_quality": 2.8366241579814737,
+          "test_generation": 4.39419819286074
+        },
+        "reward": 4.048000865703445
+      },
+      {
+        "timestamp": 1757151124.306345,
+        "improvements": {
+          "optimization_score": 4.28383918468577,
+          "bug_detection_rate": 3.5787517289276956,
+          "refactoring_quality": 2.669524336661188,
+          "test_generation": 2.9754082316661834
+        },
+        "reward": 6.343256767261321
+      },
+      {
+        "timestamp": 1757151139.7968545,
+        "improvements": {
+          "bug_detection_rate": 1.769608045506196,
+          "refactoring_quality": 2.089103188193175,
+          "test_generation": 1.0220974702120282
+        },
+        "reward": 3.8881719088848063
+      },
+      {
+        "timestamp": 1757151155.4899755,
+        "improvements": {
+          "optimization_score": 1.0378596268218594,
+          "bug_detection_rate": 0.7217399773072819,
+          "refactoring_quality": 2.2218220250859004,
+          "test_generation": 3.7916540162760692
+        },
+        "reward": 4.369784918382754
+      },
+      {
+        "timestamp": 1757151171.4068494,
+        "improvements": {
+          "optimization_score": 2.7177888464656355,
+          "bug_detection_rate": 2.2132061375119214,
+          "refactoring_quality": 1.4749989308265496,
+          "test_generation": 0.28239291314882753
+        },
+        "reward": 4.636924435366099
+      },
+      {
+        "timestamp": 1757151187.2884362,
+        "improvements": {
+          "optimization_score": 3.0427116754521575,
+          "bug_detection_rate": 0.050732650019578246,
+          "refactoring_quality": 1.8128148686567531,
+          "test_generation": 2.622400040948256
+        },
+        "reward": 5.531836455713493
+      },
+      {
+        "timestamp": 1757151202.3408976,
+        "improvements": {
+          "optimization_score": 2.674029564964893,
+          "bug_detection_rate": 1.6029328887698626,
+          "refactoring_quality": 1.2736018564864768,
+          "test_generation": 2.7031923022692532
+        },
+        "reward": 5.6713268413712035
+      },
+      {
+        "timestamp": 1757151217.4156063,
+        "improvements": {
+          "optimization_score": 0.28785052689813867,
+          "bug_detection_rate": 2.7085842143247842,
+          "refactoring_quality": 1.274528907151925,
+          "test_generation": 3.21812235342138
+        },
+        "reward": 5.98294435414191
+      },
+      {
+        "timestamp": 1757151232.5536184,
+        "improvements": {
+          "optimization_score": 2.5760126451657728,
+          "bug_detection_rate": 2.184042471833662,
+          "refactoring_quality": 3.5738048783126968,
+          "test_generation": 2.25277611402803
+        },
+        "reward": 10.549484539785213
+      },
+      {
+        "timestamp": 1757151247.917412,
+        "improvements": {
+          "optimization_score": 3.523194436436318,
+          "bug_detection_rate": 1.2364405543989974,
+          "refactoring_quality": 0.36781812824716,
+          "test_generation": 1.5937398885812522
+        },
+        "reward": 7.755023927481462
+      },
+      {
+        "timestamp": 1757151263.792149,
+        "improvements": {
+          "optimization_score": 0.8663723104964282,
+          "bug_detection_rate": 2.9203658864037205,
+          "test_generation": 2.167988403881973
+        },
+        "reward": 6.529885148878893
+      },
+      {
+        "timestamp": 1757151280.7913978,
+        "improvements": {
+          "optimization_score": 2.157889950735501,
+          "bug_detection_rate": 0.10255886283495758,
+          "test_generation": 2.2709776136435464
+        },
+        "reward": 6.419161246344824
+      },
+      {
+        "timestamp": 1757151296.0884216,
+        "improvements": {
+          "optimization_score": 2.3812661857495345
+        },
+        "reward": 4.801238001409245
       }
     ]
   },

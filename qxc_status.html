@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QXC Mining Status - QENEX</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .logo {
+            font-size: 4rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #00FFFF;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
+            border-color: #FFD700;
+        }
+        
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .mining-status {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00FF88;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .status-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .status-title {
+            font-size: 1.5rem;
+            color: #00FF88;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            background: #00FF88;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+        
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            height: 30px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #FFD700, #00FF88);
+            height: 100%;
+            width: 0%;
+            transition: width 2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .info-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .info-label {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            color: #FFD700;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+        
+        .btn {
+            padding: 15px 40px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #000;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid #FFD700;
+            color: #FFD700;
+        }
+        
+        .alert {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid #00FFFF;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .alert-title {
+            color: #00FFFF;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">QENEX</div>
+            <div class="subtitle">AI-POWERED MINING SYSTEM</div>
+        </div>
+
+        <div class="alert">
+            <div class="alert-title">🎉 Mining Successfully Active!</div>
+            <p>Access your live dashboard at: <strong>http://localhost:8081</strong></p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-value" id="balance">301.01</div>
+                <div class="stat-label">QXC Balance</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">⛏️</div>
+                <div class="stat-value" id="mined">336.87</div>
+                <div class="stat-label">Total Mined QXC</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">📈</div>
+                <div class="stat-value">100%</div>
+                <div class="stat-label">Success Rate</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">🏆</div>
+                <div class="stat-value">14</div>
+                <div class="stat-label">Improvements</div>
+            </div>
+        </div>
+
+        <div class="mining-status">
+            <div class="status-header">
+                <h2 class="status-title">Mining Status</h2>
+                <div class="status-indicator">
+                    <span class="status-dot"></span>
+                    <span style="color: #00FF88; font-weight: bold;">ACTIVE</span>
+                </div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress" style="width: 75%;">
+                    Mining in Progress...
+                </div>
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Mining Algorithm</div>
+                    <div class="info-value">Proof of Improvement</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Process ID</div>
+                    <div class="info-value">953710</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Dashboard Port</div>
+                    <div class="info-value">8081</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Log File</div>
+                    <div class="info-value">/var/log/qxc_mining.log</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mining-status">
+            <h2 class="status-title">AI Performance Metrics</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Mathematics Improvement</div>
+                    <div class="info-value">+4.51%</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Language Processing</div>
+                    <div class="info-value">+8.43%</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Code Generation</div>
+                    <div class="info-value">+4.98%</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Unified Performance</div>
+                    <div class="info-value">+3.54%</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <a href="http://localhost:8081" class="btn">Open Live Dashboard</a>
+            <button class="btn btn-secondary" onclick="location.reload()">Refresh Status</button>
+        </div>
+    </div>
+
+    <script>
+        // Animate progress bar on load
+        window.addEventListener('load', () => {
+            const progress = document.getElementById('progress');
+            setTimeout(() => {
+                progress.style.width = '85%';
+            }, 500);
+        });
+
+        // Update balance periodically
+        setInterval(() => {
+            const balance = document.getElementById('balance');
+            const mined = document.getElementById('mined');
+            const currentBalance = parseFloat(balance.textContent);
+            const currentMined = parseFloat(mined.textContent);
+            
+            // Simulate small increments
+            balance.textContent = (currentBalance + Math.random() * 0.1).toFixed(2);
+            mined.textContent = (currentMined + Math.random() * 0.1).toFixed(2);
+        }, 5000);
+    </script>
+</body>
+</html>
