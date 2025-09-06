@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  qenex-node:
+    build: .
+    container_name: qenex-blockchain
+    ports:
+      - "8545:8545"
+    volumes:
+      - ./deployments:/app/deployments
+      - ./data:/app/data
+    environment:
+      - NODE_ENV=development
+    restart: unless-stopped
+
+  qenex-api:
+    build: .
+    container_name: qenex-api
+    command: ["node", "scripts/api-server.js"]
+    ports:
+      - "3000:3000"
+    depends_on:
+      - qenex-node
+    environment:
+      - BLOCKCHAIN_URL=http://qenex-node:8545
+    restart: unless-stopped
+
+networks:
+  default:
+    name: qenex-network

@@ -1,0 +1,28 @@
+{
+  "WARNING": "⚠️ TEST CONFIGURATION ONLY - DO NOT USE WITH REAL FUNDS ⚠️",
+  "SECURITY_NOTE": "This contains a PUBLICLY KNOWN Hardhat test private key",
+  "TEST_WALLET_INFO": {
+    "ethereum_address": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    "private_key": "REMOVED_FOR_SECURITY - Use Hardhat test accounts",
+    "network": "Local Development Only",
+    "warning": "This is Hardhat test account #0 - DO NOT use on mainnet"
+  },
+  "DEVELOPMENT_ONLY": {
+    "local_rpc": "http://localhost:8545",
+    "chain_id": 31337,
+    "network_name": "Hardhat Local"
+  },
+  "TOKEN_STATUS": {
+    "QXC": {
+      "deployed": false,
+      "status": "Development/Testing Only",
+      "note": "Contracts not deployed to mainnet"
+    }
+  },
+  "IMPORTANT": [
+    "Never use test keys with real funds",
+    "Generate new keys for production",
+    "Never commit private keys to GitHub",
+    "This is for educational purposes only"
+  ]
+}

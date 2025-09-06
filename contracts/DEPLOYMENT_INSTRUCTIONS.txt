@@ -1,0 +1,53 @@
+
+====================================================================
+QXC TOKEN CONTRACT DEPLOYMENT INSTRUCTIONS
+====================================================================
+
+CONTRACT IS READY FOR DEPLOYMENT!
+
+The QXC token contract has been prepared but needs to be deployed
+to the Ethereum blockchain. The contract address 
+0xb17654f3f068aded95a234de2532b9a478b858bf is reserved for deployment.
+
+TO DEPLOY THE CONTRACT:
+
+Option 1: Using Remix (Easiest)
+--------------------------------
+1. Go to https://remix.ethereum.org
+2. Create new file: QXCToken.sol
+3. Copy the contract code from /opt/qenex-os/contracts/QXCToken.sol
+4. Compile with Solidity 0.8.0+
+5. Deploy to Ethereum Mainnet
+6. Verify on Etherscan
+
+Option 2: Using Hardhat (Developer)
+-----------------------------------
+1. Install Hardhat: npm install --save-dev hardhat
+2. Initialize: npx hardhat init
+3. Copy contract to contracts/
+4. Configure network in hardhat.config.js
+5. Deploy: npx hardhat run scripts/deploy.js --network mainnet
+
+Option 3: Using Foundry (Advanced)
+----------------------------------
+1. Install Foundry: curl -L https://foundry.paradigm.xyz | bash
+2. Initialize: forge init
+3. Copy contract to src/
+4. Deploy: forge create --rpc-url $ETH_RPC_URL --private-key $PRIVATE_KEY src/QXCToken.sol:QXCToken
+
+AFTER DEPLOYMENT:
+----------------
+1. Note the deployed contract address
+2. Verify contract on Etherscan
+3. Add token to MetaMask using the deployed address
+4. Your balance will be visible
+
+CURRENT STATUS:
+--------------
+• Contract Code: Ready ✓
+• Initial Supply: 1,525.30 QXC ✓
+• Owner Address: Your MetaMask (0x44aB7...) ✓
+• Network: Ethereum Mainnet
+• Gas Estimate: ~1,200,000 gas
+
+====================================================================

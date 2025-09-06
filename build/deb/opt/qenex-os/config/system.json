@@ -1,0 +1,23 @@
+{
+  "hostname": "qenex-os",
+  "network": {
+    "interface": "eth0",
+    "firewall": true,
+    "ids": true
+  },
+  "security": {
+    "level": 2,
+    "auto_response": true,
+    "ai_monitoring": true
+  },
+  "ai": {
+    "auto_train": true,
+    "update_interval": 3600,
+    "threat_detection": true
+  },
+  "services": {
+    "ssh_guard": true,
+    "web_api": true,
+    "monitoring": true
+  }
+}

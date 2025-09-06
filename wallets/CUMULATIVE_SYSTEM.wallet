@@ -1,0 +1,63 @@
+{
+  "id": "CUMULATIVE_SYSTEM",
+  "address": "a2e1e369b212043b9f9a38d5b97033434b16b502dd169f1aeaf8d71963e43320",
+  "balance": 0,
+  "total_mined": 29.72193766466178,
+  "model_contributions": [
+    {
+      "version": 2,
+      "timestamp": 1756899763.8369393,
+      "improvements": {
+        "mathematics.algebra": {
+          "before": 0.75,
+          "after": 0.7543619526134578,
+          "improvement": 0.581593681794379
+        },
+        "mathematics.calculus": {
+          "before": 0.65,
+          "after": 0.6567618756577875,
+          "improvement": 1.0402885627365415
+        },
+        "mathematics.geometry": {
+          "before": 0.72,
+          "after": 0.7275776278508022,
+          "improvement": 1.0524483126114144
+        },
+        "mathematics.proofs": {
+          "before": 0.6,
+          "after": 0.6095800709139629,
+          "improvement": 1.596678485660493
+        },
+        "mathematics.optimization": {
+          "before": 0.68,
+          "after": 0.6924521117868148,
+          "improvement": 1.8311929098256927
+        },
+        "mathematics.number_theory": {
+          "before": 0.63,
+          "after": 0.6462364789696677,
+          "improvement": 2.5772188840742434
+        },
+        "code.correctness": {
+          "before": 0.72,
+          "after": 0.7341024377298568,
+          "improvement": 1.9586719069245646
+        },
+        "code.refactoring": {
+          "before": 0.7,
+          "after": 0.7041922295434224,
+          "improvement": 0.5988899347746379
+        },
+        "code.testing": {
+          "before": 0.63,
+          "after": 0.652247181865542,
+          "improvement": 3.5312987088161862
+        }
+      },
+      "reward": 29.72193766466178
+    }
+  ],
+  "created_at": "2025-09-03T11:42:43.833896",
+  "consolidated_to": "USER_WALLET",
+  "consolidated_at": 1756903588.275733
+}

@@ -1,0 +1,61 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version'
+        required: true
+        default: 'v1.0.0'
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    
+    - name: Generate changelog
+      id: changelog
+      run: |
+        echo "## What's Changed" > CHANGELOG.md
+        git log --pretty=format:"- %s (%an)" $(git describe --tags --abbrev=0 2>/dev/null || echo "")..HEAD >> CHANGELOG.md
+        echo "" >> CHANGELOG.md
+        echo "**Full Changelog**: https://github.com/${{ github.repository }}/compare/$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")...$(git describe --tags)" >> CHANGELOG.md
+    
+    - name: Build release package
+      run: |
+        tar -czf qenex-os-${{ github.ref_name }}.tar.gz \
+          --exclude='.git' \
+          --exclude='.github' \
+          --exclude='*.pyc' \
+          --exclude='__pycache__' \
+          .
+    
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        body_path: CHANGELOG.md
+        files: |
+          qenex-os-${{ github.ref_name }}.tar.gz
+        generate_release_notes: true
+        draft: false
+        prerelease: false
+    
+    - name: Update Docker Hub
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: |
+        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        docker build -t qenex/os:${{ github.ref_name }} -t qenex/os:latest .
+        docker push qenex/os:${{ github.ref_name }}
+        docker push qenex/os:latest
+      continue-on-error: true

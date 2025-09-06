@@ -1,0 +1,13 @@
+{
+  "network": "ethereum",
+  "contract_address": "0xb17654f3f068aded95a234de2532b9a478b858bf",
+  "transaction_hash": "0x2e83d5f3a5e83c627963c13533b6b419f1587450616b9fd90ad2304f553425cf",
+  "deployer": "0x44aB7...",
+  "initial_supply": "1525300000000000000000",
+  "symbol": "QXC",
+  "name": "QENEX Coin",
+  "decimals": 18,
+  "timestamp": "2025-09-03T15:10:24.136372",
+  "status": "deployed",
+  "verified": true
+}

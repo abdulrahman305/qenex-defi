@@ -1,0 +1,49 @@
+{
+  "id": "ORIGINAL_MASTER",
+  "address": "c0884b65ba70e6a9f80e02b975ebf7cf30bd4f7e53b4043ee60e3ec10cd2b9f4",
+  "balance": 0,
+  "is_original": true,
+  "total_mined": 0.0,
+  "blocks_mined": 0,
+  "revenue_received": 22.35073484892807,
+  "revenue_distributed": 0.0,
+  "created_at": "2025-09-03T11:35:57.832317",
+  "transactions": [
+    {
+      "type": "revenue_share",
+      "from": "KERNEL_BRANCH",
+      "amount": 6.627715305741436,
+      "reason": "20% share from kernel_performance",
+      "timestamp": 1756899358.8642454
+    },
+    {
+      "type": "revenue_share",
+      "from": "TRAINING_BRANCH",
+      "amount": 4.884543866169285,
+      "reason": "20% share from training_speed",
+      "timestamp": 1756899359.0878851
+    },
+    {
+      "type": "revenue_share",
+      "from": "RESOURCE_BRANCH",
+      "amount": 4.088309377995073,
+      "reason": "20% share from resource_optimization",
+      "timestamp": 1756899359.6739335
+    },
+    {
+      "type": "revenue_share",
+      "from": "ALGORITHM_BRANCH",
+      "amount": 6.7501662990222755,
+      "reason": "20% share from algorithm_efficiency",
+      "timestamp": 1756899359.7688231
+    }
+  ],
+  "mining_stats": {
+    "improvements": 0,
+    "total_improvement_value": 0.0,
+    "best_improvement": 0.0,
+    "average_reward": 0.0
+  },
+  "consolidated_to": "USER_WALLET",
+  "consolidated_at": 1756903588.27308
+}

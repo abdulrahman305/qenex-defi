@@ -1,0 +1,80 @@
+{
+  "developer_id": "TRAINING_ENGINE",
+  "address": "f9806b8a2bc69e85f8e19b9f5361be75e298bc7833e060575cb8ca48d97307f3",
+  "balance": 0,
+  "created_at": "2025-09-03T11:26:15.809518",
+  "mining_stats": {
+    "total_mined": 86.94365253854093,
+    "blocks_mined": 5,
+    "improvements_submitted": 5,
+    "accuracy_gains": 0.0,
+    "speed_gains": 0.0,
+    "models_improved": 0,
+    "algorithms_created": 0
+  },
+  "transactions": [
+    {
+      "tx_id": "aea4f66d055969460f4825ff20eec960959251e82a49f508594119deb2120644",
+      "sender": "MINING_REWARD",
+      "receiver": "f9806b8a2bc69e85f8e19b9f5361be75e298bc7833e060575cb8ca48d97307f3",
+      "amount": 17.445124480623598,
+      "fee": 0.0,
+      "timestamp": 1756898553.6560438,
+      "ai_contribution": {
+        "type": "training_efficiency",
+        "score": 4.554868924611609
+      }
+    },
+    {
+      "tx_id": "f05823399a777952043e07499b282ffb8a2544381ca19507f5f5dd23f79bd8ac",
+      "sender": "MINING_REWARD",
+      "receiver": "f9806b8a2bc69e85f8e19b9f5361be75e298bc7833e060575cb8ca48d97307f3",
+      "amount": 18.58816061120849,
+      "fee": 0.0,
+      "timestamp": 1756898569.278484,
+      "ai_contribution": {
+        "type": "training_efficiency",
+        "score": 7.346453945687583
+      }
+    },
+    {
+      "tx_id": "a28da835a22d2eed1cb4d60a019b2a02f7341747e7ac7b40a3add53865ac8e6c",
+      "sender": "MINING_REWARD",
+      "receiver": "f9806b8a2bc69e85f8e19b9f5361be75e298bc7833e060575cb8ca48d97307f3",
+      "amount": 17.330765107985798,
+      "fee": 0.0,
+      "timestamp": 1756898626.0136952,
+      "ai_contribution": {
+        "type": "training_efficiency",
+        "score": 4.301590561946616
+      }
+    },
+    {
+      "tx_id": "267a1bccf19730e55c8270f437211facd3b95e5c29500800b29216c6a5558af4",
+      "sender": "MINING_REWARD",
+      "receiver": "f9806b8a2bc69e85f8e19b9f5361be75e298bc7833e060575cb8ca48d97307f3",
+      "amount": 16.343141568649873,
+      "fee": 0.0,
+      "timestamp": 1756898734.6201973,
+      "ai_contribution": {
+        "type": "training_efficiency",
+        "score": 2.289742154404391
+      }
+    },
+    {
+      "tx_id": "518d3e91d8322228964fea80fd9fd22922e1f806d77765bdac8373b313c94f7e",
+      "sender": "MINING_REWARD",
+      "receiver": "f9806b8a2bc69e85f8e19b9f5361be75e298bc7833e060575cb8ca48d97307f3",
+      "amount": 17.236460770073172,
+      "fee": 0.0,
+      "timestamp": 1756898775.8094935,
+      "ai_contribution": {
+        "type": "training_efficiency",
+        "score": 4.096048478332177
+      }
+    }
+  ],
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDJTYx2oHQ2vgJ+\nrj08FKUVklVvIIHhb3dGA+hPcPECwqPQXOXLNi6DyNMIbt+nLLAXk0+kUg8laMVt\nUVUyFCqCjsxGyyvej3pQjr2b4uuKWNemGmvjUXsavIxFi/7G7lSq0MsHg+l0guCM\n2aWN5PE09Zv7YeTptN8VLITvMx73sN6UO+1LGdF3B6ePhcxPE/Q3EJiKfkKoSxUx\nEDLibdbRrHJjmMWo9po5eZV9h++GWtcdYEJ2bTWzn79R1pTwO3P8kTuLfaRXn9qk\n+GkBiG0zKFFJ96ynFl82bebBmNVJuKqVirwDt4lJzEYHqNcQDtaMzn+0ZLmKpb9O\nuws4AWpjAgMBAAECggEATUrA2ZWPOauoUpK9QVHd9xPqSNJu/Cur3M7IRqRjbb9l\nXa4lr2p83q3f1ZeYuVwvusWdqUa2uRLq5yf48dMLZXjF15LQI9LsUH0WMYImFUc6\nefUgIraY8XGe3F898oz1Jmcn5ZlRLKLJ7FrvNbXHpaF+hD2YwuFnXH5tBlkXFVv9\n6hYg5rC5K8sUVVBJXhg+2nKBKmnbthFuDNTeBnnaFhId/rddx+jiXWkB9AVJdCbQ\nZ/7zPaPBvLgYmpd0iLTLSFJJz9Gqqvb7zACuaTDmxbrNbeRORg1O4GG68hN07EyJ\naM77K/x3P+11sY9/bBjxgN/e9ys80wDE8PQ3OtjcLQKBgQDv75RxkenE/rYyAj0D\n6D3yiVpHcs6+m1k4EyDaw+0RGnhZ6t2WUnTJCbcQDHXUXy6UBV5Gq+AArG+ooiEK\nzLgds9HoIuKuyhYGi6Hb7xB7JXxwuygPSx3e5f/MUaGJ+/jYSzZFQyG+q0aZ/4j5\nx12mAXlO1jt0SY/oO9s+4mOFLQKBgQDWx9Az5T4cHyfIRLIGhafDeyqwnK2Q+1aR\n1fF40Cx1h3ev+0yB/+YRmhlrV2P0+kuGSU9Qk3JxJ0wIJtMWT+q4TJuDjGFpwgl6\nN2+/HJPpqf8AwUD0oPIrQcoVVQ7kOogzdB+nU2mKIsPQvMXTBeZN5Dg5PC6sNlyN\nJquQ1EaHzwKBgB13zkJ4ij6Ajf3sWnQNZPZRuj3GMvAkAjwp1UIpCAeuuZNJjjd1\nHxTF1a7p6NrRadYSJrcFSviqNPiAGRDLfd1gBWq+RhrzhOr+4T0yylJlkzgBNHVU\nY3HJy7XbXLymrrRZ4Gt3SECzpnMpeDg9LRpDWhO9qgWpNzxthYreoRxtAoGAI3df\nVBJ4zR//67wcQaN0bn06MWvN5XD7fJ19gFuv28CA7RhsK9Nb5HAz3lvR77QdIJGe\nfUm7zh+VGIuAs+CCe+h6jaByvYoDEqFw3HgVnLIrn65J0Zt6IdZ9TkR7bwiTURvN\n1k2Z0euntiJV8GC7BQW4mwrrEhjv84b9Ma877lUCgYApdIAzkmHW6dl5ej7HxjnY\n0peqFrRIRoTWhAK4EfT0iGNQ5G+YMlqA7kf6ZiKMZ5Vil9NlHmW1MgSET0o0T0r+\nkOcV8Y1KQCG4dv81Z9kwl8cD5CNqDI9MsfWsDv5c3pK4rGIjqtpg7H1id4Iwn8k5\nXzXBupPdKjNOJoCndBYePg==\n-----END PRIVATE KEY-----\n",
+  "consolidated_to": "USER_WALLET",
+  "consolidated_at": 1756903588.2749417
+}

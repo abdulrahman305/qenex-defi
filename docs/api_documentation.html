@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QENEX API Documentation</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 18px;
+        }
+        .content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .endpoint {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .method {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 12px;
+            margin-right: 10px;
+        }
+        .method.get { background: #28a745; color: white; }
+        .method.post { background: #007bff; color: white; }
+        .method.put { background: #ffc107; color: black; }
+        .method.delete { background: #dc3545; color: white; }
+        .path {
+            font-family: 'Monaco', monospace;
+            font-size: 16px;
+            color: #333;
+        }
+        .description {
+            margin: 10px 0;
+            color: #666;
+        }
+        .parameters {
+            margin-top: 15px;
+        }
+        .param {
+            background: white;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+        }
+        .param-name {
+            font-weight: bold;
+            color: #495057;
+        }
+        .param-type {
+            color: #6c757d;
+            font-size: 12px;
+        }
+        .required {
+            color: #dc3545;
+            font-size: 12px;
+        }
+        .response {
+            background: #f1f3f4;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+        .code {
+            background: #263238;
+            color: #aed581;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Monaco', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+        .nav {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .nav a {
+            color: #667eea;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+        .nav a:hover {
+            background: #f0f0f0;
+        }
+        h2 {
+            color: #667eea;
+            margin: 30px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .auth-note {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 QENEX API Documentation</h1>
+            <div class="subtitle">RESTful API for QENEX Unified AI OS v3.0</div>
+        </div>
+
+        <div class="nav">
+            <ul>
+                <li><a href="#authentication">Authentication</a></li>
+                <li><a href="#pipelines">Pipelines</a></li>
+                <li><a href="#deployments">Deployments</a></li>
+                <li><a href="#webhooks">Webhooks</a></li>
+                <li><a href="#metrics">Metrics</a></li>
+                <li><a href="#system">System</a></li>
+            </ul>
+        </div>
+
+        <div class="content">
+            <div class="auth-note">
+                <strong>🔐 Authentication:</strong> All API endpoints require authentication via API Key or JWT token.
+                Include your API key in the <code>X-API-Key</code> header or JWT token in the <code>Authorization: Bearer {token}</code> header.
+            </div>
+
+            <h2 id="authentication">Authentication</h2>
+
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="path">/api/auth/register</span>
+                <div class="description">Register a new user account</div>
+                <div class="parameters">
+                    <div class="param">
+                        <span class="param-name">username</span>
+                        <span class="param-type">string</span>
+                        <span class="required">required</span>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">password</span>
+                        <span class="param-type">string</span>
+                        <span class="required">required</span>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">email</span>
+                        <span class="param-type">string</span>
+                    </div>
+                </div>
+                <div class="response">
+                    <strong>Response:</strong>
+                    <pre class="code">{
+  "user_id": 1,
+  "username": "john_doe",
+  "api_key": "qnx_aBcD1234..."
+}</pre>
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="path">/api/auth/login</span>
+                <div class="description">Login and receive JWT token</div>
+                <div class="parameters">
+                    <div class="param">
+                        <span class="param-name">username</span>
+                        <span class="param-type">string</span>
+                        <span class="required">required</span>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">password</span>
+                        <span class="param-type">string</span>
+                        <span class="required">required</span>
+                    </div>
+                </div>
+                <div class="response">
+                    <strong>Response:</strong>
+                    <pre class="code">{
+  "token": "eyJhbGciOiJIUzI1NiIs...",
+  "api_key": "qnx_aBcD1234...",
+  "user": {
+    "id": 1,
+    "username": "john_doe",
+    "role": "user"
+  }
+}</pre>
+                </div>
+            </div>
+
+            <h2 id="pipelines">Pipelines</h2>
+
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="path">/api/pipelines</span>
+                <div class="description">List all pipelines</div>
+                <div class="parameters">
+                    <div class="param">
+                        <span class="param-name">limit</span>
+                        <span class="param-type">integer</span>
+                        <span>Default: 10</span>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">status</span>
+                        <span class="param-type">string</span>
+                        <span>Filter by status: pending, running, success, failed</span>
+                    </div>
+                </div>
+                <div class="response">
+                    <strong>Response:</strong>
+                    <pre class="code">[
+  {
+    "id": "pipeline_20240120123456",
+    "name": "main-build",
+    "repository": "qenex/app",
+    "branch": "main",
+    "status": "running",
+    "created_at": "2024-01-20T12:34:56Z"
+  }
+]</pre>
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="path">/api/pipelines/trigger</span>
+                <div class="description">Trigger a new pipeline</div>
+                <div class="parameters">
+                    <div class="param">
+                        <span class="param-name">repository</span>
+                        <span class="param-type">string</span>
+                        <span class="required">required</span>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">branch</span>
+                        <span class="param-type">string</span>
+                        <span>Default: main</span>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">commit</span>
+                        <span class="param-type">string</span>
+                    </div>
+                </div>
+                <div class="response">
+                    <strong>Response:</strong>
+                    <pre class="code">{
+  "pipeline_id": "pipeline_20240120123456",
+  "status": "pending",
+  "message": "Pipeline triggered successfully"
+}</pre>
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="path">/api/pipelines/{pipeline_id}</span>
+                <div class="description">Get pipeline details</div>
+                <div class="response">
+                    <strong>Response:</strong>
+                    <pre class="code">{
+  "id": "pipeline_20240120123456",
+  "name": "main-build",
+  "repository": "qenex/app",
+  "branch": "main",
+  "commit_sha": "abc123def",
+  "status": "success",
+  "created_at": "2024-01-20T12:34:56Z",
+  "started_at": "2024-01-20T12:35:00Z",
+  "completed_at": "2024-01-20T12:40:00Z",
+  "duration_seconds": 300,
+  "stages": [
+    {
+      "name": "build",
+      "status": "success",
+      "duration_seconds": 120
+    },
+    {
+      "name": "test",
+      "status": "success",
+      "duration_seconds": 150
+    },
+    {
+      "name": "deploy",
+      "status": "success",
+      "duration_seconds": 30
+    }
+  ]
+}</pre>
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="path">/api/pipelines/{pipeline_id}/logs</span>
+                <div class="description">Get pipeline logs</div>
+                <div class="parameters">
+                    <div class="param">
+                        <span class="param-name">follow</span>
+                        <span class="param-type">boolean</span>
+                        <span>Stream logs in real-time</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <span class="method delete">DELETE</span>
+                <span class="path">/api/pipelines/{pipeline_id}/cancel</span>
+                <div class="description">Cancel a running pipeline</div>
+            </div>
+
+            <h2 id="deployments">Deployments</h2>
+
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="path">/api/deployments</span>
+                <div class="description">Create a deployment</div>
+                <div class="parameters">
+                    <div class="param">
+                        <span class="param-name">pipeline_id</span>
+                        <span class="param-type">string</span>
+                        <span class="required">required</span>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">environment</span>
+                        <span class="param-type">string</span>
+                        <span class="required">required</span>
+                        <span>Values: dev, staging, production</span>
+                    </div>
+                    <div class="param">
+                        <span class="param-name">version</span>
+                        <span class="param-type">string</span>
+                        <span class="required">required</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="path">/api/deployments/rollback</span>
+                <div class="description">Rollback to previous deployment</div>
+                <div class="parameters">
+                    <div class="param">
+                        <span class="param-name">environment</span>
+                        <span class="param-type">string</span>
+                        <span class="required">required</span>
+                    </div>
+                </div>
+            </div>
+
+            <h2 id="webhooks">Webhooks</h2>
+
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="path">/webhooks/github</span>
+                <div class="description">GitHub webhook endpoint</div>
+                <div class="description">Requires X-Hub-Signature-256 header for validation</div>
+            </div>
+
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="path">/webhooks/gitlab</span>
+                <div class="description">GitLab webhook endpoint</div>
+                <div class="description">Requires X-Gitlab-Token header for validation</div>
+            </div>
+
+            <h2 id="metrics">Metrics</h2>
+
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="path">/api/metrics</span>
+                <div class="description">Get system metrics in JSON format</div>
+            </div>
+
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="path">/metrics</span>
+                <div class="description">Get Prometheus-formatted metrics</div>
+            </div>
+
+            <h2 id="system">System</h2>
+
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="path">/api/health</span>
+                <div class="description">Health check endpoint</div>
+                <div class="response">
+                    <strong>Response:</strong>
+                    <pre class="code">{
+  "status": "healthy",
+  "version": "3.0.0",
+  "uptime": 3600
+}</pre>
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="path">/api/system/status</span>
+                <div class="description">Get comprehensive system status</div>
+            </div>
+
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="path">/api/scaling/up</span>
+                <div class="description">Scale up workers</div>
+                <div class="parameters">
+                    <div class="param">
+                        <span class="param-name">count</span>
+                        <span class="param-type">integer</span>
+                        <span>Number of workers to add</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="path">/api/scaling/down</span>
+                <div class="description">Scale down workers</div>
+                <div class="parameters">
+                    <div class="param">
+                        <span class="param-name">count</span>
+                        <span class="param-type">integer</span>
+                        <span>Number of workers to remove</span>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Rate Limiting</h2>
+            <p>API requests are limited to:</p>
+            <ul style="margin-left: 20px;">
+                <li>1000 requests per hour for authenticated users</li>
+                <li>100 requests per hour for unauthenticated requests</li>
+            </ul>
+
+            <h2>Error Responses</h2>
+            <p>All error responses follow this format:</p>
+            <pre class="code">{
+  "error": "Error message",
+  "code": "ERROR_CODE",
+  "details": {}
+}</pre>
+
+            <h2>WebSocket Events</h2>
+            <p>Connect to <code>ws://localhost:8000/ws</code> for real-time updates:</p>
+            <ul style="margin-left: 20px;">
+                <li><strong>pipeline:started</strong> - Pipeline execution started</li>
+                <li><strong>pipeline:completed</strong> - Pipeline execution completed</li>
+                <li><strong>deployment:success</strong> - Deployment successful</li>
+                <li><strong>alert:triggered</strong> - System alert triggered</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

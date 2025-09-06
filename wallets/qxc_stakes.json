@@ -1,0 +1,13 @@
+[
+  {
+    "id": "535977365d2dd63e",
+    "amount": 100.0,
+    "duration_days": 7,
+    "apy": 10.0,
+    "estimated_rewards": 0.19178082191780824,
+    "start_time": 1756905694.3243823,
+    "end_time": 1757510494.3243825,
+    "status": "active",
+    "auto_compound": true
+  }
+]

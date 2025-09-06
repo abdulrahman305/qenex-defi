@@ -1,0 +1,20 @@
+{
+  "chain": [
+    {
+      "index": 0,
+      "timestamp": 1756903060.5214515,
+      "transactions": [
+        {
+          "from": "genesis",
+          "to": "testnet_wallet_1",
+          "amount": 1000000,
+          "timestamp": 1756903060.521452
+        }
+      ],
+      "proof": 0,
+      "previous_hash": "0"
+    }
+  ],
+  "pending_transactions": [],
+  "nodes": []
+}

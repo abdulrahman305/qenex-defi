@@ -1,0 +1,21 @@
+{
+  "address": "d6dcd634295d4419d8461811b8400d87ce57f4c5293df5493cc35206754e5d5f",
+  "balance": 0,
+  "total_mined": 428.1427980119855,
+  "stats": {
+    "blocks_mined": 0,
+    "total_improvements": 0,
+    "model_accuracy_gains": 0.0,
+    "training_speed_gains": 0.0,
+    "resource_optimizations": 0.0,
+    "kernel_enhancements": 0.0,
+    "algorithm_improvements": 0.0,
+    "error_reductions": 0.0,
+    "total_compute_hours": 0.0,
+    "verified_improvements": []
+  },
+  "blockchain": [],
+  "last_updated": "2025-09-03T11:31:00.316200",
+  "consolidated_to": "USER_WALLET",
+  "consolidated_at": 1756903588.2774386
+}

@@ -1,0 +1,21 @@
+# File listing verification
+.github/ISSUE_TEMPLATE/bug_report.md
+.github/ISSUE_TEMPLATE/feature_request.md
+.github/workflows/ci.yml
+.github/workflows/deploy.yml
+.github/workflows/release.yml
+.github/workflows/security.yml
+Dockerfile
+PACKAGE_INFO.txt
+README.md
+ai/advanced_ai.py
+ai/ai_assistant.py
+ai/continuous_learning.py
+ai/continuous_learning_engine.py
+ai/feedback/operations.db
+api/stats_collector.py
+auth/authentication.py
+autoscaling/autoscaler.py
+backup-recovery/backup_system.py
+build/deb/DEBIAN/control
+build/deb/DEBIAN/postinst

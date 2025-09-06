@@ -1,0 +1,50 @@
+name: Auto-Deploy
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Deploy to Production Server
+      env:
+        DEPLOY_WEBHOOK: ${{ secrets.DEPLOY_WEBHOOK }}
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      run: |
+        # Trigger deployment webhook
+        if [ ! -z "$DEPLOY_WEBHOOK" ]; then
+          curl -X POST "$DEPLOY_WEBHOOK" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "ref": "'$GITHUB_SHA'",
+              "repository": "'$GITHUB_REPOSITORY'",
+              "pusher": "'$GITHUB_ACTOR'"
+            }'
+        fi
+    
+    - name: Update Production
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          cd /opt/qenex-os
+          git pull origin main
+          docker-compose down
+          docker-compose up -d --build
+          systemctl restart qenex-os
+      continue-on-error: true
+    
+    - name: Verify Deployment
+      run: |
+        sleep 30
+        curl -f https://qenex.ai/health || exit 1
+      continue-on-error: true

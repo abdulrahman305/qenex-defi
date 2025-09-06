@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>QENEX Unified OS Dashboard</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            padding: 30px 0;
+        }
+        h1 {
+            font-size: 3em;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-top: 10px;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.15);
+        }
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .stat-label {
+            opacity: 0.9;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 1px;
+        }
+        .modules {
+            margin-top: 40px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+        }
+        .module {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 25px;
+            margin: 5px;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4ade80;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>QENEX Unified AI OS</h1>
+            <div class="subtitle">Single Instance • Self-Healing • AI-Powered</div>
+        </div>
+        
+        <div class="stats" id="stats">
+            <div class="stat-card">
+                <div class="stat-label">System Uptime</div>
+                <div class="stat-value" id="uptime">--</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Memory Usage</div>
+                <div class="stat-value" id="memory">--</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">CPU Load</div>
+                <div class="stat-value" id="cpu">--</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Active Services</div>
+                <div class="stat-value" id="services">9</div>
+            </div>
+        </div>
+        
+        <div class="modules">
+            <h2>Active Modules</h2>
+            <div id="modules">
+                <div class="module"><span class="status-indicator"></span>API Server</div>
+                <div class="module"><span class="status-indicator"></span>Dashboard</div>
+                <div class="module"><span class="status-indicator"></span>AI Engine</div>
+                <div class="module"><span class="status-indicator"></span>CI/CD</div>
+                <div class="module"><span class="status-indicator"></span>Monitoring</div>
+                <div class="module"><span class="status-indicator"></span>Security</div>
+                <div class="module"><span class="status-indicator"></span>Networking</div>
+                <div class="module"><span class="status-indicator"></span>Storage</div>
+                <div class="module"><span class="status-indicator"></span>Self-Healing</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        async function updateStats() {
+            try {
+                // Get system stats from api.json  
+                const response = await fetch('/api.json?t=' + Date.now());
+                const stats = await response.json();
+                
+                // Calculate uptime
+                const hours = stats.uptime_hours || 0;
+                const uptimeText = hours < 1 ? 'Just started' : hours + 'h';
+                
+                // Update displayed stats
+                document.getElementById('uptime').textContent = uptimeText;
+                document.getElementById('memory').textContent = stats.memory_usage + '%';
+                document.getElementById('cpu').textContent = stats.load_average.toFixed(2);
+                document.getElementById('services').textContent = stats.services || 9;
+            } catch (e) {
+                console.error('Failed to update stats:', e);
+                // Fallback values
+                document.getElementById('uptime').textContent = 'Running';
+                document.getElementById('services').textContent = '9';
+            }
+        }
+        
+        // Update every 5 seconds
+        setInterval(updateStats, 5000);
+        updateStats();
+    </script>
+</body>
+</html>

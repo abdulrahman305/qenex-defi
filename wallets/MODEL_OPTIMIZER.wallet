@@ -1,0 +1,344 @@
+{
+  "developer_id": "MODEL_OPTIMIZER",
+  "address": "496ad9b5c69eabdd778cb04f8e3fd5115d1cdff593e554d7f6290330f21feb3a",
+  "balance": 0,
+  "created_at": "2025-09-03T11:44:22.484603",
+  "mining_stats": {
+    "total_mined": 745.4730588401011,
+    "blocks_mined": 27,
+    "improvements_submitted": 27,
+    "accuracy_gains": 76.0552879018769,
+    "speed_gains": 0.0,
+    "models_improved": 27,
+    "algorithms_created": 0
+  },
+  "transactions": [
+    {
+      "tx_id": "33ef9cae22ca016d5e01152953f5a444eaded023e073da867d09a1d80480a153",
+      "sender": "MINING_REWARD",
+      "receiver": "496ad9b5c69eabdd778cb04f8e3fd5115d1cdff593e554d7f6290330f21feb3a",
+      "amount": 26.907824387633088,
+      "fee": 0.0,
+      "timestamp": 1756898651.4504087,
+      "ai_contribution": {
+        "type": "model_accuracy",
+        "score": 1.92100789240508
+      }
+    },
+    {
+      "tx_id": "1399db9341857ac50285914309619fbc70e53e95924c56df1202b80677b58012",
+      "sender": "MINING_REWARD",
+      "receiver": "496ad9b5c69eabdd778cb04f8e3fd5115d1cdff593e554d7f6290330f21feb3a",
+      "amount": 29.25006399427272,
+      "fee": 0.0,
+      "timestamp": 1756898692.469898,
+      "ai_contribution": {
+        "type": "model_accuracy",
+        "score": 4.79117106192356
+      }
+    },
+    {
+      "tx_id": "d96ea53de539840a271a076261b8feb10b63af4c1b8ebd67d5148114d9223a3e",
+      "sender": "MINING_REWARD",
+      "receiver": "496ad9b5c69eabdd778cb04f8e3fd5115d1cdff593e554d7f6290330f21feb3a",
+      "amount": 29.63613643056894,
+      "fee": 0.0,
+      "timestamp": 1756898698.3431258,
+      "ai_contribution": {
+        "type": "model_accuracy",
+        "score": 5.3265870860948255
+      }
+    },
+    {
+      "tx_id": "c0f062487e8a727601cfb3224a53630951d22614afafac16f032601896a30a60",
+      "sender": "MINING_REWARD",
+      "receiver": "496ad9b5c69eabdd778cb04f8e3fd5115d1cdff593e554d7f6290330f21feb3a",
+      "amount": 27.511422101410542,
+      "fee": 0.0,
+      "timestamp": 1756898807.027344,
+      "ai_contribution": {
+        "type": "model_accuracy",
+        "score": 2.602505163703339
+      }
+    },
+    {
+      "tx_id": "f15a1b1d145eeb3b9a0dd13876df55588423340cc584f29f393e953af69bdbea",
+      "sender": "MINING_REWARD",
+      "receiver": "496ad9b5c69eabdd778cb04f8e3fd5115d1cdff593e554d7f6290330f21feb3a",
+      "amount": 26.423090191798043,
+      "fee": 0.0,
+      "timestamp": 1756898888.9774778,
+      "ai_contribution": {
+        "type": "model_accuracy",
+        "score": 1.400492354497651
+      }
+    },
+    {
+      "tx_id": "e67c5165a35dd4dd4155a3b2e387fc5a9407a00f1099ce563de65a4f3dd77d6f",
+      "sender": "MINING_REWARD",
+      "receiver": "496ad9b5c69eabdd778cb04f8e3fd5115d1cdff593e554d7f6290330f21feb3a",
+      "amount": 32.196835245197285,
+      "fee": 0.0,
+      "timestamp": 1756898940.285736,
+      "ai_contribution": {
+        "type": "model_accuracy",
+        "score": 9.403202215198903
+      }
+    },
+    {
+      "tx_id": "8c14345c26edbd795f9f7ee545d9ce6cac6bdd51a57822c7f26c13929dba11ea",
+      "sender": "MINING_REWARD",
+      "receiver": "496ad9b5c69eabdd778cb04f8e3fd5115d1cdff593e554d7f6290330f21feb3a",
+      "amount": 28.672837399693364,
+      "fee": 0.0,
+      "timestamp": 1756898940.7670522,
+      "ai_contribution": {
+        "type": "model_accuracy",
+        "score": 4.025343159571227
+      }
+    },
+    {
+      "tx_id": "b76a0c54e270c168aa0624afbb282eeff30ce82d1da6939967ab66ed3428d38d",
+      "sender": "MINING_REWARD",
+      "receiver": "496ad9b5c69eabdd778cb04f8e3fd5115d1cdff593e554d7f6290330f21feb3a",
+      "amount": 26.398327662036287,
+      "fee": 0.0,
+      "timestamp": 1756898993.0853753,
+      "ai_contribution": {
+        "type": "model_accuracy",
+        "score": 1.3745207284085903
+      }
+    },
+    {
+      "tx_id": "313d2a363a2ca9778316369240bc83ef9143affe5b4d931b02ceaa58494d174e",
+      "sender": "MINING_REWARD",
+      "receiver": "496ad9b5c69eabdd778cb04f8e3fd5115d1cdff593e554d7f6290330f21feb3a",
+      "amount": 26.795826547556068,
+      "fee": 0.0,
+      "timestamp": 1756899049.565509,
+      "ai_contribution": {
+        "type": "model_accuracy",
+        "score": 1.7986702036393298
+      }
+    },
+    {
+      "tx_id": "7a55d314c428aa579f456953e8183fdfd57a0f33f907f9273a8ebebce786d4f8",
+      "sender": "MINING_REWARD",
+      "receiver": "496ad9b5c69eabdd778cb04f8e3fd5115d1cdff593e554d7f6290330f21feb3a",
+      "amount": 28.34639813155538,
+      "fee": 0.0,
+      "timestamp": 1756899085.3721201,
+      "ai_contribution": {
+        "type": "model_accuracy",
+        "score": 3.6099310580169686
+      }
+    },
+    {
+      "tx_id": "d84e8a73d8e5d8d98957c8b820d4f46a1c2021d91ac0266f65759268b54d8958",
+      "sender": "MINING_REWARD",
+      "receiver": "496ad9b5c69eabdd778cb04f8e3fd5115d1cdff593e554d7f6290330f21feb3a",
+      "amount": 27.81101280583519,
+      "fee": 0.0,
+      "timestamp": 1756899105.8475466,
+      "ai_contribution": {
+        "type": "model_accuracy",
+        "score": 2.9550923215095892
+      }
+    },
+    {
+      "tx_id": "6ae53a2756a8329b8f195cfdd5b086ddb219b3cebe49397bfec6076f3a03d901",
+      "sender": "MINING_REWARD",
+      "receiver": "496ad9b5c69eabdd778cb04f8e3fd5115d1cdff593e554d7f6290330f21feb3a",
+      "amount": 26.45664895215768,
+      "fee": 0.0,
+      "timestamp": 1756899167.426643,
+      "ai_contribution": {
+        "type": "model_accuracy",
+        "score": 1.4357843768534884
+      }
+    },
+    {
+      "tx_id": "82b7bb44d5883a36ea9db6a7084453f876665926ec3b8ebbfe10974cfdd9f458",
+      "sender": "MINING_REWARD",
+      "receiver": "496ad9b5c69eabdd778cb04f8e3fd5115d1cdff593e554d7f6290330f21feb3a",
+      "amount": 28.295162187682926,
+      "fee": 0.0,
+      "timestamp": 1756899188.3679712,
+      "ai_contribution": {
+        "type": "model_accuracy",
+        "score": 3.5458570294377267
+      }
+    },
+    {
+      "tx_id": "e9656a2e2cf4b02c016900b4b250e5dbd447b712265777c4ac4838a2cbb4c106",
+      "sender": "MINING_REWARD",
+      "receiver": "496ad9b5c69eabdd778cb04f8e3fd5115d1cdff593e554d7f6290330f21feb3a",
+      "amount": 27.32557693011051,
+      "fee": 0.0,
+      "timestamp": 1756899219.6726716,
+      "ai_contribution": {
+        "type": "model_accuracy",
+        "score": 2.388624144945961
+      }
+    },
+    {
+      "tx_id": "569bff7fc166ff9fe6a7bc7a9144872a8745bd9485ac72d7374b71aef9d99295",
+      "sender": "MINING_REWARD",
+      "receiver": "496ad9b5c69eabdd778cb04f8e3fd5115d1cdff593e554d7f6290330f21feb3a",
+      "amount": 26.90833799006126,
+      "fee": 0.0,
+      "timestamp": 1756899261.3548143,
+      "ai_contribution": {
+        "type": "model_accuracy",
+        "score": 1.9215718234400714
+      }
+    },
+    {
+      "tx_id": "d3e265ad6cd458c4d914ce6f9986adb074137b8b2d3796b47b59da653d7914cd",
+      "sender": "MINING_REWARD",
+      "receiver": "496ad9b5c69eabdd778cb04f8e3fd5115d1cdff593e554d7f6290330f21feb3a",
+      "amount": 26.09050782223992,
+      "fee": 0.0,
+      "timestamp": 1756899291.9774582,
+      "ai_contribution": {
+        "type": "model_accuracy",
+        "score": 1.0565672777915425
+      }
+    },
+    {
+      "tx_id": "e11950bbb195ba65a38470144bf1dd716916a6bffa41c531ec5590940f1bf1ee",
+      "sender": "MINING_REWARD",
+      "receiver": "496ad9b5c69eabdd778cb04f8e3fd5115d1cdff593e554d7f6290330f21feb3a",
+      "amount": 26.217002795382193,
+      "fee": 0.0,
+      "timestamp": 1756899307.458562,
+      "ai_contribution": {
+        "type": "model_accuracy",
+        "score": 1.1861364296036903
+      }
+    },
+    {
+      "tx_id": "f76dc988ded8460d0ed7e70d0d038ab73654d3508fc6cbe37d53d1c1fa51d0cb",
+      "sender": "MINING_REWARD",
+      "receiver": "496ad9b5c69eabdd778cb04f8e3fd5115d1cdff593e554d7f6290330f21feb3a",
+      "amount": 28.122481605292858,
+      "fee": 0.0,
+      "timestamp": 1756899425.2936506,
+      "ai_contribution": {
+        "type": "model_accuracy",
+        "score": 3.3321215410436866
+      }
+    },
+    {
+      "tx_id": "a868f79dc83e8e53c6c5d8d21c513417f967aac883e374ff228f3007b2cd8e7b",
+      "sender": "MINING_REWARD",
+      "receiver": "496ad9b5c69eabdd778cb04f8e3fd5115d1cdff593e554d7f6290330f21feb3a",
+      "amount": 27.270652459059402,
+      "fee": 0.0,
+      "timestamp": 1756899471.6697812,
+      "ai_contribution": {
+        "type": "model_accuracy",
+        "score": 2.3261116814370486
+      }
+    },
+    {
+      "tx_id": "796aa11687c938cec9647b359c706657a8b95eb11eb2d1debfaa316b95a21669",
+      "sender": "MINING_REWARD",
+      "receiver": "496ad9b5c69eabdd778cb04f8e3fd5115d1cdff593e554d7f6290330f21feb3a",
+      "amount": 28.422422858644435,
+      "fee": 0.0,
+      "timestamp": 1756899487.445791,
+      "ai_contribution": {
+        "type": "model_accuracy",
+        "score": 3.7055640749914187
+      }
+    },
+    {
+      "tx_id": "db684f5c0bdf4c33a55375a8102fcbc273555868d000a2ca04b33d6ae2bd661e",
+      "sender": "MINING_REWARD",
+      "receiver": "496ad9b5c69eabdd778cb04f8e3fd5115d1cdff593e554d7f6290330f21feb3a",
+      "amount": 26.583003653533645,
+      "fee": 0.0,
+      "timestamp": 1756899498.0944748,
+      "ai_contribution": {
+        "type": "model_accuracy",
+        "score": 1.5696480040679694
+      }
+    },
+    {
+      "tx_id": "5d0c3c4b90d4c0ff67f0c7ed49bdcee7f0cba7d9d7e0ab632af8e101b8976dfe",
+      "sender": "MINING_REWARD",
+      "receiver": "496ad9b5c69eabdd778cb04f8e3fd5115d1cdff593e554d7f6290330f21feb3a",
+      "amount": 27.940352776507964,
+      "fee": 0.0,
+      "timestamp": 1756899549.3208761,
+      "ai_contribution": {
+        "type": "model_accuracy",
+        "score": 3.110344719811653
+      }
+    },
+    {
+      "tx_id": "56fc8b757d11702e59d2abd8e84e5213050b64b30363f7c8edcc990f000ab14d",
+      "sender": "MINING_REWARD",
+      "receiver": "496ad9b5c69eabdd778cb04f8e3fd5115d1cdff593e554d7f6290330f21feb3a",
+      "amount": 27.494549795361262,
+      "fee": 0.0,
+      "timestamp": 1756899641.3715065,
+      "ai_contribution": {
+        "type": "model_accuracy",
+        "score": 2.582936119862622
+      }
+    },
+    {
+      "tx_id": "0c93834c89c6d1abedf5ace62856b591fda8c869de199c3b65d8283344d7167a",
+      "sender": "MINING_REWARD",
+      "receiver": "496ad9b5c69eabdd778cb04f8e3fd5115d1cdff593e554d7f6290330f21feb3a",
+      "amount": 26.28514788812626,
+      "fee": 0.0,
+      "timestamp": 1756899646.7102454,
+      "ai_contribution": {
+        "type": "model_accuracy",
+        "score": 1.2565658303977822
+      }
+    },
+    {
+      "tx_id": "d18df21055da9b0e07a80be679590b9af042fa3e0523c74ce41988b955566dde",
+      "sender": "MINING_REWARD",
+      "receiver": "496ad9b5c69eabdd778cb04f8e3fd5115d1cdff593e554d7f6290330f21feb3a",
+      "amount": 27.032014302563105,
+      "fee": 0.0,
+      "timestamp": 1756899744.3391695,
+      "ai_contribution": {
+        "type": "model_accuracy",
+        "score": 2.058146946919781
+      }
+    },
+    {
+      "tx_id": "776602fda5a8a367f4531dd41d47039e500204196d86cd8d390abf4018dcd2c1",
+      "sender": "MINING_REWARD",
+      "receiver": "496ad9b5c69eabdd778cb04f8e3fd5115d1cdff593e554d7f6290330f21feb3a",
+      "amount": 28.505370325013253,
+      "fee": 0.0,
+      "timestamp": 1756899780.2314734,
+      "ai_contribution": {
+        "type": "model_accuracy",
+        "score": 3.8106720634969227
+      }
+    },
+    {
+      "tx_id": "652f2bee3eb356017ffb1fd9d09877c97a63957a9bc52c067a2294952dba87bd",
+      "sender": "MINING_REWARD",
+      "receiver": "496ad9b5c69eabdd778cb04f8e3fd5115d1cdff593e554d7f6290330f21feb3a",
+      "amount": 26.57405160080744,
+      "fee": 0.0,
+      "timestamp": 1756899862.4845977,
+      "ai_contribution": {
+        "type": "model_accuracy",
+        "score": 1.560112592806473
+      }
+    }
+  ],
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDMrgDTcsCxSJ/7\nNMFNRCI34boFSEYs+jd5IqL6BUbti3MQw2bmZiGuAxaGi234+MdIGOPY/EIEUgGu\n/aoTL2F2+5PGFX3lPrWpWkpljc6ZNIHhwftn4SBIe4iLDzRcu9TnycpUPWuShqhB\n+qHrskMubtu1yGxiaak9LCEOqi+1ny7fN0MdfdN1KhvoGAn//cm9n7fD9NVDen3d\n1+ETBa9j3V4ZSqLkgzjoKl/Kr1cNoyi1P3eeXEgW6lHvMsGmycWVMpNbm4KaD2Up\n4E6kC+3aJTYWPZJ4kS/oKbrnwQJkUb1aHbRS6M8vX2ud/w08bEuNbKb93X4aPnoP\nZjl/mhiPAgMBAAECggEAEGbvRQKV+NRU5wNqwX+GGHamermNz26RFyF/RaGPoLCY\nnM1z3QnD2tcqLR0A8pSJGmN4OtFi6Z1iv3xaGTsmSIEk7e5B+PwmAEzD19CIhP7Q\nBmCOU4bsbd03FiG2n1R5XXEZHYK7MJz0NdlZCXNvGR+kIV9OztzLGvkC1dMt4JQc\ntqGh9TOST9Jw3SAG+q7bY+EeZxfjNMGSu0+A5J1Kg0DhMpZ+aDm29QXUeCggL3TB\n9Q69u/9Lmi4kVvw9K9zjFfwIIMnmbh5vtNGjaVs7fJVqHQROhruiBJSTZ6fUStA+\nhxQFrOFno/lKq5Enyz8hiuslyLfCCxngMuUbdKx3uQKBgQD7H9anrYgxsNaSxfW0\nibfTxQ44ZtrJuadx3G1AMfjrFD4y6DIBVofUBoKLn+yKWZrRbZii1D+3GSbQgE6b\nnDVh77XUbpUhpckhqfx5FhcRDBJWndBL77Y3kbcH8a7IFPxSwAV66GvJcWCDrRkC\nTc3uhcYJFidtSoBJfhPqJbWiFwKBgQDQp1I3B+2pVe5jnOEI9GzGQSQTbI5T4HzA\nt3Nw+0QBPW3M+DGIJdlP/7vB+DdKlTqFF8Qzt3cY1hkLNFIFIjGV+1ZpHHPKzYM2\nH3bDsJUtA/lgvLCZJajt6YG80h5Z/sftBwuN89TPmcPtAl2rX16Cfvw8RpMmz3h8\ndVfh3VQgSQKBgE10toqldZqOBsDimjSDPdXts8MlxlnuD32JFZF1WGd5qO2evL24\n6NA26dETFKxfkucBvNCMUtKwyU4KJTTN65E3lIffS9RDBFSDz8GxVJAHfyiEKJkj\naLqfESs8GkLQZjtHyujsA0Lw22oB2/Lf+KKXVEu9L5AAKK2CW7Yex3UlAoGBALcG\nPmDVTIygOvcX8nGXbh7NnyaGr6Y1oViu0s2FKlboGnuULmadxKyex4TTBTUgB3Ad\ns9YllYusqdUhNN0Z7GMCT/7tnUiE0xbTrKrlJ0WQWdyYR1RfK3pdvJbzvPn2OkrZ\nRjJjcwYTfEBXNfEQO+e+GeWJhqShkq+hgtA2BAg5AoGAWNi0vWJNYg9xzVZ0a8HD\nahFE/HuZgDFbFhAXY9xEw5+UVOqWUT0SifwzrxhT2P8BFd94nhIVC5o662XXUw74\nGrE60m0BLda34EDz5aPiIR+QpDcRgTtArx+b+FAn5V+jjEefBVk+coKmyedTK+5R\nTN5w/A5i8MZ0TAOcpyko5TE=\n-----END PRIVATE KEY-----\n",
+  "consolidated_to": "USER_WALLET",
+  "consolidated_at": 1756903588.2762322
+}

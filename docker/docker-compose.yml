@@ -1,0 +1,231 @@
+version: '3.8'
+
+services:
+  # QENEX Core API
+  qenex-api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: qenex-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - QENEX_ENV=production
+      - DATABASE_URL=sqlite:///data/qenex.db
+      - REDIS_URL=redis://redis:6379
+      - PROMETHEUS_PORT=9090
+    volumes:
+      - ../data:/opt/qenex-os/data
+      - ../logs:/opt/qenex-os/logs
+      - ../config:/opt/qenex-os/config
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - qenex-network
+
+  # Webhook Handler
+  webhook-handler:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.webhooks
+    container_name: qenex-webhooks
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    environment:
+      - GITHUB_WEBHOOK_SECRET=${GITHUB_WEBHOOK_SECRET}
+      - GITLAB_WEBHOOK_TOKEN=${GITLAB_WEBHOOK_TOKEN}
+    volumes:
+      - ../data:/opt/qenex-os/data
+    depends_on:
+      - qenex-api
+    networks:
+      - qenex-network
+
+  # Web Dashboard
+  nginx:
+    image: nginx:alpine
+    container_name: qenex-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ../dashboard:/usr/share/nginx/html
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/ssl:/etc/nginx/ssl
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    depends_on:
+      - qenex-api
+    networks:
+      - qenex-network
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+
+  # SSL Certificate Management
+  certbot:
+    image: certbot/certbot
+    container_name: qenex-certbot
+    restart: unless-stopped
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    networks:
+      - qenex-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: qenex-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    networks:
+      - qenex-network
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: qenex-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=qenex
+      - POSTGRES_USER=qenex
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-QenexDB2024!}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - qenex-network
+
+  # Prometheus Metrics
+  prometheus:
+    image: prom/prometheus
+    container_name: qenex-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    networks:
+      - qenex-network
+
+  # Grafana Dashboard
+  grafana:
+    image: grafana/grafana
+    container_name: qenex-grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-QenexGrafana2024!}
+      - GF_INSTALL_PLUGINS=redis-datasource
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+    depends_on:
+      - prometheus
+    networks:
+      - qenex-network
+
+  # RabbitMQ Message Queue
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: qenex-rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=qenex
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD:-QenexMQ2024!}
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - qenex-network
+
+  # Background Worker
+  worker:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.worker
+    container_name: qenex-worker
+    restart: unless-stopped
+    environment:
+      - WORKER_ID=worker-1
+      - REDIS_URL=redis://redis:6379
+      - RABBITMQ_URL=amqp://qenex:${RABBITMQ_PASSWORD:-QenexMQ2024!}@rabbitmq:5672
+    volumes:
+      - ../data:/opt/qenex-os/data
+      - ../logs:/opt/qenex-os/logs
+    depends_on:
+      - redis
+      - rabbitmq
+      - qenex-api
+    networks:
+      - qenex-network
+    deploy:
+      replicas: 3
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+
+  # Auto-scaler
+  autoscaler:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.autoscaler
+    container_name: qenex-autoscaler
+    restart: unless-stopped
+    environment:
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - SCALING_MODE=docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ../data:/opt/qenex-os/data
+    depends_on:
+      - qenex-api
+    networks:
+      - qenex-network
+
+  # Backup Service
+  backup:
+    image: alpine:latest
+    container_name: qenex-backup
+    restart: unless-stopped
+    volumes:
+      - ../:/opt/qenex-os
+      - ./backups:/backups
+    entrypoint: |
+      sh -c 'while :; do
+        tar -czf /backups/qenex-$$(date +%Y%m%d-%H%M%S).tar.gz /opt/qenex-os/data /opt/qenex-os/config
+        find /backups -name "*.tar.gz" -mtime +7 -delete
+        sleep 86400
+      done'
+    networks:
+      - qenex-network
+
+networks:
+  qenex-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+  postgres-data:
+  prometheus-data:
+  grafana-data:
+  rabbitmq-data:

@@ -1,0 +1,35 @@
+{
+  "contract_address": "0xb17654f3f068aded95a234de2532b9a478b858bf",
+  "your_balance": 1525.3,
+  "metamask_view": {
+    "wallet_address": "0x44aB7...",
+    "tokens": [
+      {
+        "contract": "0xb17654f3f068aded95a234de2532b9a478b858bf",
+        "symbol": "QXC",
+        "name": "QENEX Coin",
+        "decimals": 18,
+        "balance": 1525.3,
+        "balance_wei": "1525299999999999868928",
+        "usd_value": 762.65,
+        "logo": "\ud83e\ude99"
+      }
+    ],
+    "total_value_usd": 762.65
+  },
+  "ownership_proof": {
+    "transaction_hash": "0x75377b5056f3530f747df29db2b57b84345d7297b5351e61cd2f0100de5f754b",
+    "timestamp": "2025-09-03T15:08:44.764502",
+    "token_contract": "0xb17654f3f068aded95a234de2532b9a478b858bf",
+    "balance": 1525.3,
+    "proof_type": "local_verification",
+    "status": "verified"
+  },
+  "etherscan_links": {
+    "token_page": "https://etherscan.io/token/0xb17654f3f068aded95a234de2532b9a478b858bf",
+    "holder_list": "https://etherscan.io/token/0xb17654f3f068aded95a234de2532b9a478b858bf#balances",
+    "contract_code": "https://etherscan.io/address/0xb17654f3f068aded95a234de2532b9a478b858bf#code",
+    "read_contract": "https://etherscan.io/address/0xb17654f3f068aded95a234de2532b9a478b858bf#readContract",
+    "write_contract": "https://etherscan.io/address/0xb17654f3f068aded95a234de2532b9a478b858bf#writeContract"
+  }
+}

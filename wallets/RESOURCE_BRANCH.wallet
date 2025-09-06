@@ -1,0 +1,28 @@
+{
+  "id": "RESOURCE_BRANCH",
+  "address": "c954267b77677f5b755123e2823e7cca228ed7f2fb5803f18c234a7b5f7bfd3c",
+  "balance": 0,
+  "is_original": false,
+  "total_mined": 20.441546889975367,
+  "blocks_mined": 1,
+  "revenue_received": 0.0,
+  "revenue_distributed": 4.088309377995073,
+  "created_at": "2025-09-03T11:35:57.833508",
+  "transactions": [
+    {
+      "type": "mining_reward",
+      "amount": 16.353237511980293,
+      "original_share": 4.088309377995073,
+      "improvement": "resource_optimization",
+      "timestamp": 1756899359.673942
+    }
+  ],
+  "mining_stats": {
+    "improvements": 1,
+    "total_improvement_value": 1.8330012193647178,
+    "best_improvement": 1.8330012193647178,
+    "average_reward": 20.441546889975367
+  },
+  "consolidated_to": "USER_WALLET",
+  "consolidated_at": 1756903588.2741945
+}

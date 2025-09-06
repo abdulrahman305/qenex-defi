@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+.nyc_output
+
+# Production
+build/
+dist/
+artifacts/
+cache/
+typechain-types/
+
+# Environment
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.production
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Hardhat
+artifacts/
+cache/
+typechain/
+
+# Deployment
+mainnet-deployment.json
+deployment-verification.json
+
+# Keys and Secrets
+*.key
+*.pem
+secrets.json

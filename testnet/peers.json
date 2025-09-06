@@ -1,0 +1,17 @@
+[
+  {
+    "id": 0,
+    "address": "localhost:9000",
+    "rpc": "http://localhost:10000"
+  },
+  {
+    "id": 1,
+    "address": "localhost:9001",
+    "rpc": "http://localhost:10001"
+  },
+  {
+    "id": 2,
+    "address": "localhost:9002",
+    "rpc": "http://localhost:10002"
+  }
+]

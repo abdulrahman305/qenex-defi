@@ -1,0 +1,28 @@
+{
+  "id": "TRAINING_BRANCH",
+  "address": "68f345f9a708408054cafc63894451582b3a9633f1c6b9085c75a8c261ddd24f",
+  "balance": 0,
+  "is_original": false,
+  "total_mined": 24.42271933084642,
+  "blocks_mined": 1,
+  "revenue_received": 0.0,
+  "revenue_distributed": 4.884543866169285,
+  "created_at": "2025-09-03T11:35:57.833327",
+  "transactions": [
+    {
+      "type": "mining_reward",
+      "amount": 19.53817546467714,
+      "original_share": 4.884543866169285,
+      "improvement": "training_speed",
+      "timestamp": 1756899359.0878932
+    }
+  ],
+  "mining_stats": {
+    "improvements": 1,
+    "total_improvement_value": 3.3196675201922377,
+    "best_improvement": 3.3196675201922377,
+    "average_reward": 24.42271933084642
+  },
+  "consolidated_to": "USER_WALLET",
+  "consolidated_at": 1756903588.2733347
+}

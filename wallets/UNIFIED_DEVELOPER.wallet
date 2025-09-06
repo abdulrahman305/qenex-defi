@@ -1,0 +1,50 @@
+{
+  "id": "UNIFIED_DEVELOPER",
+  "address": "7c9d02e577949aca888b3012e166c7260a8948e3fd04ec57ccc15fc714fed9d8",
+  "balance": 0,
+  "total_mined": 35.858935247451015,
+  "improvements": {
+    "mathematics": [
+      {
+        "timestamp": 1756899512.6521409,
+        "improvements": {
+          "arithmetic_accuracy": 2.087868563340168,
+          "algebra_accuracy": 1.41888443781338,
+          "calculus_accuracy": 4.292713383211901,
+          "statistics_accuracy": 3.321572134719921,
+          "geometry_accuracy": 2.090195739028605
+        },
+        "reward": 11.952978415817004
+      }
+    ],
+    "language": [
+      {
+        "timestamp": 1756899512.6521409,
+        "improvements": {
+          "grammar_accuracy": 1.7658580432112163,
+          "comprehension_accuracy": 9.754688826953517,
+          "translation_accuracy": 1.05320384290514,
+          "sentiment_accuracy": 2.1026564669870567,
+          "summarization_accuracy": 8.341195866984595,
+          "qa_accuracy": 9.253124032958162
+        },
+        "reward": 14.343574098980406
+      }
+    ],
+    "code": [
+      {
+        "timestamp": 1756899512.6521409,
+        "improvements": {
+          "optimization_score": 4.431867537877217,
+          "bug_detection_rate": 2.687344393931534,
+          "refactoring_quality": 3.581383922585097,
+          "test_generation": 0.6959153889406365
+        },
+        "reward": 9.562382732653603
+      }
+    ]
+  },
+  "created_at": "2025-09-03T11:38:32.635132",
+  "consolidated_to": "USER_WALLET",
+  "consolidated_at": 1756903588.27457
+}

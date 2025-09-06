@@ -1,0 +1,10 @@
+Package: qenex-unified-ai-os
+Version: 3.0.0
+Section: admin
+Priority: optional
+Architecture: all
+Depends: python3 (>= 3.8), python3-pip
+Maintainer: QENEX Team
+Description: QENEX Unified AI Operating System
+ Autonomous CI/CD platform with AI-driven orchestration
+ Features include GitOps, distributed execution, and self-healing pipelines

@@ -1,0 +1,9 @@
+{
+  "network": "localhost",
+  "rpc_url": "http://localhost:8545",
+  "chain_id": 9999,
+  "contract_address": "0x2cc409f4d6bf0332b4e7e016e04fe55c9bf18db1",
+  "owner": "0x44aB7...",
+  "balance": 1525.3,
+  "status": "deployed_locally"
+}
