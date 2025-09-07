@@ -8,12 +8,17 @@ import secrets
 import jwt
 import json
 import sqlite3
+import os
+import re
 from datetime import datetime, timedelta
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 import bcrypt
 from functools import wraps
 from aiohttp import web
 import logging
+import time
+from collections import defaultdict
+import hmac
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -21,15 +26,42 @@ logger = logging.getLogger(__name__)
 class AuthenticationManager:
     def __init__(self, db_path="/opt/qenex-os/data/qenex.db", secret_key=None):
         self.db_path = db_path
-        self.secret_key = secret_key or secrets.token_urlsafe(32)
+        # Load secret from environment or secure storage
+        self.secret_key = secret_key or os.environ.get('QENEX_JWT_SECRET')
+        if not self.secret_key:
+            # Generate and store securely if not exists
+            self.secret_key = secrets.token_urlsafe(64)
+            logger.warning("JWT secret generated - should be stored securely!")
         self.jwt_algorithm = 'HS256'
-        self.token_expiry_hours = 24
+        self.token_expiry_hours = 2  # Reduced token expiry
+        self.refresh_token_expiry_days = 7
         self.api_key_length = 32
+        self.rate_limiter = defaultdict(list)
+        self.max_attempts = 5
+        self.lockout_duration = 300  # 5 minutes
+        self.csrf_tokens = {}
         
     def hash_password(self, password: str) -> str:
-        """Hash password using bcrypt"""
-        salt = bcrypt.gensalt()
+        """Hash password using bcrypt with strong salt rounds"""
+        # Validate password strength
+        if not self._validate_password_strength(password):
+            raise ValueError("Password does not meet security requirements")
+        salt = bcrypt.gensalt(rounds=12)  # Increased rounds for better security
         return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
+    
+    def _validate_password_strength(self, password: str) -> bool:
+        """Validate password meets security requirements"""
+        if len(password) < 12:
+            return False
+        if not re.search(r'[A-Z]', password):
+            return False
+        if not re.search(r'[a-z]', password):
+            return False
+        if not re.search(r'[0-9]', password):
+            return False
+        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+            return False
+        return True
     
     def verify_password(self, password: str, hashed: str) -> bool:
         """Verify password against hash"""
@@ -39,16 +71,32 @@ class AuthenticationManager:
         """Generate a secure API key"""
         return f"qnx_{secrets.token_urlsafe(self.api_key_length)}"
     
-    def generate_jwt_token(self, user_id: int, username: str, role: str) -> str:
-        """Generate JWT token for user"""
+    def generate_jwt_token(self, user_id: int, username: str, role: str) -> tuple:
+        """Generate JWT token and refresh token for user"""
+        # Add jti (JWT ID) for token revocation support
+        jti = secrets.token_urlsafe(32)
         payload = {
             'user_id': user_id,
             'username': username,
             'role': role,
+            'jti': jti,
             'exp': datetime.utcnow() + timedelta(hours=self.token_expiry_hours),
-            'iat': datetime.utcnow()
+            'iat': datetime.utcnow(),
+            'type': 'access'
         }
-        return jwt.encode(payload, self.secret_key, algorithm=self.jwt_algorithm)
+        access_token = jwt.encode(payload, self.secret_key, algorithm=self.jwt_algorithm)
+        
+        # Generate refresh token
+        refresh_payload = {
+            'user_id': user_id,
+            'jti': secrets.token_urlsafe(32),
+            'exp': datetime.utcnow() + timedelta(days=self.refresh_token_expiry_days),
+            'iat': datetime.utcnow(),
+            'type': 'refresh'
+        }
+        refresh_token = jwt.encode(refresh_payload, self.secret_key, algorithm=self.jwt_algorithm)
+        
+        return access_token, refresh_token
     
     def verify_jwt_token(self, token: str) -> Optional[Dict[str, Any]]:
         """Verify and decode JWT token"""
@@ -64,7 +112,15 @@ class AuthenticationManager:
     
     def create_user(self, username: str, password: str, email: str = None, 
                    role: str = 'user') -> Dict[str, Any]:
-        """Create a new user"""
+        """Create a new user with proper validation"""
+        # Validate inputs
+        if not self._validate_username(username):
+            raise ValueError("Invalid username format")
+        if email and not self._validate_email(email):
+            raise ValueError("Invalid email format")
+        if role not in ['user', 'operator', 'admin', 'viewer']:
+            raise ValueError("Invalid role")
+            
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         
@@ -72,9 +128,10 @@ class AuthenticationManager:
             password_hash = self.hash_password(password)
             api_key = self.generate_api_key()
             
+            # Use parameterized query to prevent SQL injection
             cursor.execute('''
-                INSERT INTO users (username, email, password_hash, api_key, role)
-                VALUES (?, ?, ?, ?, ?)
+                INSERT INTO users (username, email, password_hash, api_key, role, created_at)
+                VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
             ''', (username, email, password_hash, api_key, role))
             
             user_id = cursor.lastrowid
@@ -95,40 +152,69 @@ class AuthenticationManager:
         finally:
             conn.close()
     
-    def authenticate_user(self, username: str, password: str) -> Optional[Dict[str, Any]]:
-        """Authenticate user with username and password"""
+    def authenticate_user(self, username: str, password: str, client_ip: str = None) -> Optional[Dict[str, Any]]:
+        """Authenticate user with rate limiting and account lockout"""
+        # Check rate limiting
+        if not self._check_rate_limit(client_ip or username):
+            logger.warning(f"Rate limit exceeded for {username} from {client_ip}")
+            return None
+            
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         
+        # Use parameterized query
         cursor.execute('''
-            SELECT id, password_hash, role, is_active, api_key
+            SELECT id, password_hash, role, is_active, api_key, failed_attempts, locked_until
             FROM users
             WHERE username = ?
         ''', (username,))
         
         user = cursor.fetchone()
         
-        if user and user[3]:  # is_active
-            user_id, password_hash, role, _, api_key = user
+        if user:
+            user_id, password_hash, role, is_active, api_key, failed_attempts, locked_until = user
             
-            if self.verify_password(password, password_hash):
-                # Update last login
+            # Check if account is locked
+            if locked_until and datetime.fromisoformat(locked_until) > datetime.utcnow():
+                conn.close()
+                logger.warning(f"Account locked for {username}")
+                return None
+                
+            if is_active and self.verify_password(password, password_hash):
+                # Reset failed attempts and update last login
                 cursor.execute('''
-                    UPDATE users SET last_login = CURRENT_TIMESTAMP
+                    UPDATE users SET last_login = CURRENT_TIMESTAMP, 
+                    failed_attempts = 0, locked_until = NULL
                     WHERE id = ?
                 ''', (user_id,))
                 conn.commit()
                 
-                token = self.generate_jwt_token(user_id, username, role)
+                access_token, refresh_token = self.generate_jwt_token(user_id, username, role)
                 
                 conn.close()
                 return {
                     'user_id': user_id,
                     'username': username,
                     'role': role,
-                    'token': token,
+                    'access_token': access_token,
+                    'refresh_token': refresh_token,
                     'api_key': api_key
                 }
+            else:
+                # Increment failed attempts
+                failed_attempts = (failed_attempts or 0) + 1
+                if failed_attempts >= self.max_attempts:
+                    locked_until = datetime.utcnow() + timedelta(seconds=self.lockout_duration)
+                    cursor.execute('''
+                        UPDATE users SET failed_attempts = ?, locked_until = ?
+                        WHERE id = ?
+                    ''', (failed_attempts, locked_until.isoformat(), user_id))
+                else:
+                    cursor.execute('''
+                        UPDATE users SET failed_attempts = ?
+                        WHERE id = ?
+                    ''', (failed_attempts, user_id))
+                conn.commit()
         
         conn.close()
         return None
@@ -429,7 +515,41 @@ class AuthRoutes:
         users = self.auth.list_users()
         return web.json_response({'users': users})
 
-from typing import List
+    def _validate_username(self, username: str) -> bool:
+        """Validate username format"""
+        return bool(re.match(r'^[a-zA-Z0-9_]{3,32}$', username))
+    
+    def _validate_email(self, email: str) -> bool:
+        """Validate email format"""
+        return bool(re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email))
+    
+    def _check_rate_limit(self, identifier: str) -> bool:
+        """Check if request is within rate limits"""
+        now = time.time()
+        # Clean old entries
+        self.rate_limiter[identifier] = [
+            t for t in self.rate_limiter[identifier] 
+            if now - t < 60
+        ]
+        
+        if len(self.rate_limiter[identifier]) >= self.max_attempts:
+            return False
+            
+        self.rate_limiter[identifier].append(now)
+        return True
+    
+    def generate_csrf_token(self, session_id: str) -> str:
+        """Generate CSRF token for session"""
+        token = secrets.token_urlsafe(32)
+        self.csrf_tokens[session_id] = token
+        return token
+    
+    def verify_csrf_token(self, session_id: str, token: str) -> bool:
+        """Verify CSRF token"""
+        return hmac.compare_digest(
+            self.csrf_tokens.get(session_id, ''),
+            token
+        )
 
 # Initialize default admin user
 def init_default_admin(auth_manager: AuthenticationManager):
@@ -441,16 +561,27 @@ def init_default_admin(auth_manager: AuthenticationManager):
     admin_count = cursor.fetchone()[0]
     
     if admin_count == 0:
-        admin = auth_manager.create_user(
-            username='admin',
-            password='QenexAdmin2024!',  # Change this immediately!
-            email='admin@qenex.local',
-            role='admin'
-        )
+        # Generate secure random password
+        admin_password = secrets.token_urlsafe(24)
         
-        if admin:
-            logger.info(f"Created default admin user. API Key: {admin['api_key']}")
-            logger.warning("IMPORTANT: Change the default admin password immediately!")
+        try:
+            admin = auth_manager.create_user(
+                username='admin',
+                password=admin_password + '!Aa1',  # Ensure it meets requirements
+                email='admin@qenex.local',
+                role='admin'
+            )
+            
+            if admin:
+                # Store password securely or display once
+                logger.critical(f"===== ADMIN CREDENTIALS (SAVE THESE!) =====")
+                logger.critical(f"Username: admin")
+                logger.critical(f"Password: {admin_password}!Aa1")
+                logger.critical(f"API Key: {admin['api_key']}")
+                logger.critical(f"============================================")
+                logger.warning("Store these credentials securely and delete this log!")
+        except Exception as e:
+            logger.error(f"Failed to create admin: {e}")
     
     conn.close()
 
