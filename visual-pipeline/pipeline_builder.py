@@ -689,10 +689,10 @@ class QenexPipelineBuilder:
         input_value = input_data.get("input", {})
         
         if language == "python":
-            # Execute Python transformation (sandbox this in production)
-            local_vars = {"data": input_value, "result": None}
-            exec(expression, {}, local_vars)
-            result = local_vars.get("result", input_value)
+            # SECURITY FIX: Removed dangerous exec() call
+            # Python code execution must be done in a secure sandbox environment
+            result = {"error": "Python code execution disabled for security - implement secure sandbox"}
+            print("WARNING: Python code execution blocked for security reasons")
         else:
             # Placeholder for other languages
             result = input_value
@@ -752,8 +752,10 @@ class QenexPipelineBuilder:
         condition = node.config["condition"]
         input_value = input_data.get("input", {})
         
-        # Execute condition (sandbox this in production)
-        result = eval(f"bool({condition})", {"data": input_value})
+        # SECURITY FIX: Removed dangerous eval() call
+        # Condition evaluation must use safe expression parser
+        print(f"WARNING: Condition evaluation '{condition}' blocked for security")
+        result = False  # Default to false for security
         
         if result:
             return {"true": input_value}

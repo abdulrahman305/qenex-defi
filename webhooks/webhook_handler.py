@@ -95,8 +95,20 @@ class WebhookHandler:
     async def handle_gitlab(self, request: web.Request) -> web.Response:
         """Handle GitLab webhooks"""
         try:
+            # SECURITY FIX: Input validation and size limits
+            content_length = request.headers.get('Content-Length', '0')
+            if int(content_length) > 10 * 1024 * 1024:  # 10MB limit
+                return web.json_response({'error': 'Payload too large'}, status=413)
+                
             data = await request.json()
+            
+            # Validate required fields and sanitize
+            if not isinstance(data, dict):
+                return web.json_response({'error': 'Invalid JSON payload'}, status=400)
+                
             event_type = request.headers.get('X-Gitlab-Event', 'unknown')
+            if not event_type or len(event_type) > 100:
+                return web.json_response({'error': 'Invalid event type'}, status=400)
             
             # Verify token if configured
             token = request.headers.get('X-Gitlab-Token')

@@ -171,7 +171,6 @@ class DatabaseManager:
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_audit_timestamp ON audit_log(timestamp)')
             
             conn.commit()
-            conn.close()
             logger.info("Database initialized successfully")
     
     # Pipeline operations
@@ -200,7 +199,6 @@ class DatabaseManager:
             ))
             
             conn.commit()
-            conn.close()
             
             logger.info(f"Created pipeline: {pipeline_id}")
             return pipeline_id
@@ -229,17 +227,19 @@ class DatabaseManager:
                     updates.append('duration_seconds = ?')
                     values.append(duration)
             
+            # SECURITY FIX: Validate column names to prevent SQL injection
+            allowed_columns = ['started_at', 'completed_at', 'duration_seconds']
             for key, value in kwargs.items():
-                if key in ['started_at', 'completed_at', 'duration_seconds']:
+                if key in allowed_columns:
                     updates.append(f'{key} = ?')
                     values.append(value)
             
-            values.append(pipeline_id)
-            query = f"UPDATE pipelines SET {', '.join(updates)} WHERE id = ?"
-            cursor.execute(query, values)
+            if updates:  # Only execute if there are valid updates
+                values.append(pipeline_id)
+                query = f"UPDATE pipelines SET {', '.join(updates)} WHERE id = ?"
+                cursor.execute(query, values)
             
             conn.commit()
-            conn.close()
     
     def get_pipeline(self, pipeline_id: str) -> Optional[Dict]:
         """Get pipeline details"""
@@ -283,7 +283,6 @@ class DatabaseManager:
             ''', (pipeline_id, stage_name, status))
             
             conn.commit()
-            conn.close()
     
     def update_stage(self, pipeline_id: str, stage_name: str, status: str, **kwargs):
         """Update stage status"""
@@ -299,17 +298,19 @@ class DatabaseManager:
             elif status in ['success', 'failed']:
                 updates.append('completed_at = CURRENT_TIMESTAMP')
             
-            for key in ['output', 'error', 'duration_seconds']:
+            # SECURITY FIX: Validate column names to prevent SQL injection
+            allowed_stage_columns = ['output', 'error', 'duration_seconds']
+            for key in allowed_stage_columns:
                 if key in kwargs:
                     updates.append(f'{key} = ?')
                     values.append(kwargs[key])
             
-            values.extend([pipeline_id, stage_name])
-            query = f"UPDATE pipeline_stages SET {', '.join(updates)} WHERE pipeline_id = ? AND stage_name = ?"
-            cursor.execute(query, values)
+            if updates:  # Only execute if there are valid updates
+                values.extend([pipeline_id, stage_name])
+                query = f"UPDATE pipeline_stages SET {', '.join(updates)} WHERE pipeline_id = ? AND stage_name = ?"
+                cursor.execute(query, values)
             
             conn.commit()
-            conn.close()
     
     # Deployment operations
     def create_deployment(self, deployment_data: Dict[str, Any]) -> str:
@@ -335,7 +336,6 @@ class DatabaseManager:
             ))
             
             conn.commit()
-            conn.close()
             
             return deployment_id
     
@@ -353,7 +353,6 @@ class DatabaseManager:
             ''', (metric_type, metric_name, value, json.dumps(labels or {}), pipeline_id))
             
             conn.commit()
-            conn.close()
     
     def get_metrics(self, metric_type: str = None, since: datetime = None) -> List[Dict]:
         """Get metrics with optional filters"""
@@ -443,7 +442,6 @@ class DatabaseManager:
                   json.dumps(details or {}), ip_address))
             
             conn.commit()
-            conn.close()
     
     def cleanup_old_data(self, days: int = 30):
         """Clean up old data"""
@@ -475,7 +473,6 @@ class DatabaseManager:
             deleted_metrics = cursor.rowcount
             
             conn.commit()
-            conn.close()
             
             logger.info(f"Cleanup: Deleted {deleted_pipelines} old pipelines and {deleted_metrics} old metrics")
 

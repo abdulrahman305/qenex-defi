@@ -15,24 +15,54 @@ import threading
 import os
 from datetime import datetime, timedelta
 import subprocess
+from functools import lru_cache
+from collections import deque
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'qenex-secret-key-2024'
 CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-# Global metrics storage
+# Global metrics storage with bounded size to prevent memory leaks
+MAX_METRICS_SIZE = 1000
 system_metrics = {
-    "cpu_usage": [],
-    "memory_usage": [],
-    "disk_usage": [],
-    "network_io": [],
+    "cpu_usage": deque(maxlen=MAX_METRICS_SIZE),
+    "memory_usage": deque(maxlen=MAX_METRICS_SIZE),
+    "disk_usage": deque(maxlen=MAX_METRICS_SIZE),
+    "network_io": deque(maxlen=MAX_METRICS_SIZE),
     "mining_stats": {},
     "ai_performance": {},
     "blockchain_info": {},
     "wallet_balances": {},
-    "active_processes": []
+    "active_processes": deque(maxlen=100)
 }
+
+# Thread pool for concurrent operations
+executor = ThreadPoolExecutor(max_workers=4)
+
+# Cache for expensive operations
+class MetricsCache:
+    def __init__(self, ttl=5):
+        self.cache = {}
+        self.ttl = ttl
+        self.lock = threading.RLock()
+    
+    def get(self, key):
+        with self.lock:
+            if key in self.cache:
+                value, timestamp = self.cache[key]
+                if time.time() - timestamp < self.ttl:
+                    return value
+                del self.cache[key]
+        return None
+    
+    def set(self, key, value):
+        with self.lock:
+            self.cache[key] = (value, time.time())
+
+metrics_cache = MetricsCache(ttl=5)
 
 class MetricsCollector:
     """Collects system and QENEX metrics"""
@@ -43,11 +73,27 @@ class MetricsCollector:
         self.wallet_db = "/opt/qenex-os/blockchain/wallets.db"
         self.model_path = "/opt/qenex-os/models/unified_model.json"
         
-    def collect_system_metrics(self):
-        """Collect system performance metrics"""
+    @lru_cache(maxsize=128)
+    def get_static_system_info(self):
+        """Get static system information (cached)"""
         return {
+            "boot_time": psutil.boot_time(),
+            "cpu_count": psutil.cpu_count(),
+            "total_memory": psutil.virtual_memory().total,
+            "total_disk": psutil.disk_usage('/').total
+        }
+    
+    def collect_system_metrics(self):
+        """Collect system performance metrics with caching"""
+        # Check cache first
+        cached = metrics_cache.get('system_metrics')
+        if cached:
+            return cached
+        
+        # Use non-blocking interval for CPU percent
+        metrics = {
             "timestamp": time.time(),
-            "cpu_percent": psutil.cpu_percent(interval=1),
+            "cpu_percent": psutil.cpu_percent(interval=0.1),  # Reduced interval
             "cpu_freq": psutil.cpu_freq().current if psutil.cpu_freq() else 0,
             "memory": {
                 "total": psutil.virtual_memory().total,
@@ -66,11 +112,20 @@ class MetricsCollector:
                 "packets_recv": psutil.net_io_counters().packets_recv
             },
             "processes": len(psutil.pids()),
-            "boot_time": psutil.boot_time()
+            "boot_time": self.get_static_system_info()['boot_time']
         }
+        
+        # Cache the result
+        metrics_cache.set('system_metrics', metrics)
+        return metrics
     
     def collect_blockchain_metrics(self):
-        """Collect blockchain and mining metrics"""
+        """Collect blockchain and mining metrics with connection pooling"""
+        # Check cache first
+        cached = metrics_cache.get('blockchain_metrics')
+        if cached:
+            return cached
+        
         metrics = {
             "blocks": 0,
             "total_supply": 0,
@@ -81,18 +136,33 @@ class MetricsCollector:
         
         if os.path.exists(self.blockchain_db):
             try:
-                with sqlite3.connect(self.blockchain_db) as conn:
-                    cursor = conn.execute("SELECT COUNT(*) FROM blocks")
-                    metrics["blocks"] = cursor.fetchone()[0]
+                with sqlite3.connect(self.blockchain_db, timeout=5) as conn:
+                    conn.row_factory = sqlite3.Row
+                    # Enable WAL mode for better concurrency
+                    conn.execute('PRAGMA journal_mode=WAL')
+                    conn.execute('PRAGMA synchronous=NORMAL')
                     
-                    cursor = conn.execute("SELECT MAX(timestamp) FROM blocks")
-                    last_time = cursor.fetchone()[0]
-                    if last_time:
-                        metrics["last_block_time"] = last_time
-                        metrics["mining_rate"] = metrics["blocks"] / ((time.time() - last_time) / 3600)
-            except:
-                pass
+                    # Use single query to get all stats
+                    cursor = conn.execute("""
+                        SELECT 
+                            COUNT(*) as block_count,
+                            MAX(timestamp) as last_time
+                        FROM blocks
+                    """)
+                    row = cursor.fetchone()
+                    if row:
+                        metrics["blocks"] = row[0]
+                        if row[1]:
+                            metrics["last_block_time"] = row[1]
+                            elapsed_hours = (time.time() - row[1]) / 3600
+                            if elapsed_hours > 0:
+                                metrics["mining_rate"] = metrics["blocks"] / elapsed_hours
+            except Exception as e:
+                # Log error but don't crash
+                print(f"Error collecting blockchain metrics: {e}")
         
+        # Cache the result
+        metrics_cache.set('blockchain_metrics', metrics)
         return metrics
     
     def collect_ai_metrics(self):
@@ -588,10 +658,19 @@ def api_status():
 def restart_system():
     """Restart QENEX core system"""
     try:
-        # Stop old processes
-        subprocess.run("pkill -f qenex_core_integrated", shell=True)
+        # SECURITY FIX: Use safe subprocess calls without shell=True
+        # Stop old processes using specific PID management
+        import psutil
+        for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+            try:
+                if any('qenex_core_integrated' in str(cmd) for cmd in proc.info['cmdline'] or []):
+                    proc.terminate()
+                    proc.wait(timeout=5)
+            except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.TimeoutExpired):
+                pass
+        
         time.sleep(2)
-        # Start new process
+        # Start new process safely
         subprocess.Popen(["python3", "/opt/qenex-os/qenex_core_integrated.py"], 
                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         return jsonify({"success": True, "message": "System restarted"})
@@ -602,9 +681,30 @@ def restart_system():
 def stop_mining():
     """Stop all mining processes"""
     try:
-        subprocess.run("pkill -f mining", shell=True)
-        subprocess.run("pkill -f qxc", shell=True)
-        return jsonify({"success": True, "message": "Mining stopped"})
+        # SECURITY FIX: Safe process termination without shell=True
+        import psutil
+        mining_processes = []
+        
+        for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+            try:
+                cmdline = proc.info['cmdline'] or []
+                if any('mining' in str(cmd).lower() or 'qxc' in str(cmd).lower() for cmd in cmdline):
+                    mining_processes.append(proc)
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                pass
+        
+        # Terminate mining processes safely
+        for proc in mining_processes:
+            try:
+                proc.terminate()
+                proc.wait(timeout=5)
+            except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.TimeoutExpired):
+                try:
+                    proc.kill()
+                except (psutil.NoSuchProcess, psutil.AccessDenied):
+                    pass
+        
+        return jsonify({"success": True, "message": f"Mining stopped ({len(mining_processes)} processes)"})
     except Exception as e:
         return jsonify({"success": False, "message": str(e)})
 

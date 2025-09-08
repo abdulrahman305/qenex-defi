@@ -284,11 +284,25 @@ Type 'exit' or 'quit' to leave the shell.
             print(f"{Colors.RED}Usage: exec <command>{Colors.NC}")
             return
         try:
-            result = subprocess.run(arg, shell=True, capture_output=True, text=True)
+            # SECURITY FIX: Use shlex.split to safely parse command arguments
+            import shlex
+            args = shlex.split(arg)
+            if not args:
+                return
+            
+            # Whitelist allowed commands for security
+            allowed_commands = ['ls', 'pwd', 'whoami', 'date', 'uptime', 'ps', 'df', 'free']
+            if args[0] not in allowed_commands:
+                print(f"{Colors.RED}Command '{args[0]}' not allowed for security reasons{Colors.NC}")
+                return
+                
+            result = subprocess.run(args, capture_output=True, text=True, timeout=10)
             if result.stdout:
                 print(result.stdout)
             if result.stderr:
                 print(f"{Colors.RED}{result.stderr}{Colors.NC}")
+        except subprocess.TimeoutExpired:
+            print(f"{Colors.RED}Command timed out{Colors.NC}")
         except Exception as e:
             print(f"{Colors.RED}Error executing command: {e}{Colors.NC}")
     
@@ -575,15 +589,8 @@ Type 'exit' or 'quit' to leave the shell.
             expanded = line.replace(cmd, self.aliases[cmd], 1)
             return self.onecmd(expanded)
         
-        # Try to execute as system command
-        try:
-            result = subprocess.run(line, shell=True, capture_output=True, text=True)
-            if result.stdout:
-                print(result.stdout, end='')
-            if result.stderr:
-                print(f"{Colors.RED}{result.stderr}{Colors.NC}", end='')
-        except Exception as e:
-            print(f"{Colors.RED}Command not found: {cmd}{Colors.NC}")
+        # SECURITY FIX: Disable arbitrary system command execution
+        print(f"{Colors.RED}Unknown command: {line.split()[0] if line else ''}. Use 'exec' for whitelisted system commands.{Colors.NC}")
     
     def precmd(self, line):
         """Called before executing a command"""

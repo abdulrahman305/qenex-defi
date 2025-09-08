@@ -77,7 +77,23 @@ interface IERC20 {
     event Approval(address indexed owner, address indexed spender, uint256 value);
 }
 
+// SECURITY FIX: SafeMath library for overflow protection
+library SafeMath {
+    function add(uint256 a, uint256 b) internal pure returns (uint256) {
+        uint256 c = a + b;
+        require(c >= a, "SafeMath: addition overflow");
+        return c;
+    }
+    
+    function sub(uint256 a, uint256 b) internal pure returns (uint256) {
+        require(b <= a, "SafeMath: subtraction overflow");
+        return a - b;
+    }
+}
+
 contract QXCToken is IERC20 {
+    using SafeMath for uint256;
+    
     mapping(address => uint256) private _balances;
     mapping(address => mapping(address => uint256)) private _allowances;
     
@@ -87,6 +103,16 @@ contract QXCToken is IERC20 {
     uint8 public decimals = 18;
     
     address public owner;
+    
+    // SECURITY FIX: Reentrancy guard
+    bool private _reentrancyGuard;
+    
+    modifier nonReentrant() {
+        require(!_reentrancyGuard, "ReentrancyGuard: reentrant call");
+        _reentrancyGuard = true;
+        _;
+        _reentrancyGuard = false;
+    }
     
     event MiningReward(address indexed miner, uint256 reward, string improvement);
     
@@ -105,7 +131,7 @@ contract QXCToken is IERC20 {
         return _balances[account];
     }
     
-    function transfer(address to, uint256 amount) public override returns (bool) {
+    function transfer(address to, uint256 amount) public override nonReentrant returns (bool) {
         _transfer(msg.sender, to, amount);
         return true;
     }
@@ -119,12 +145,12 @@ contract QXCToken is IERC20 {
         return true;
     }
     
-    function transferFrom(address from, address to, uint256 amount) public override returns (bool) {
+    function transferFrom(address from, address to, uint256 amount) public override nonReentrant returns (bool) {
         uint256 currentAllowance = _allowances[from][msg.sender];
         require(currentAllowance >= amount, "ERC20: insufficient allowance");
         
         _transfer(from, to, amount);
-        _approve(from, msg.sender, currentAllowance - amount);
+        _approve(from, msg.sender, currentAllowance.sub(amount));
         
         return true;
     }
@@ -136,8 +162,8 @@ contract QXCToken is IERC20 {
         uint256 fromBalance = _balances[from];
         require(fromBalance >= amount, "ERC20: insufficient balance");
         
-        _balances[from] = fromBalance - amount;
-        _balances[to] += amount;
+        _balances[from] = fromBalance.sub(amount);
+        _balances[to] = _balances[to].add(amount);
         
         emit Transfer(from, to, amount);
     }
@@ -150,11 +176,24 @@ contract QXCToken is IERC20 {
         emit Approval(_owner, spender, amount);
     }
     
-    // Mining reward function for AI improvements
-    function mintReward(address miner, uint256 reward, string memory improvement) public {
+    // SECURITY FIX: Added minting controls and limits
+    uint256 public constant MAX_SUPPLY = 21000000 * 10**18; // 21 million QXC max
+    uint256 public constant MAX_REWARD_PER_MINT = 100 * 10**18; // 100 QXC max per mint
+    mapping(address => uint256) public lastMintTime;
+    uint256 public constant MINT_COOLDOWN = 1 hours; // Cooldown between mints
+    
+    // Mining reward function for AI improvements with security controls
+    function mintReward(address miner, uint256 reward, string memory improvement) public nonReentrant {
         require(msg.sender == owner, "Only owner can mint rewards");
-        _totalSupply += reward;
-        _balances[miner] += reward;
+        require(miner != address(0), "Cannot mint to zero address");
+        require(reward > 0, "Reward must be greater than zero");
+        require(reward <= MAX_REWARD_PER_MINT, "Reward exceeds maximum allowed");
+        require(_totalSupply.add(reward) <= MAX_SUPPLY, "Would exceed maximum supply");
+        require(block.timestamp >= lastMintTime[miner] + MINT_COOLDOWN, "Miner on cooldown");
+        
+        lastMintTime[miner] = block.timestamp;
+        _totalSupply = _totalSupply.add(reward);
+        _balances[miner] = _balances[miner].add(reward);
         emit Transfer(address(0), miner, reward);
         emit MiningReward(miner, reward, improvement);
     }

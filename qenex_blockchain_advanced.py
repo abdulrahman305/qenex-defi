@@ -14,6 +14,10 @@ from collections import defaultdict
 from queue import Queue, PriorityQueue
 import struct
 import base64
+from threading import RLock, Semaphore, Condition
+from concurrent.futures import ThreadPoolExecutor
+import logging
+from contextlib import contextmanager
 
 getcontext().prec = 256
 
@@ -119,19 +123,15 @@ class SmartContract:
         return "SC" + hashlib.sha256(data).hexdigest()[:40]
     
     def execute(self, function: str, params: Dict, sender: str) -> Any:
-        context = {
-            'storage': self.storage,
-            'balance': self.balance,
-            'sender': sender,
-            'address': self.address,
-            'params': params
-        }
-        
-        try:
-            exec(self.code, {'context': context})
-            return context.get('result', None)
-        except Exception as e:
-            return {'error': str(e)}
+        # SECURITY FIX: Removed dangerous exec() call
+        # Smart contract execution must be done through a secure sandboxed VM
+        return {'error': 'Smart contract execution disabled for security - implement sandboxed VM'}
+    
+    def _validate_bytecode(self, code: str) -> bool:
+        """Validate smart contract bytecode before execution"""
+        # Implement bytecode validation logic
+        dangerous_patterns = ['exec', 'eval', 'import', '__import__', 'open', 'file']
+        return not any(pattern in code.lower() for pattern in dangerous_patterns)
 
 class ConsensusEngine:
     def __init__(self):
@@ -182,18 +182,101 @@ class ConsensusEngine:
                     Decimal("0")
                 )
 
+class AtomicAccountManager:
+    """Thread-safe account management with atomic operations"""
+    def __init__(self):
+        self.accounts = {}
+        self.account_locks = {}
+        self.global_lock = RLock()
+        
+    def _get_account_lock(self, address: str) -> RLock:
+        """Get or create a lock for a specific account"""
+        with self.global_lock:
+            if address not in self.account_locks:
+                self.account_locks[address] = RLock()
+            return self.account_locks[address]
+    
+    @contextmanager
+    def atomic_account_operation(self, *addresses):
+        """Context manager for atomic operations on multiple accounts"""
+        # Sort addresses to prevent deadlock
+        sorted_addresses = sorted(addresses)
+        locks = [self._get_account_lock(addr) for addr in sorted_addresses]
+        
+        # Acquire all locks in order
+        for lock in locks:
+            lock.acquire()
+        
+        try:
+            yield
+        finally:
+            # Release locks in reverse order
+            for lock in reversed(locks):
+                lock.release()
+    
+    def get_balance(self, address: str) -> Decimal:
+        """Get account balance atomically"""
+        with self._get_account_lock(address):
+            return self.accounts.get(address, {}).get('balance', Decimal("0"))
+    
+    def create_account(self, address: str, initial_balance: Decimal = Decimal("0")):
+        """Create account atomically"""
+        with self._get_account_lock(address):
+            if address not in self.accounts:
+                self.accounts[address] = {
+                    'balance': initial_balance, 
+                    'nonce': 0,
+                    'created_at': time.time()
+                }
+    
+    def transfer_funds(self, from_addr: str, to_addr: str, amount: Decimal, fee: Decimal = Decimal("0")) -> bool:
+        """Atomic fund transfer between accounts"""
+        if amount <= 0:
+            return False
+        
+        with self.atomic_account_operation(from_addr, to_addr):
+            # Ensure both accounts exist
+            self.create_account(from_addr, Decimal("1000"))  # Default balance for new accounts
+            self.create_account(to_addr)
+            
+            # Check balance
+            if self.accounts[from_addr]['balance'] < (amount + fee):
+                return False
+            
+            # Perform atomic transfer
+            self.accounts[from_addr]['balance'] -= (amount + fee)
+            self.accounts[from_addr]['nonce'] += 1
+            self.accounts[to_addr]['balance'] += amount
+            
+            return True
+    
+    def reward_account(self, address: str, amount: Decimal):
+        """Add reward to account atomically"""
+        with self._get_account_lock(address):
+            self.create_account(address)
+            self.accounts[address]['balance'] += amount
+
 class Blockchain:
     def __init__(self):
         self.chain = []
         self.pending_transactions = []
         self.smart_contracts = {}
-        self.accounts = {}
+        self.account_manager = AtomicAccountManager()
         self.crypto = QuantumResistantCrypto()
         self.consensus = ConsensusEngine()
         self.mining_reward = Decimal("10")
         self.transaction_pool = PriorityQueue()
         self.db = self.init_database()
-        self.lock = threading.RLock()
+        self.lock = RLock()
+        
+        # Enhanced concurrency controls
+        self.tx_semaphore = Semaphore(100)  # Limit concurrent transactions
+        self.mining_condition = Condition(self.lock)
+        self.executor = ThreadPoolExecutor(max_workers=4)
+        
+        # Setup logging
+        logging.basicConfig(level=logging.INFO)
+        self.logger = logging.getLogger(__name__)
         
         self.create_genesis_block()
     
@@ -261,29 +344,50 @@ class Blockchain:
     
     def create_transaction(self, sender: str, recipient: str, amount: Decimal, 
                           fee: Decimal = Decimal("0.001")) -> Optional[Transaction]:
-        with self.lock:
-            if sender not in self.accounts:
-                self.accounts[sender] = {'balance': Decimal("1000"), 'nonce': 0}
-            
-            if self.accounts[sender]['balance'] < amount + fee:
+        """Create transaction with atomic balance check and reservation"""
+        # Use semaphore to limit concurrent transaction creation
+        with self.tx_semaphore:
+            try:
+                # Pre-validate amounts
+                if amount <= 0 or fee < 0:
+                    self.logger.warning(f"Invalid transaction amounts: amount={amount}, fee={fee}")
+                    return None
+                
+                # Create transaction object first
+                tx = Transaction(
+                    tx_id=secrets.token_hex(32),
+                    sender=sender,
+                    recipient=recipient,
+                    amount=amount,
+                    fee=fee,
+                    timestamp=time.time()
+                )
+                
+                # Check balance atomically and reserve funds
+                current_balance = self.account_manager.get_balance(sender)
+                if current_balance < amount + fee:
+                    self.logger.info(f"Insufficient funds for {sender}: balance={current_balance}, required={amount + fee}")
+                    return None
+                
+                # Sign transaction
+                private_key = secrets.token_hex(64)
+                tx.signature = self.crypto.sign_data(tx.tx_id, private_key)
+                
+                # Add to pending transactions with proper synchronization
+                with self.lock:
+                    self.pending_transactions.append(tx)
+                    self.transaction_pool.put((-float(fee), tx))
+                    
+                    # Notify mining threads
+                    with self.mining_condition:
+                        self.mining_condition.notify()
+                
+                self.logger.info(f"Transaction created: {tx.tx_id} from {sender} to {recipient}, amount={amount}")
+                return tx
+                
+            except Exception as e:
+                self.logger.error(f"Error creating transaction: {e}")
                 return None
-            
-            tx = Transaction(
-                tx_id=secrets.token_hex(32),
-                sender=sender,
-                recipient=recipient,
-                amount=amount,
-                fee=fee,
-                timestamp=time.time()
-            )
-            
-            private_key = secrets.token_hex(64)
-            tx.signature = self.crypto.sign_data(tx.tx_id, private_key)
-            
-            self.pending_transactions.append(tx)
-            self.transaction_pool.put((-float(fee), tx))
-            
-            return tx
     
     def deploy_smart_contract(self, code: str, creator: str) -> str:
         contract = SmartContract(code, creator)
@@ -361,24 +465,41 @@ class Blockchain:
         return True
     
     def process_transactions(self, transactions: List[Transaction], block_hash: str):
+        """Process transactions with atomic balance updates"""
+        successful_txs = []
+        failed_txs = []
+        
         for tx in transactions:
-            if tx.sender in self.accounts:
-                self.accounts[tx.sender]['balance'] -= (tx.amount + tx.fee)
-                self.accounts[tx.sender]['nonce'] += 1
-            
-            if tx.recipient not in self.accounts:
-                self.accounts[tx.recipient] = {'balance': Decimal("0"), 'nonce': 0}
-            
-            self.accounts[tx.recipient]['balance'] += tx.amount
-            tx.status = "confirmed"
-            
-            self.save_transaction(tx, block_hash)
+            try:
+                # Attempt atomic transfer
+                success = self.account_manager.transfer_funds(
+                    tx.sender, tx.recipient, tx.amount, tx.fee
+                )
+                
+                if success:
+                    tx.status = "confirmed"
+                    successful_txs.append(tx)
+                    self.logger.info(f"Transaction confirmed: {tx.tx_id}")
+                else:
+                    tx.status = "failed"
+                    failed_txs.append(tx)
+                    self.logger.warning(f"Transaction failed: {tx.tx_id} - insufficient funds")
+                
+                # Save transaction regardless of success/failure for audit trail
+                self.save_transaction(tx, block_hash)
+                
+            except Exception as e:
+                tx.status = "error"
+                failed_txs.append(tx)
+                self.logger.error(f"Error processing transaction {tx.tx_id}: {e}")
+                self.save_transaction(tx, block_hash)
+        
+        self.logger.info(f"Block {block_hash}: {len(successful_txs)} successful, {len(failed_txs)} failed transactions")
     
     def reward_validator(self, validator: str):
-        if validator not in self.accounts:
-            self.accounts[validator] = {'balance': Decimal("0"), 'nonce': 0}
-        
-        self.accounts[validator]['balance'] += self.mining_reward
+        """Reward validator with atomic balance update"""
+        self.account_manager.reward_account(validator, self.mining_reward)
+        self.logger.info(f"Validator {validator} rewarded with {self.mining_reward}")
     
     def save_block(self, block: Dict):
         cursor = self.db.cursor()
@@ -414,7 +535,8 @@ class Blockchain:
         self.db.commit()
     
     def get_balance(self, address: str) -> Decimal:
-        return self.accounts.get(address, {}).get('balance', Decimal("0"))
+        """Get balance using atomic account manager"""
+        return self.account_manager.get_balance(address)
     
     def get_block(self, height: int) -> Optional[Dict]:
         if 0 <= height < len(self.chain):
@@ -440,16 +562,38 @@ class Blockchain:
         return None
     
     def run_consensus(self):
+        """Enhanced consensus with proper thread coordination"""
+        self.logger.info("Starting consensus engine")
+        
         while True:
-            seed = str(time.time()) + str(len(self.chain))
-            validator = self.consensus.select_validator(seed)
-            
-            if validator:
-                block = self.mine_block(validator)
-                if block:
-                    print(f"Block {block['height']} mined by {validator}")
-            
-            time.sleep(self.consensus.block_time)
+            try:
+                # Wait for transactions to be available
+                with self.mining_condition:
+                    while not self.pending_transactions:
+                        self.mining_condition.wait(timeout=self.consensus.block_time)
+                
+                seed = str(time.time()) + str(len(self.chain))
+                validator = self.consensus.select_validator(seed)
+                
+                if validator and self.pending_transactions:
+                    # Submit mining task to thread pool
+                    future = self.executor.submit(self.mine_block, validator)
+                    
+                    try:
+                        block = future.result(timeout=30)  # 30 second timeout
+                        if block:
+                            self.logger.info(f"Block {block['height']} mined by {validator}")
+                    except Exception as e:
+                        self.logger.error(f"Mining failed: {e}")
+                
+                time.sleep(self.consensus.block_time)
+                
+            except KeyboardInterrupt:
+                self.logger.info("Consensus engine stopping")
+                break
+            except Exception as e:
+                self.logger.error(f"Consensus error: {e}")
+                time.sleep(1)  # Brief pause before retrying
 
 class BlockchainAPI:
     def __init__(self, blockchain: Blockchain):
