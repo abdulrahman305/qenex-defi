@@ -9,28 +9,56 @@ import os
 import time
 import hashlib
 import subprocess
+import threading
+import logging
 from datetime import datetime, timedelta
 from collections import defaultdict
-import pickle
 import re
+import base64
+import hmac
+from pathlib import Path
+from typing import Dict, List, Optional, Any
+import signal
+import sys
+from decimal import Decimal
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+# Security constants
+MAX_LOG_SIZE = 100 * 1024 * 1024  # 100MB
+MAX_PATTERN_COUNT = 1000
+MAX_INCIDENT_HISTORY = 10000
+SECURE_DELETE_PASSES = 3
 
 class QenexSecurityAI:
     def __init__(self):
-        self.model_path = "/opt/qenex/models/security_ai.pkl"
+        # Use JSON instead of pickle for security
+        self.model_path = "/opt/qenex/models/security_ai.json"
         self.log_path = "/var/log/qenex/ai_security.log"
         self.patterns_db = "/opt/qenex/security_patterns.json"
         self.training_data = "/opt/qenex/training/security_data.json"
         
-        # Create directories
-        os.makedirs(os.path.dirname(self.model_path), exist_ok=True)
-        os.makedirs(os.path.dirname(self.log_path), exist_ok=True)
-        os.makedirs(os.path.dirname(self.training_data), exist_ok=True)
+        # Thread safety
+        self.lock = threading.RLock()
+        self._shutdown = False
+        
+        # Security key for data integrity
+        self.security_key = self._generate_security_key()
+        
+        # Create directories securely
+        self._create_secure_directories()
         
         # Initialize attack patterns first
         self.initialize_patterns()
         
         # Initialize or load model
         self.load_model()
+        
+        # Register cleanup
+        signal.signal(signal.SIGTERM, self._signal_handler)
+        signal.signal(signal.SIGINT, self._signal_handler)
     
     def initialize_patterns(self):
         
@@ -101,40 +129,191 @@ class QenexSecurityAI:
         # Incident history for learning
         self.incident_history = []
         
+    def _generate_security_key(self) -> bytes:
+        """Generate security key for data integrity"""
+        key_file = "/opt/qenex/.security_key"
+        if os.path.exists(key_file):
+            try:
+                with open(key_file, 'rb') as f:
+                    return f.read()
+            except Exception:
+                pass
+        
+        # Generate new key
+        key = os.urandom(32)
+        try:
+            os.makedirs(os.path.dirname(key_file), exist_ok=True)
+            with open(key_file, 'wb') as f:
+                f.write(key)
+            # Secure file permissions
+            os.chmod(key_file, 0o600)
+        except Exception as e:
+            logger.warning(f"Could not save security key: {e}")
+        return key
+    
+    def _create_secure_directories(self):
+        """Create directories with secure permissions"""
+        directories = [
+            os.path.dirname(self.model_path),
+            os.path.dirname(self.log_path),
+            os.path.dirname(self.training_data)
+        ]
+        
+        for directory in directories:
+            try:
+                os.makedirs(directory, exist_ok=True)
+                # Secure permissions - only owner can read/write/execute
+                os.chmod(directory, 0o700)
+            except Exception as e:
+                logger.error(f"Failed to create secure directory {directory}: {e}")
+                raise
+    
+    def _calculate_integrity_hash(self, data: Any) -> str:
+        """Calculate HMAC for data integrity using SHA256"""
+        data_bytes = json.dumps(data, sort_keys=True).encode('utf-8')
+        return hmac.new(self.security_key, data_bytes, hashlib.sha256).hexdigest()
+    
+    def _verify_integrity(self, data: Any, expected_hash: str) -> bool:
+        """Verify data integrity"""
+        calculated_hash = self._calculate_integrity_hash(data)
+        return hmac.compare_digest(calculated_hash, expected_hash)
+    
     def load_model(self):
-        """Load or initialize the AI model"""
-        if os.path.exists(self.model_path):
-            with open(self.model_path, 'rb') as f:
-                saved_data = pickle.load(f)
-                self.attack_patterns = saved_data.get('patterns', self.attack_patterns)
-                self.baseline = saved_data.get('baseline', self.baseline)
-                self.incident_history = saved_data.get('history', [])
-            self.log("Model loaded from disk")
-        else:
-            self.log("Initialized new model")
+        """Load or initialize the AI model using secure JSON format"""
+        with self.lock:
+            if os.path.exists(self.model_path):
+                try:
+                    with open(self.model_path, 'r') as f:
+                        saved_data = json.load(f)
+                    
+                    # Verify data integrity
+                    if 'integrity_hash' in saved_data:
+                        model_data = saved_data.get('model_data', {})
+                        if not self._verify_integrity(model_data, saved_data['integrity_hash']):
+                            logger.warning("Model data integrity check failed, reinitializing")
+                            self.log("Model integrity compromised - reinitializing", "WARNING")
+                            return
+                        
+                        self.attack_patterns = model_data.get('patterns', self.attack_patterns)
+                        self.baseline = model_data.get('baseline', self.baseline)
+                        # Limit history size to prevent memory issues
+                        history = model_data.get('history', [])
+                        self.incident_history = history[-MAX_INCIDENT_HISTORY:] if history else []
+                        self.log("Model loaded from disk with integrity verification")
+                    else:
+                        logger.warning("Model file missing integrity hash, reinitializing")
+                        self.log("Model missing integrity verification - reinitializing", "WARNING")
+                        
+                except (json.JSONDecodeError, KeyError, TypeError) as e:
+                    logger.error(f"Failed to load model: {e}")
+                    self.log(f"Model loading failed: {e} - reinitializing", "ERROR")
+                except Exception as e:
+                    logger.error(f"Unexpected error loading model: {e}")
+                    self.log(f"Unexpected error loading model: {e}", "ERROR")
+            else:
+                self.log("Initialized new model")
     
     def save_model(self):
-        """Save the trained model"""
-        model_data = {
-            'patterns': self.attack_patterns,
-            'baseline': self.baseline,
-            'history': self.incident_history,
-            'timestamp': datetime.now().isoformat()
-        }
-        with open(self.model_path, 'wb') as f:
-            pickle.dump(model_data, f)
-        self.log("Model saved to disk")
+        """Save the trained model using secure JSON format"""
+        with self.lock:
+            try:
+                # Limit incident history size
+                limited_history = self.incident_history[-MAX_INCIDENT_HISTORY:]
+                
+                model_data = {
+                    'patterns': self.attack_patterns,
+                    'baseline': self.baseline,
+                    'history': limited_history,
+                    'timestamp': datetime.now().isoformat()
+                }
+                
+                # Calculate integrity hash
+                integrity_hash = self._calculate_integrity_hash(model_data)
+                
+                save_data = {
+                    'model_data': model_data,
+                    'integrity_hash': integrity_hash,
+                    'version': '2.0'  # Version for future compatibility
+                }
+                
+                # Write to temporary file first for atomic operation
+                temp_path = self.model_path + '.tmp'
+                with open(temp_path, 'w') as f:
+                    json.dump(save_data, f, indent=2)
+                
+                # Atomic rename
+                os.rename(temp_path, self.model_path)
+                
+                # Secure file permissions
+                os.chmod(self.model_path, 0o600)
+                
+                self.log("Model saved to disk with integrity protection")
+                
+            except Exception as e:
+                logger.error(f"Failed to save model: {e}")
+                self.log(f"Model save failed: {e}", "ERROR")
+                # Clean up temp file if it exists
+                temp_path = self.model_path + '.tmp'
+                if os.path.exists(temp_path):
+                    try:
+                        os.remove(temp_path)
+                    except:
+                        pass
     
     def log(self, message, level="INFO"):
-        """Log events with timestamp"""
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        log_entry = f"[{timestamp}] [{level}] {message}\n"
-        with open(self.log_path, 'a') as f:
-            f.write(log_entry)
-        if level in ["WARNING", "CRITICAL"]:
-            print(f"\033[91m{log_entry}\033[0m", end="")
-        else:
-            print(log_entry, end="")
+        """Log events with timestamp and proper security measures"""
+        try:
+            # Sanitize message to prevent log injection
+            safe_message = re.sub(r'[\r\n\x00-\x08\x0B\x0C\x0E-\x1F\x7F]', '', str(message))
+            
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            log_entry = f"[{timestamp}] [{level}] {safe_message}\n"
+            
+            # Check log file size and rotate if needed
+            if os.path.exists(self.log_path) and os.path.getsize(self.log_path) > MAX_LOG_SIZE:
+                self._rotate_log()
+            
+            with open(self.log_path, 'a') as f:
+                f.write(log_entry)
+            
+            # Also log to system logger
+            if level == "CRITICAL":
+                logger.critical(safe_message)
+            elif level == "ERROR":
+                logger.error(safe_message)
+            elif level == "WARNING":
+                logger.warning(safe_message)
+            else:
+                logger.info(safe_message)
+            
+            # Console output with colors
+            if level in ["WARNING", "CRITICAL", "ERROR"]:
+                print(f"\033[91m{log_entry}\033[0m", end="")
+            else:
+                print(log_entry, end="")
+                
+        except Exception as e:
+            # Fallback logging to stderr
+            print(f"Logging error: {e}", file=sys.stderr)
+    
+    def _rotate_log(self):
+        """Rotate log file when it gets too large"""
+        try:
+            backup_path = f"{self.log_path}.{int(time.time())}"
+            os.rename(self.log_path, backup_path)
+            
+            # Compress old log if possible
+            try:
+                import gzip
+                with open(backup_path, 'rb') as f_in:
+                    with gzip.open(f"{backup_path}.gz", 'wb') as f_out:
+                        f_out.writelines(f_in)
+                os.remove(backup_path)
+            except ImportError:
+                pass  # gzip not available, keep uncompressed
+            
+        except Exception as e:
+            logger.error(f"Log rotation failed: {e}")
     
     def collect_system_data(self):
         """Collect current system state for analysis"""
@@ -329,28 +508,51 @@ class QenexSecurityAI:
         self.save_model()
     
     def extract_patterns(self, incident_data):
-        """Extract new patterns from incidents"""
-        # Look for repeated strings that might be attack signatures
-        data_str = json.dumps(incident_data)
-        
-        # Find IP addresses involved
-        ip_pattern = r'\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b'
-        ips = re.findall(ip_pattern, data_str)
-        
-        # Find suspicious commands
-        cmd_pattern = r'(curl|wget|nc|ssh|scp).*[;&|]'
-        commands = re.findall(cmd_pattern, data_str)
-        
-        # Add to learned patterns
-        for attack_type in self.attack_patterns:
-            if attack_type in data_str.lower():
-                for ip in ips[:5]:  # Limit to avoid noise
-                    if ip not in self.attack_patterns[attack_type]["learned_patterns"]:
-                        self.attack_patterns[attack_type]["learned_patterns"].append(ip)
+        """Extract new patterns from incidents with security limits"""
+        with self.lock:
+            try:
+                # Look for repeated strings that might be attack signatures
+                data_str = json.dumps(incident_data)
                 
-                for cmd in commands[:3]:
-                    if cmd not in self.attack_patterns[attack_type]["learned_patterns"]:
-                        self.attack_patterns[attack_type]["learned_patterns"].append(cmd)
+                # Find IP addresses involved (with validation)
+                ip_pattern = r'\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b'
+                potential_ips = re.findall(ip_pattern, data_str)
+                
+                # Validate and filter IPs
+                ips = []
+                for ip in potential_ips:
+                    parts = ip.split('.')
+                    if all(0 <= int(part) <= 255 for part in parts):
+                        ips.append(ip)
+                
+                # Find suspicious commands (with safer regex)
+                cmd_pattern = r'\b(curl|wget|nc|ssh|scp)\s+[^\s]+'
+                commands = re.findall(cmd_pattern, data_str)
+                
+                # Add to learned patterns with limits
+                for attack_type in self.attack_patterns:
+                    if attack_type in data_str.lower():
+                        learned_patterns = self.attack_patterns[attack_type]["learned_patterns"]
+                        
+                        # Limit learned patterns to prevent memory exhaustion
+                        if len(learned_patterns) >= MAX_PATTERN_COUNT:
+                            # Remove oldest patterns (FIFO)
+                            learned_patterns = learned_patterns[-MAX_PATTERN_COUNT//2:]
+                            self.attack_patterns[attack_type]["learned_patterns"] = learned_patterns
+                        
+                        for ip in ips[:3]:  # Further limit to avoid noise
+                            if ip not in learned_patterns:
+                                learned_patterns.append(ip)
+                        
+                        for cmd in commands[:2]:  # Limit commands
+                            # Sanitize command to prevent injection
+                            safe_cmd = re.sub(r'[^\w\s\.\-]', '', cmd)
+                            if safe_cmd and safe_cmd not in learned_patterns:
+                                learned_patterns.append(safe_cmd)
+                                
+            except Exception as e:
+                logger.error(f"Error extracting patterns: {e}")
+                self.log(f"Pattern extraction error: {e}", "ERROR")
     
     def adjust_thresholds(self, incident_data):
         """Adjust detection thresholds based on false positives"""
@@ -466,50 +668,117 @@ class QenexSecurityAI:
         
         return recommendations
     
+    def _signal_handler(self, signum, frame):
+        """Handle shutdown signals gracefully"""
+        self._shutdown = True
+        self.log(f"Received signal {signum}, shutting down gracefully...")
+    
+    def _secure_delete_file(self, file_path: str):
+        """Securely delete a file by overwriting it"""
+        try:
+            if os.path.exists(file_path):
+                file_size = os.path.getsize(file_path)
+                with open(file_path, 'r+b') as f:
+                    for _ in range(SECURE_DELETE_PASSES):
+                        f.seek(0)
+                        f.write(os.urandom(file_size))
+                        f.flush()
+                        os.fsync(f.fileno())
+                os.remove(file_path)
+        except Exception as e:
+            logger.error(f"Secure delete failed for {file_path}: {e}")
+    
+    def shutdown(self):
+        """Properly shutdown the security system"""
+        with self.lock:
+            if not self._shutdown:
+                self._shutdown = True
+                self.log("Shutting down QENEX AI Security System...")
+                
+                # Save final model state
+                try:
+                    self.save_model()
+                except Exception as e:
+                    logger.error(f"Error saving model during shutdown: {e}")
+                
+                self.log("QENEX AI Security System shutdown complete")
+    
     def continuous_monitoring(self):
-        """Main monitoring loop"""
+        """Main monitoring loop with proper error handling and security"""
         self.log("QENEX AI Security Training System started", "INFO")
         
-        while True:
-            try:
-                # Collect system data
-                data = self.collect_system_data()
-                
-                # Analyze for threats
-                threats = self.analyze_threat(data)
-                
-                responses = []
-                if threats:
-                    self.log(f"Detected {len(threats)} threats", "WARNING")
+        try:
+            while not self._shutdown:
+                try:
+                    # Collect system data
+                    data = self.collect_system_data()
                     
-                    for threat in threats:
-                        self.log(f"Threat: {threat['type']} (Confidence: {threat.get('confidence', 0)}%)", "CRITICAL")
+                    # Analyze for threats
+                    threats = self.analyze_threat(data)
+                    
+                    responses = []
+                    if threats:
+                        self.log(f"Detected {len(threats)} threats", "WARNING")
                         
-                        # Automated response for high confidence threats
-                        if threat.get("confidence", 0) > 70:
-                            response = self.respond_to_threat(threat)
-                            responses.extend(response)
+                        for threat in threats:
+                            confidence = threat.get('confidence', 0)
+                            self.log(f"Threat: {threat['type']} (Confidence: {confidence}%)", "CRITICAL")
+                            
+                            # Automated response for high confidence threats
+                            if confidence > 70 and not self._shutdown:
+                                try:
+                                    response = self.respond_to_threat(threat)
+                                    responses.extend(response)
+                                except Exception as e:
+                                    self.log(f"Threat response failed: {e}", "ERROR")
+                        
+                        # Generate report
+                        try:
+                            report = self.generate_report(threats, responses)
+                            # Don't log full report in continuous mode to avoid log spam
+                            self.log(f"Report generated with {len(threats)} threats")
+                        except Exception as e:
+                            self.log(f"Report generation failed: {e}", "ERROR")
+                        
+                        # Learn from this incident (would need human feedback in production)
+                        try:
+                            self.learn_from_incident(data, True)
+                        except Exception as e:
+                            self.log(f"Learning failed: {e}", "ERROR")
                     
-                    # Generate report
-                    report = self.generate_report(threats, responses)
-                    self.log(f"Report generated: {json.dumps(report, indent=2)}")
+                    # Save model periodically
+                    if datetime.now().minute % 10 == 0 and not self._shutdown:
+                        try:
+                            self.save_model()
+                        except Exception as e:
+                            self.log(f"Periodic model save failed: {e}", "ERROR")
                     
-                    # Learn from this incident (would need human feedback in production)
-                    self.learn_from_incident(data, True)
-                
-                # Save model periodically
-                if datetime.now().minute % 10 == 0:
-                    self.save_model()
-                
-                # Sleep before next check
-                time.sleep(60)  # Check every minute
-                
-            except KeyboardInterrupt:
-                self.log("Monitoring stopped by user")
-                break
-            except Exception as e:
-                self.log(f"Error in monitoring: {str(e)}", "ERROR")
-                time.sleep(60)
+                    # Sleep before next check (with interruption support)
+                    for _ in range(60):  # Check every minute
+                        if self._shutdown:
+                            break
+                        time.sleep(1)
+                        
+                except KeyboardInterrupt:
+                    self.log("Monitoring stopped by user")
+                    break
+                except Exception as e:
+                    self.log(f"Error in monitoring loop: {str(e)}", "ERROR")
+                    # Wait before retrying, but allow interruption
+                    for _ in range(60):
+                        if self._shutdown:
+                            break
+                        time.sleep(1)
+                        
+        finally:
+            self.shutdown()
+    
+    def __del__(self):
+        """Destructor with proper cleanup"""
+        try:
+            self.shutdown()
+        except:
+            pass  # Ignore errors in destructor
 
 def main():
     import sys
