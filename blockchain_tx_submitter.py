@@ -21,7 +21,7 @@ class BlockchainTransactionSubmitter:
         self.running = False
         
         # Blockchain parameters
-        self.node_url = "https://qenex.ai/api/blockchain"
+        self.node_url = "https://abdulrahman305.github.io/qenex-docs
         self.chain_id = 1337
         self.gas_price = 20000000000  # 20 Gwei
         self.block_time = 3  # seconds

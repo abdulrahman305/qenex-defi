@@ -195,7 +195,7 @@ graph LR
 
 ## 📚 Documentation
 
-- [API Reference](https://qenex.ai/api/docs)
+- [API Reference](https://abdulrahman305.github.io/qenex-docs)
 - [Architecture Guide](https://github.com/abdulrahman305/qenex-os/docs)
 - [Development Guide](https://abdulrahman305.github.io/qenex-docs)
 

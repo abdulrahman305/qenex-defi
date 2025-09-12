@@ -45,15 +45,22 @@ class PerformanceOptimizer:
                     for proc in processes[:5]:
                         if proc['cpu_percent'] > 20:
                             try:
-                                os.nice(5)  # Lower priority
-                                subprocess.run(['renice', '10', str(proc['pid'])], 
-                                             capture_output=True)
-                            except:
+                                # SECURITY FIX: Use psutil instead of subprocess for process management
+                                p = psutil.Process(proc['pid'])
+                                current_nice = p.nice()
+                                if current_nice < 10:  # Only increase nice value (lower priority)
+                                    p.nice(min(current_nice + 5, 19))
+                            except (psutil.NoSuchProcess, psutil.AccessDenied):
                                 pass
                     
-                    # Enable CPU frequency scaling
-                    subprocess.run(['cpupower', 'frequency-set', '-g', 'powersave'],
-                                 capture_output=True)
+                    # SECURITY FIX: Use sysfs interface instead of subprocess for CPU scaling
+                    try:
+                        scaling_governor_path = '/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor'
+                        if os.path.exists(scaling_governor_path) and os.access(scaling_governor_path, os.W_OK):
+                            with open(scaling_governor_path, 'w') as f:
+                                f.write('powersave')
+                    except (IOError, OSError):
+                        pass  # Not running as root or cpufreq not available
                 
             except Exception as e:
                 print(f"CPU optimization error: {e}")
@@ -67,13 +74,23 @@ class PerformanceOptimizer:
                 mem = psutil.virtual_memory()
                 
                 if mem.percent > self.memory_threshold:
-                    # Clear page cache
-                    subprocess.run(['sh', '-c', 'echo 1 > /proc/sys/vm/drop_caches'],
-                                 capture_output=True)
+                    # SECURITY FIX: Use direct file I/O instead of subprocess for cache clearing
+                    try:
+                        drop_caches_path = '/proc/sys/vm/drop_caches'
+                        if os.path.exists(drop_caches_path) and os.access(drop_caches_path, os.W_OK):
+                            with open(drop_caches_path, 'w') as f:
+                                f.write('1')
+                    except (IOError, OSError):
+                        pass  # Not running as root
                     
-                    # Compact memory
-                    subprocess.run(['sh', '-c', 'echo 1 > /proc/sys/vm/compact_memory'],
-                                 capture_output=True)
+                    # SECURITY FIX: Use direct file I/O for memory compaction
+                    try:
+                        compact_memory_path = '/proc/sys/vm/compact_memory'
+                        if os.path.exists(compact_memory_path) and os.access(compact_memory_path, os.W_OK):
+                            with open(compact_memory_path, 'w') as f:
+                                f.write('1')
+                    except (IOError, OSError):
+                        pass  # Not running as root
                     
                     # Kill memory-heavy processes if critical
                     if mem.percent > 95:
@@ -141,15 +158,24 @@ class PerformanceOptimizer:
             await asyncio.sleep(30)
     
     def get_frequently_accessed_files(self) -> List[str]:
-        """Get list of frequently accessed files"""
+        """Get list of frequently accessed files - SECURITY FIX: Use /proc instead of lsof"""
         try:
-            # Use lsof to find open files
-            result = subprocess.run(['lsof', '-Fn'], capture_output=True, text=True)
+            # SECURITY FIX: Use /proc filesystem instead of subprocess
             files = []
-            for line in result.stdout.split('\n'):
-                if line.startswith('n/'):
-                    files.append(line[1:])
-            return files[:20]  # Top 20 files
+            for proc in psutil.process_iter(['pid']):
+                try:
+                    proc_fd_dir = f'/proc/{proc.info["pid"]}/fd'
+                    if os.path.exists(proc_fd_dir):
+                        for fd in os.listdir(proc_fd_dir):
+                            try:
+                                link_target = os.readlink(f'{proc_fd_dir}/{fd}')
+                                if link_target.startswith('/') and not link_target.startswith('/proc'):
+                                    files.append(link_target)
+                            except (OSError, IOError):
+                                pass
+                except (psutil.NoSuchProcess, psutil.AccessDenied, OSError):
+                    pass
+            return list(set(files))[:20]  # Top 20 unique files
         except:
             return []
     
@@ -181,12 +207,25 @@ class PerformanceOptimizer:
                         name = proc.info['name']
                         pid = proc.info['pid']
                         
+                        # SECURITY FIX: Use psutil for process priority management
                         # Boost critical processes
                         if any(crit in name for crit in critical_processes):
-                            subprocess.run(['renice', '-5', str(pid)], capture_output=True)
+                            try:
+                                p = psutil.Process(pid)
+                                current_nice = p.nice()
+                                if current_nice > -5:  # Only if not already high priority
+                                    p.nice(max(current_nice - 2, -5))
+                            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                                pass
                         # Lower priority for batch jobs
                         elif 'batch' in name or 'backup' in name:
-                            subprocess.run(['renice', '15', str(pid)], capture_output=True)
+                            try:
+                                p = psutil.Process(pid)
+                                current_nice = p.nice()
+                                if current_nice < 15:  # Only if not already low priority
+                                    p.nice(min(current_nice + 5, 19))
+                            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                                pass
                     except:
                         pass
                 
@@ -279,17 +318,44 @@ class PredictiveAnalytics:
         """Handle detected anomalies"""
         for anomaly in anomalies:
             if anomaly == 'cpu_spike':
-                # Trigger CPU optimization
-                subprocess.run(['nice', '-n', '10', 'echo', 'CPU spike detected'])
+                # SECURITY FIX: Log instead of executing system commands
+                print('WARNING: CPU spike detected')
             elif anomaly == 'memory_spike':
-                # Clear caches
-                subprocess.run(['sh', '-c', 'echo 3 > /proc/sys/vm/drop_caches'])
+                # SECURITY FIX: Use direct file I/O for cache clearing
+                try:
+                    drop_caches_path = '/proc/sys/vm/drop_caches'
+                    if os.path.exists(drop_caches_path) and os.access(drop_caches_path, os.W_OK):
+                        with open(drop_caches_path, 'w') as f:
+                            f.write('3')
+                except (IOError, OSError):
+                    print('WARNING: Memory spike detected but cannot clear caches (insufficient permissions)')
             elif anomaly == 'disk_critical':
-                # Clean up disk
-                subprocess.run(['find', '/tmp', '-type', 'f', '-mtime', '+1', '-delete'])
+                # SECURITY FIX: Use safe Python file operations instead of shell commands
+                try:
+                    import time
+                    tmp_dir = '/tmp'
+                    if os.path.exists(tmp_dir):
+                        current_time = time.time()
+                        for filename in os.listdir(tmp_dir):
+                            filepath = os.path.join(tmp_dir, filename)
+                            try:
+                                if os.path.isfile(filepath):
+                                    file_age = current_time - os.path.getmtime(filepath)
+                                    if file_age > 86400:  # 1 day in seconds
+                                        os.remove(filepath)
+                            except (OSError, IOError):
+                                pass
+                except Exception:
+                    print('WARNING: Disk critical but cannot clean temp files')
             elif anomaly == 'sustained_high_cpu':
-                # Enable power saving
-                subprocess.run(['cpupower', 'frequency-set', '-g', 'powersave'])
+                # SECURITY FIX: Use sysfs interface for CPU frequency scaling
+                try:
+                    scaling_governor_path = '/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor'
+                    if os.path.exists(scaling_governor_path) and os.access(scaling_governor_path, os.W_OK):
+                        with open(scaling_governor_path, 'w') as f:
+                            f.write('powersave')
+                except (IOError, OSError):
+                    print('WARNING: Sustained high CPU but cannot enable power saving (insufficient permissions)')
     
     def predict_failure(self) -> Dict:
         """Predict potential system failures"""

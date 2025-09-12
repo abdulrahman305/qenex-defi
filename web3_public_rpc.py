@@ -239,7 +239,7 @@ def start_public_rpc():
     server = HTTPServer(('0.0.0.0', port), QXCPublicRPC)
     
     print(f"🌐 Public Web3 RPC Server starting on port {port}")
-    print(f"📡 Accessible at: https://qenex.ai/rpc")
+    print(f"📡 Accessible at: https://abdulrahman305.github.io/qenex-docs)
     print(f"🔗 Chain ID: 1337 | Network: QENEX")
     
     try:

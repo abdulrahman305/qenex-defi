@@ -396,7 +396,7 @@ def export_live_data():
             "name": "QENEX Network",
             "rpcUrl": "http://localhost:8545",
             "symbol": "QXC",
-            "blockExplorer": "https://qenex.ai/explorer"
+            "blockExplorer": "https://abdulrahman305.github.io/qenex-docs
         },
         "contract": node.contract.get_contract_data(),
         "currentBalance": balance,

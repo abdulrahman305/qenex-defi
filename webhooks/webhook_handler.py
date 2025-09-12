@@ -232,7 +232,7 @@ class WebhookHandler:
         try:
             async with aiohttp.ClientSession() as session:
                 async with session.post(
-                    'http://localhost:8000/api/pipelines/trigger',
+                    'https://abdulrahman305.github.io/qenex-docs
                     json={
                         'repository': repo,
                         'branch': branch,

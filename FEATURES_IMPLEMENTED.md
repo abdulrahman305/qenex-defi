@@ -4,7 +4,7 @@
 
 ### 1. Real-Time Mining Dashboard ⚡
 - **File:** `realtime_mining_dashboard.py`
-- **Access:** http://localhost:8080
+- **Access:** https://abdulrahman305.github.io/qenex-docs
 - **Features:**
   - Live mining statistics
   - Real-time balance updates
@@ -116,7 +116,7 @@
 ### 1. Start Mining Dashboard:
 ```bash
 python3 /opt/qenex-os/realtime_mining_dashboard.py
-# Access at http://localhost:8080
+# Access at https://abdulrahman305.github.io/qenex-docs
 ```
 
 ### 2. Launch AI Marketplace:
@@ -207,8 +207,8 @@ python3 /opt/qenex-os/web3_qxc_integration.py stake 500 30
 
 - **GitHub:** https://github.com/abdulrahman305/qenex-os
 - **Ethereum Address:** [0xdE071fdF4077FdaBc2Ec9990B48920b8D06C2A2D](https://etherscan.io/address/0xdE071fdF4077FdaBc2Ec9990B48920b8D06C2A2D)
-- **Dashboard:** http://localhost:8080
-- **API Endpoint:** http://localhost:8000
+- **Dashboard:** https://abdulrahman305.github.io/qenex-docs
+- **API Endpoint:** https://abdulrahman305.github.io/qenex-docs
 - **Testnet RPC:** http://localhost:8545
 
 ## ✨ CONCLUSION

@@ -165,7 +165,7 @@ class HealthCheck:
         try:
             result = subprocess.run(
                 ['curl', '-s', '-o', '/dev/null', '-w', '%{http_code}', 
-                 'http://localhost:8000/api/health'],
+                 'https://abdulrahman305.github.io/qenex-docs
                 capture_output=True,
                 text=True
             )
@@ -622,7 +622,7 @@ class AutoRollback:
             
             # Check health
             health_check = subprocess.run(['curl', '-s', '-o', '/dev/null', '-w', '%{http_code}',
-                                         'http://localhost:8000/api/health'],
+                                         'https://abdulrahman305.github.io/qenex-docs
                                         capture_output=True, text=True)
             
             if health_check.stdout.strip() != '200':

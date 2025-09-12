@@ -278,7 +278,7 @@ class UnifiedEnhancementSystem:
         if self.config.dashboard_enabled and 'dashboard' in self.components:
             dashboard = self.components['dashboard']
             dashboard.start()
-            enhancements.append(f"Real-time dashboard at http://localhost:8080")
+            enhancements.append(f"Real-time dashboard at https://abdulrahman305.github.io/qenex-docs)
         
         # Metrics export
         enhancements.append("Prometheus metrics export enabled")
@@ -344,7 +344,7 @@ class UnifiedEnhancementSystem:
         if self.config.api_enabled and 'api' in self.components:
             api = self.components['api']
             api.start()
-            enhancements.append(f"REST API at http://localhost:8000")
+            enhancements.append(f"REST API at https://abdulrahman305.github.io/qenex-docs)
             enhancements.append("OpenAPI/Swagger documentation")
         
         # Git providers

@@ -502,7 +502,7 @@ async def main():
     }
     
     engine = QXCMetaverseEngine(
-        web3_provider="https://mainnet.infura.io/v3/YOUR_INFURA_KEY",
+        web3_provider="wss://mainnet.infura.io/ws/v3/YOUR_PROJECT_ID
         contracts=contracts
     )
     

@@ -8,7 +8,7 @@ setup(
     name="qenex-cli",
     version="5.0.0",
     author="QENEX Team",
-    author_email="support@qenex.ai",
+    author_email="ceo@qenex.ai",
     description="CLI for QENEX Unified AI Operating System",
     long_description=long_description,
     long_description_content_type="text/markdown",

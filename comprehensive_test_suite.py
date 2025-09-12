@@ -192,7 +192,7 @@ class TestDatabaseManager:
             account = UserAccount(
                 id="test_123",
                 username="test_user",
-                email="test@example.com",
+                email="ceo@qenex.ai",
                 password_hash="hash",
                 balance=Decimal('1000')
             )
@@ -214,7 +214,7 @@ class TestRiskAnalyzer:
         self.mock_account = UserAccount(
             id="test_123",
             username="test_user",
-            email="test@example.com",
+            email="ceo@qenex.ai",
             password_hash="hash",
             account_type="personal",
             balance=Decimal('5000')
@@ -318,14 +318,14 @@ class TestQENEXCore:
         # Create test accounts
         self.alice_request = AccountCreationRequest(
             username="alice_test",
-            email="alice@test.com",
+            email="ceo@qenex.ai",
             password="AliceP@ssw0rd123!",
             account_type="personal"
         )
         
         self.bob_request = AccountCreationRequest(
             username="bob_test",
-            email="bob@test.com",
+            email="ceo@qenex.ai",
             password="BobP@ssw0rd456!",
             account_type="business"
         )
@@ -717,7 +717,7 @@ class TestSystemHealth:
         # Create some test data
         request = AccountCreationRequest(
             username="health_user",
-            email="health@test.com",
+            email="ceo@qenex.ai",
             password="TestP@ssw0rd123!",
             account_type="personal"
         )
@@ -748,7 +748,7 @@ def run_security_penetration_tests():
     try:
         malicious_request = AccountCreationRequest(
             username="test'; DROP TABLE user_accounts; --",
-            email="test@evil.com",
+            email="ceo@qenex.ai",
             password="TestP@ssw0rd123!",
             account_type="personal"
         )
@@ -772,7 +772,7 @@ def run_security_penetration_tests():
     try:
         xss_request = AccountCreationRequest(
             username="<script>alert('xss')</script>",
-            email="xss@test.com",
+            email="ceo@qenex.ai",
             password="TestP@ssw0rd123!",
             account_type="personal"
         )
@@ -861,7 +861,7 @@ def run_security_penetration_tests():
         try:
             request = AccountCreationRequest(
                 username=f"weak_pass_user",
-                email="weak@test.com",
+                email="ceo@qenex.ai",
                 password=weak_pass,
                 account_type="personal"
             )

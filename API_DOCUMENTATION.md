@@ -19,7 +19,7 @@
 
 The QENEX OS API provides programmatic access to all system functions including blockchain operations, wallet management, AI model interactions, and mining control.
 
-**Base URL**: `http://localhost:8000/api`  
+**Base URL**: `https://abdulrahman305.github.io/qenex-docs  
 **Protocol**: HTTP/HTTPS, WebSocket  
 **Format**: JSON
 
@@ -551,7 +551,7 @@ X-RateLimit-Reset: 1699123456
 import requests
 
 # Configuration
-API_URL = "http://localhost:8000/api"
+API_URL = "https://abdulrahman305.github.io/qenex-docs
 API_KEY = "your_api_key"
 
 headers = {
@@ -588,7 +588,7 @@ print(f"Transaction ID: {tx['tx_id']}")
 
 ### JavaScript Example
 ```javascript
-const API_URL = 'http://localhost:8000/api';
+const API_URL = 'https://abdulrahman305.github.io/qenex-docs
 const API_KEY = 'your_api_key';
 
 const headers = {
@@ -621,21 +621,21 @@ ws.onmessage = (event) => {
 ```bash
 # Get blockchain info
 curl -H "Authorization: Bearer YOUR_API_KEY" \
-     http://localhost:8000/api/blockchain/info
+     https://abdulrahman305.github.io/qenex-docs
 
 # Create wallet
 curl -X POST \
      -H "Authorization: Bearer YOUR_API_KEY" \
      -H "Content-Type: application/json" \
      -d '{"wallet_id":"test","password":"Pass123!"}' \
-     http://localhost:8000/api/wallet/create
+     https://abdulrahman305.github.io/qenex-docs
 
 # Start mining
 curl -X POST \
      -H "Authorization: Bearer YOUR_API_KEY" \
      -H "Content-Type: application/json" \
      -d '{"wallet":"MINER_WALLET","threads":4}' \
-     http://localhost:8000/api/mining/start
+     https://abdulrahman305.github.io/qenex-docs
 ```
 
 ## SDKs and Libraries
@@ -648,7 +648,7 @@ Official SDKs available for:
 
 ## Support
 
-- Documentation: https://docs.qenex.ai
+- Documentation: https://abdulrahman305.github.io/qenex-docs
 - GitHub: https://github.com/abdulrahman305/qenex-os
 - API Status: https://status.qenex.ai
 

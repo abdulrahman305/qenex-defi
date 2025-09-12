@@ -163,7 +163,7 @@ def custom_openapi():
     )
     
     openapi_schema["info"]["x-logo"] = {
-        "url": "https://qenex.ai/logo.png"
+        "url": "https://abdulrahman305.github.io/qenex-docs
     }
     
     app.openapi_schema = openapi_schema

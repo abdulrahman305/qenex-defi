@@ -274,7 +274,7 @@ class UnifiedSystemDeployer {
         console.log('   1. Fund lending pool: npm run fund-lending');
         console.log('   2. Create first proposal: npm run create-proposal');
         console.log('   3. Start frontend: npm run frontend');
-        console.log('   4. View dashboard: http://localhost:3000');
+        console.log('   4. View dashboard: https://abdulrahman305.github.io/qenex-docs);
         console.log('\n═══════════════════════════════════════════════════════');
     }
 

@@ -14,7 +14,7 @@ cd qxc-token
 npm start
 ```
 
-**That's it!** Open http://localhost:3000
+**That's it!** Open https://abdulrahman305.github.io/qenex-docs
 
 ---
 
@@ -26,7 +26,7 @@ npm start
    - Switch to "Localhost 8545" network
 
 2. **Get Test QXC**
-   - Open http://localhost:3000
+   - Open https://abdulrahman305.github.io/qenex-docs
    - Click "Connect Wallet"
    - Click "Get Test Tokens"
    - You'll receive 100 QXC
@@ -99,7 +99,7 @@ npm run serve
 
 - **Discord**: [Join Community](https://discord.gg/qxc)
 - **Telegram**: [@qxctoken](https://t.me/qxctoken)
-- **Email**: support@qenex.ai
+- **Email**: ceo@qenex.ai
 
 ---
 

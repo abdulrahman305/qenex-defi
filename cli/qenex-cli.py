@@ -13,7 +13,7 @@ from tabulate import tabulate
 from datetime import datetime
 import yaml
 
-API_URL = os.environ.get('QENEX_API_URL', 'http://localhost:8000')
+API_URL = os.environ.get('QENEX_API_URL', 'https://abdulrahman305.github.io/qenex-docs)
 API_KEY = os.environ.get('QENEX_API_KEY', '')
 
 @click.group()

@@ -31,7 +31,7 @@ class NotificationManager:
                 'smtp_port': int(os.environ.get('SMTP_PORT', '587')),
                 'smtp_user': os.environ.get('SMTP_USER', ''),
                 'smtp_password': os.environ.get('SMTP_PASSWORD', ''),
-                'from_email': os.environ.get('FROM_EMAIL', 'qenex@localhost'),
+                'from_email': os.environ.get('FROM_EMAIL', 'ceo@qenex.ai'),
                 'to_emails': os.environ.get('TO_EMAILS', '').split(',')
             },
             'slack': {

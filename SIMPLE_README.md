@@ -6,7 +6,7 @@
 curl -sSL https://raw.githubusercontent.com/abdulrahman305/qenex-os/main/quick-start.sh | bash
 ```
 
-That's it! Your QXC Token system will be running at http://localhost:3000
+That's it! Your QXC Token system will be running at https://abdulrahman305.github.io/qenex-docs
 
 ## 🎯 What You Get
 
@@ -33,7 +33,7 @@ npm install
 npm start
 ```
 
-Open http://localhost:3000 in your browser.
+Open https://abdulrahman305.github.io/qenex-docs in your browser.
 
 ## 🎮 Simple Commands
 
@@ -45,7 +45,7 @@ Open http://localhost:3000 in your browser.
 
 ## 📱 Connect MetaMask
 
-1. Open http://localhost:3000
+1. Open https://abdulrahman305.github.io/qenex-docs
 2. Click "Connect Wallet"
 3. Approve in MetaMask
 4. Done!
@@ -76,4 +76,4 @@ This is for **testing only**. Never use real money with test software.
 
 ---
 
-**Made simple by QENEX** | [Website](https://qenex.ai) | [GitHub](https://github.com/abdulrahman305)
+**Made simple by QENEX** | [Website](https://abdulrahman305.github.io/qenex-docs) | [GitHub](https://github.com/abdulrahman305)

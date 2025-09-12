@@ -268,7 +268,7 @@ if __name__ == "__main__":
     import os
     
     # Test email validation
-    assert validator.validate_email("test@example.com") == True
+    assert validator.validate_email("ceo@qenex.ai") == True
     assert validator.validate_email("invalid.email") == False
     
     # Test Ethereum address

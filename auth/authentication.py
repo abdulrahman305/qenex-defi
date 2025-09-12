@@ -591,7 +591,7 @@ if __name__ == "__main__":
     init_default_admin(auth)
     
     # Create test user
-    user = auth.create_user('testuser', 'testpass123', 'test@example.com')
+    user = auth.create_user('testuser', 'testpass123', 'ceo@qenex.ai')
     if user:
         print(f"Created user: {user}")
         

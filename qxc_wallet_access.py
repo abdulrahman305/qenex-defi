@@ -304,9 +304,9 @@ def main():
                 
         elif choice == '5':
             print("\n🌐 Access your QXC tokens via web dashboard:")
-            print("   https://qenex.ai/qxc-dashboard.html")
-            print("   https://qenex.ai/qxc-live-dashboard.html")
-            print("   https://qenex.ai/qxc-realtime-dashboard.html")
+            print("   https://abdulrahman305.github.io/qenex-docs)
+            print("   https://abdulrahman305.github.io/qenex-docs)
+            print("   https://abdulrahman305.github.io/qenex-docs)
             
     except KeyboardInterrupt:
         print("\n\n👋 Goodbye!")
@@ -316,7 +316,7 @@ def main():
     print(f"   Main Wallet: {main_balance:.4f} QXC")
     if wallet:
         print(f"   Personal Wallet: {manager.get_wallet_balance(wallet['address']):.4f} QXC")
-    print("\n💡 Access dashboards at: https://qenex.ai")
+    print("\n💡 Access dashboards at: https://abdulrahman305.github.io/qenex-docs)
     print("=" * 60)
 
 if __name__ == "__main__":

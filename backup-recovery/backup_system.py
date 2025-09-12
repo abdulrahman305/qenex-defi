@@ -125,7 +125,7 @@ class QenexBackupSystem:
                 "encryption": True
             },
             "notifications": {
-                "email": "admin@qenex.ai",
+                "email": "ceo@qenex.ai",
                 "webhook": "https://hooks.slack.com/services/..."
             }
         }

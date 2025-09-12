@@ -55,15 +55,15 @@ chmod +x /opt/qenex-os/cicd/start_cicd.sh
 ```
 
 ### 2. Access the Services
-- **Dashboard**: http://localhost:8080 (Web UI for pipeline management)
-- **API Documentation**: http://localhost:8000/docs (Interactive API docs)
-- **API Server**: http://localhost:8000 (REST API endpoint)
+- **Dashboard**: https://abdulrahman305.github.io/qenex-docs (Web UI for pipeline management)
+- **API Documentation**: https://abdulrahman305.github.io/qenex-docs (Interactive API docs)
+- **API Server**: https://abdulrahman305.github.io/qenex-docs (REST API endpoint)
 - **Webhook Server**: http://localhost:9000 (Git webhook receiver)
 
 ### 3. Create Your First Pipeline
 ```bash
 # Using the API
-curl -X POST "http://localhost:8000/pipelines" \
+curl -X POST "https://abdulrahman305.github.io/qenex-docs \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -134,7 +134,7 @@ python3 /opt/qenex-os/cicd/cache_manager.py stats
 ### Authentication
 ```bash
 # Login and get JWT token
-curl -X POST "http://localhost:8000/auth/login" \
+curl -X POST "https://abdulrahman305.github.io/qenex-docs \
   -d "username=admin&password=admin123"
 
 # Use the token in subsequent requests
@@ -145,27 +145,27 @@ export TOKEN="your_jwt_token_here"
 ```bash
 # List all pipelines
 curl -H "Authorization: Bearer $TOKEN" \
-  "http://localhost:8000/pipelines"
+  "https://abdulrahman305.github.io/qenex-docs
 
 # Get pipeline details
 curl -H "Authorization: Bearer $TOKEN" \
-  "http://localhost:8000/pipelines/pipeline-id"
+  "https://abdulrahman305.github.io/qenex-docs
 
 # Trigger pipeline execution
 curl -X POST -H "Authorization: Bearer $TOKEN" \
-  "http://localhost:8000/pipelines/pipeline-id/trigger"
+  "https://abdulrahman305.github.io/qenex-docs
 ```
 
 ### Worker Management
 ```bash
 # List workers
 curl -H "Authorization: Bearer $TOKEN" \
-  "http://localhost:8000/workers"
+  "https://abdulrahman305.github.io/qenex-docs
 
 # Register new worker
 curl -X POST -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
-  "http://localhost:8000/workers" \
+  "https://abdulrahman305.github.io/qenex-docs \
   -d '{
     "hostname": "worker-2",
     "ip_address": "192.168.1.101",
@@ -226,7 +226,7 @@ curl -X POST -H "Authorization: Bearer $TOKEN" \
 
 # View system metrics
 curl -H "Authorization: Bearer $TOKEN" \
-  "http://localhost:8000/metrics"
+  "https://abdulrahman305.github.io/qenex-docs
 ```
 
 ### Log Management
@@ -239,7 +239,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 
 # System cleanup
 curl -X POST -H "Authorization: Bearer $TOKEN" \
-  "http://localhost:8000/admin/cleanup"
+  "https://abdulrahman305.github.io/qenex-docs
 ```
 
 ### Backup and Recovery

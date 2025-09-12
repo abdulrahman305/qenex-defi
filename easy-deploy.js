@@ -97,7 +97,7 @@ Token Details:
 
 Next Steps:
 1. Import token to MetaMask using address above
-2. Visit http://localhost:3000 to use interface
+2. Visit https://abdulrahman305.github.io/qenex-docs to use interface
 3. Run 'npm start' to launch application
     `);
 }

@@ -15,23 +15,47 @@ if (file_exists($stats_file)) {
 }
 
 // Otherwise collect stats directly
-// Get real system uptime
-$uptime_seconds = shell_exec("cat /proc/uptime | awk '{print $1}'");
+// Get real system uptime - SECURITY FIX: Use file_get_contents instead of shell_exec
+$uptime_line = file_get_contents('/proc/uptime');
+$uptime_seconds = floatval(explode(' ', trim($uptime_line))[0]);
 $uptime_hours = round($uptime_seconds / 3600, 1);
 
 // Get load average
 $load = sys_getloadavg();
 
-// Get memory usage
-$mem_total = shell_exec("grep MemTotal /proc/meminfo | awk '{print $2}'");
-$mem_free = shell_exec("grep MemAvailable /proc/meminfo | awk '{print $2}'");
+// Get memory usage - SECURITY FIX: Parse /proc/meminfo directly
+$meminfo = file_get_contents('/proc/meminfo');
+preg_match('/MemTotal:\s+(\d+)/', $meminfo, $total_match);
+preg_match('/MemAvailable:\s+(\d+)/', $meminfo, $avail_match);
+$mem_total = intval($total_match[1]);
+$mem_free = intval($avail_match[1]);
 $mem_used_percent = round((1 - ($mem_free / $mem_total)) * 100, 1);
 
-// Get CPU usage
-$cpu_usage = shell_exec("top -bn1 | grep 'Cpu(s)' | sed 's/.*, *\([0-9.]*\)%* id.*/\1/' | awk '{print 100 - $1}'");
+// Get CPU usage - SECURITY FIX: Use /proc/stat instead of shell commands
+$stat_line = file_get_contents('/proc/stat');
+if (preg_match('/cpu\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/', $stat_line, $matches)) {
+    $idle = intval($matches[4]);
+    $total = array_sum(array_slice($matches, 1));
+    $cpu_usage = round((1 - $idle / $total) * 100, 1);
+} else {
+    $cpu_usage = 0;
+}
 
-// Count QENEX processes
-$qenex_processes = shell_exec("ps aux | grep -E '[q]enex|[c]icd|[g]itops|[a]i_engine' | wc -l");
+// Count QENEX processes - SECURITY FIX: Use /proc filesystem
+$qenex_processes = 0;
+try {
+    $processes = glob('/proc/*/comm');
+    foreach ($processes as $comm_file) {
+        if (is_readable($comm_file)) {
+            $comm = trim(file_get_contents($comm_file));
+            if (preg_match('/qenex|cicd|gitops|ai_engine/i', $comm)) {
+                $qenex_processes++;
+            }
+        }
+    }
+} catch (Exception $e) {
+    $qenex_processes = 1;
+}
 
 // Get real QENEX pipeline data
 $pipelines = 0;
@@ -81,17 +105,40 @@ foreach ($log_files as $log_file) {
     }
 }
 
-// If no pipeline data from logs, check running services
+// If no pipeline data from logs, check running services - SECURITY FIX
 if ($pipelines == 0) {
-    $running = shell_exec("ps aux | grep -E 'pipeline|cicd' | grep -v grep | wc -l");
-    $pipelines = intval($running);
+    $running = 0;
+    try {
+        $processes = glob('/proc/*/comm');
+        foreach ($processes as $comm_file) {
+            if (is_readable($comm_file)) {
+                $comm = trim(file_get_contents($comm_file));
+                if (preg_match('/pipeline|cicd/i', $comm)) {
+                    $running++;
+                }
+            }
+        }
+    } catch (Exception $e) {
+        $running = 0;
+    }
+    $pipelines = $running;
 }
 
-// Get disk usage
-$disk_usage = shell_exec("df -h / | awk 'NR==2 {print $5}' | sed 's/%//'");
+// Get disk usage - SECURITY FIX: Use disk_free_space function
+$total_space = disk_total_space('/');
+$free_space = disk_free_space('/');
+$disk_usage = round((($total_space - $free_space) / $total_space) * 100, 0);
 
-// Get network connections
-$connections = shell_exec("ss -tun | wc -l");
+// Get network connections - SECURITY FIX: Use /proc/net/tcp
+$connections = 0;
+try {
+    $tcp_file = '/proc/net/tcp';
+    if (file_exists($tcp_file)) {
+        $connections = count(file($tcp_file)) - 1; // Subtract header line
+    }
+} catch (Exception $e) {
+    $connections = 0;
+}
 
 echo json_encode([
     'uptime_hours' => $uptime_hours,

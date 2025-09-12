@@ -111,7 +111,7 @@ CMD ["gunicorn", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWor
 
 #### Environment Variables
 ```bash
-DATABASE_URL=postgresql://user:pass@localhost/qenex
+DATABASE_URL=postgresql://user:ceo@qenex.ai/qenex
 REDIS_URL=redis://localhost:6379
 SECRET_KEY=<32-char-min-secret>
 JWT_SECRET=<strong-jwt-secret>
@@ -133,7 +133,7 @@ async def test_user_registration():
     backend = QENEXSecureBackend()
     result = await backend.register_user(
         "testuser", 
-        "test@example.com", 
+        "ceo@qenex.ai", 
         "SecureP@ssw0rd123!"
     )
     assert result['success'] == True

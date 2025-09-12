@@ -182,7 +182,7 @@ class PipelineController:
         # Execute deployment
         cmd = [
             'curl', '-X', 'POST',
-            'http://localhost:8000/api/pipelines/trigger',
+            'https://abdulrahman305.github.io/qenex-docs
             '-H', 'Content-Type: application/json',
             '-d', json.dumps({
                 'repository': repo,
@@ -207,7 +207,7 @@ class PipelineController:
         # Trigger build pipeline
         cmd = [
             'curl', '-X', 'POST',
-            'http://localhost:8000/api/pipelines/trigger',
+            'https://abdulrahman305.github.io/qenex-docs
             '-H', 'Content-Type: application/json',
             '-d', json.dumps({
                 'repository': repo,
@@ -231,7 +231,7 @@ class PipelineController:
         # Run tests
         cmd = [
             'curl', '-X', 'POST',
-            'http://localhost:8000/api/pipelines/trigger',
+            'https://abdulrahman305.github.io/qenex-docs
             '-H', 'Content-Type: application/json',
             '-d', json.dumps({
                 'repository': repo,
@@ -265,7 +265,7 @@ class PipelineController:
         if metric == 'replicas':
             cmd = [
                 'curl', '-X', 'POST',
-                'http://localhost:8000/api/scaling/adjust',
+                'https://abdulrahman305.github.io/qenex-docs
                 '-H', 'Content-Type: application/json',
                 '-d', json.dumps({
                     'replicas': replicas,
@@ -319,7 +319,7 @@ class PipelineController:
         # Execute rollback
         cmd = [
             'curl', '-X', 'POST',
-            'http://localhost:8000/api/pipelines/rollback',
+            'https://abdulrahman305.github.io/qenex-docs
             '-H', 'Content-Type: application/json',
             '-d', json.dumps({
                 'environment': env,

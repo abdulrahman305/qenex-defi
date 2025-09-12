@@ -13,16 +13,25 @@ preg_match('/MemTotal:\s+(\d+)/', $meminfo, $total);
 preg_match('/MemAvailable:\s+(\d+)/', $meminfo, $avail);
 $mem_percent = round((1 - ($avail[1] / $total[1])) * 100, 1);
 
-// Count QENEX-related processes
-$ps_output = shell_exec('ps aux 2>/dev/null');
+// Count QENEX-related processes - SECURITY FIX: Use safer process counting
 $qenex_count = 0;
-if ($ps_output) {
-    $lines = explode("\n", $ps_output);
-    foreach ($lines as $line) {
-        if (preg_match('/qenex|cicd|gitops|ai_engine/i', $line) && !preg_match('/grep/i', $line)) {
-            $qenex_count++;
+try {
+    // Use proc filesystem instead of shell_exec for security
+    $proc_dir = '/proc';
+    if (is_dir($proc_dir)) {
+        $processes = glob('/proc/*/comm');
+        foreach ($processes as $comm_file) {
+            if (is_readable($comm_file)) {
+                $comm = trim(file_get_contents($comm_file));
+                if (preg_match('/qenex|cicd|gitops|ai_engine/i', $comm)) {
+                    $qenex_count++;
+                }
+            }
         }
     }
+} catch (Exception $e) {
+    // Fallback to safe default
+    $qenex_count = 1;
 }
 
 // Check CI/CD logs for pipeline data

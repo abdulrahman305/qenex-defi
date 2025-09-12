@@ -243,7 +243,7 @@ await banking.transfer(recipientAddress, amount, "REF123");
 
 ## Support
 
-- Documentation: https://docs.qenex.ai/defi
+- Documentation: https://abdulrahman305.github.io/qenex-docs
 - Discord: https://discord.gg/qenex
 - Telegram: https://t.me/qenex_defi
 - Email: defi@qenex.ai

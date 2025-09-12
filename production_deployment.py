@@ -50,7 +50,7 @@ class DeploymentConfig:
     environment: str = "production"
     
     # Database settings
-    database_url: str = "postgresql://qenex:secure_password@localhost:5432/qenex_prod"
+    database_url: str = "postgresql://qenex:ceo@qenex.ai:5432/qenex_prod"
     database_pool_size: int = 20
     
     # Redis settings
@@ -82,7 +82,7 @@ class DeploymentConfig:
     alerts_enabled: bool = True
     smtp_server: str = "smtp.company.com"
     smtp_port: int = 587
-    alert_email_from: str = "alerts@qenex.com"
+    alert_email_from: str = "ceo@qenex.ai"
     alert_email_to: List[str] = None
     
     # Resource limits
@@ -92,7 +92,7 @@ class DeploymentConfig:
     
     def __post_init__(self):
         if self.alert_email_to is None:
-            self.alert_email_to = ["admin@qenex.com"]
+            self.alert_email_to = ["ceo@qenex.ai"]
 
 class SystemMonitor:
     """Advanced system monitoring and alerting"""
@@ -1004,7 +1004,7 @@ def main():
         print("✅ All services running")
         print("\n🌐 Web interface: https://localhost")
         print("📊 Metrics: http://localhost:9090/metrics")
-        print("💚 Health check: http://localhost:8080/health")
+        print("💚 Health check: https://abdulrahman305.github.io/qenex-docs")
         print("\n📝 Next steps:")
         print("  1. Review logs: tail -f /var/log/qenex/qenex.log")
         print("  2. Monitor system: systemctl status qenex")

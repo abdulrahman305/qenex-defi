@@ -324,7 +324,7 @@ System configuration via `/opt/qenex-os/config/`:
 
 ### Contact
 - Technical: Via GitHub
-- Security: security@qenex.ai
+- Security: ceo@qenex.ai
 - Business: business@qenex.ai
 
 ## License & Legal

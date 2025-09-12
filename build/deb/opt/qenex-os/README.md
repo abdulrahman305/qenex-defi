@@ -109,9 +109,9 @@ cicd gitops list
 
 ### 3. Web Interfaces
 
-- **Dashboard**: http://localhost:8080
-- **API Documentation**: http://localhost:8000/docs
-- **Metrics**: http://localhost:8080/metrics
+- **Dashboard**: https://abdulrahman305.github.io/qenex-docs
+- **API Documentation**: https://abdulrahman305.github.io/qenex-docs
+- **Metrics**: https://abdulrahman305.github.io/qenex-docs
 
 ## 🏗️ Architecture
 
@@ -174,7 +174,7 @@ The AI engine continuously learns from:
 ### Metrics Export
 Prometheus-compatible metrics available at:
 ```
-http://localhost:8080/metrics
+https://abdulrahman305.github.io/qenex-docs
 ```
 
 ### Logging
@@ -236,8 +236,8 @@ config = manager.generate_pipeline_config('nodejs')
 ### API Reference
 
 Full API documentation available at:
-- Interactive: http://localhost:8000/docs
-- OpenAPI spec: http://localhost:8000/openapi.json
+- Interactive: https://abdulrahman305.github.io/qenex-docs
+- OpenAPI spec: https://abdulrahman305.github.io/qenex-docs
 
 ## 🛠️ Configuration
 
@@ -309,10 +309,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- **Documentation**: https://docs.qenex.ai
+- **Documentation**: https://abdulrahman305.github.io/qenex-docs
 - **Issues**: https://github.com/qenex/unified-ai-os/issues
 - **Discord**: https://discord.gg/qenex
-- **Email**: support@qenex.ai
+- **Email**: ceo@qenex.ai
 
 ## 🚦 Status
 

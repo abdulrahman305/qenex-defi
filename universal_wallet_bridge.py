@@ -122,7 +122,7 @@ class UniversalWalletBridge:
                 name="QENEX Native Network",
                 chain_id=9999,
                 rpc_url="http://localhost:8545",
-                explorer_url="http://localhost:3000",
+                explorer_url="https://abdulrahman305.github.io/qenex-docs
                 native_token="QXC",
                 decimals=18,
                 gas_limit=21000,
@@ -263,7 +263,7 @@ class UniversalWalletBridge:
                     'rpc_url': 'http://localhost:8545',
                     'chain_id': 9999,
                     'symbol': 'QXC',
-                    'explorer': 'http://localhost:3000'
+                    'explorer': 'https://abdulrahman305.github.io/qenex-docs
                 }
             ]
         }

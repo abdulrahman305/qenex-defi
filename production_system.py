@@ -869,7 +869,7 @@ class ProductionAPI:
     async def initialize(self):
         """Initialize all components"""
         # Initialize database
-        conn_string = os.getenv('DATABASE_URL', 'postgresql://user:pass@localhost/qenex')
+        conn_string = os.getenv('DATABASE_URL', 'postgresql://user:ceo@qenex.ai/qenex')
         self.database = DistributedDatabase(conn_string)
         await self.database.initialize()
         

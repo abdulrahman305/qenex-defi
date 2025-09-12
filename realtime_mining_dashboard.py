@@ -456,5 +456,5 @@ async def main():
         
 if __name__ == '__main__':
     print("Starting QENEX Mining Dashboard...")
-    print("Access at: http://localhost:8080")
+    print("Access at: https://abdulrahman305.github.io/qenex-docs)
     asyncio.run(main())

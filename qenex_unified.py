@@ -87,7 +87,7 @@ class QenexSingleOS:
         # Trigger pipeline
         result = subprocess.run([
             'curl', '-X', 'POST',
-            'http://localhost:8000/api/pipelines/trigger',
+            'https://abdulrahman305.github.io/qenex-docs
             '-H', 'Content-Type: application/json',
             '-d', json.dumps({'repository': repo, 'branch': branch})
         ], capture_output=True, text=True)

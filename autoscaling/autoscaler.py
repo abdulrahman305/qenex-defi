@@ -197,7 +197,7 @@ class QenexAutoScaler:
         try:
             # Check application metrics endpoint
             result = subprocess.run([
-                'curl', '-s', 'http://localhost:8000/metrics/response_time'
+                'curl', '-s', 'https://abdulrahman305.github.io/qenex-docs
             ], capture_output=True, text=True, timeout=5)
             
             if result.returncode == 0:

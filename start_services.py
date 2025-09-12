@@ -372,8 +372,8 @@ Access URLs:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Local Access:
-  Dashboard: http://localhost:8080
-  API: http://localhost:8000
+  Dashboard: https://abdulrahman305.github.io/qenex-docs
+  API: https://abdulrahman305.github.io/qenex-docs
 
 Press Ctrl+C to stop services.
 """)

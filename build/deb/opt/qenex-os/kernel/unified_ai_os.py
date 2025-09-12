@@ -635,8 +635,8 @@ Mode: {}
 Uptime: {:.0f} seconds
 
 Services:
-  ✓ Dashboard: http://localhost:8080
-  ✓ API: http://localhost:8000/docs
+  ✓ Dashboard: https://abdulrahman305.github.io/qenex-docs
+  ✓ API: https://abdulrahman305.github.io/qenex-docs
   ✓ Webhooks: http://localhost:8082
 
 Type 'qenex-shell' to access the command interface.

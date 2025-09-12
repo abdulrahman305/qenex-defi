@@ -147,7 +147,7 @@ class QenexZeroTrustSecurity:
             "network": {
                 "microsegmentation": True,
                 "firewall_rules": [],
-                "allowed_origins": ["https://qenex.ai"],
+                "allowed_origins": ["https://abdulrahman305.github.io/qenex-docs
                 "rate_limiting": {
                     "requests_per_minute": 100,
                     "burst_limit": 20
@@ -861,7 +861,7 @@ class QenexZeroTrustSecurity:
             admin_password = secrets.token_urlsafe(16)
             admin_id = self.create_user(
                 "admin",
-                "admin@qenex.ai", 
+                "ceo@qenex.ai", 
                 admin_password,
                 ["admin"],
                 ["admin", "read", "write", "delete", "backup", "restore", "audit"]

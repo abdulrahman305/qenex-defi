@@ -17,7 +17,7 @@ import time
 console = Console()
 
 # Default configuration
-DEFAULT_API_URL = "https://qenex.ai/api/v1"
+DEFAULT_API_URL = "https://abdulrahman305.github.io/qenex-docs
 CONFIG_FILE = os.path.expanduser("~/.qenex/config.yaml")
 
 class QenexCLI:
